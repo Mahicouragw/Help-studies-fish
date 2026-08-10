@@ -1,5 +1,5 @@
 {
-  "name": "inter-ai-study-buddy",
+  "name": "help-studies-fish",
   "version": "1.0.0",
   "description": "Inter AI Study Buddy — AITutor for TS Inter 1st & 2nd Year. PDF Upload, AutoScan, Library, Quiz Generation, Flashcards, Gemini Chat.",
   "type": "module",
@@ -8,10 +8,21 @@
     "serve": "npx serve .",
     "start": "npx serve ."
   },
-  "keywords": ["inter", "telangana", "bie", "ai-tutor", "gemini", "study-buddy", "pdf", "ocr", "quiz", "flashcards"],
+  "keywords": [
+    "inter",
+    "telangana",
+    "bie",
+    "ai-tutor",
+    "gemini",
+    "study-buddy",
+    "pdf",
+    "ocr",
+    "quiz",
+    "flashcards"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/AITutor"
+    "url": "https://github.com/Mahicouragw/Help-studies-fish"
   }
 }

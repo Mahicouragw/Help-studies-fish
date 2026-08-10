@@ -93,7 +93,7 @@ No `node_modules`, no build step — deploy anywhere (GitHub Pages, Netlify, Ver
 2. **Repository name:** `AITutor` (or `inter-ai-study-buddy`)
 3. Description: `Inter AI Study Buddy — AITutor for TS Inter with PDF Upload, AutoScan & Quiz Gen`
 4. Choose **Public** → **Create repository**
-5. Copy the HTTPS URL: `https://github.com/YOUR_USERNAME/AITutor.git`
+5. Copy the HTTPS URL: `https://github.com/Mahicouragw/Help-studies-fish.git`
 
 #### Option B — From This Workspace (Terminal)
 ```bash
@@ -102,7 +102,7 @@ git init
 git add .
 git commit -m "feat: Inter AI Study Buddy — AITutor with PDF, Scan, Library, Quiz"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/AITutor.git
+git remote add origin https://github.com/Mahicouragw/Help-studies-fish.git
 git push -u origin main
 ```
 
