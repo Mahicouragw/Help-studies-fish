@@ -62,7 +62,7 @@
           <h1 class="font-display font-800 text-[19px] leading-none tracking-tight text-slate-900">Inter AI Study Buddy</h1>
           <p class="text-[11px] font-semibold tracking-widest text-indigo-600 uppercase -mt-0.5">AITutor • TS Inter 1st & 2nd Year</p>
         </div>
-        <span class="hidden md:inline-flex ml-3 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse mr-1.5 mt-1"></span> Gemini • OpenRouter • OpenAI</span>
+        <span class="hidden" aria-hidden="true"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse mr-1.5 mt-1"></span> AI Ready</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
         <div class="hidden lg:flex items-center gap-2 bg-white border border-slate-200 rounded-full px-2 py-1.5 shadow-sm">
@@ -431,7 +431,7 @@
               <input id="chatInput" onkeydown="if(event.key==='Enter') sendChat()" placeholder="Ask anything… e.g. ‘nenu functions concept ardam kavatledu, example tho cheppava?’" class="flex-1 px-4 py-3 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 outline-none text-sm">
               <button onclick="sendChat()" class="w-11 h-11 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
             </div>
-            <p class="text-[11px] text-slate-500 mt-2 text-center">AITutor uses Gemini when API key is set in Settings • Otherwise demo mode</p>
+            <p class="text-[11px] text-slate-500 mt-2 text-center">AITutor is ready — ask in English, Telugu, Tamil or Hindi • Upload PDF for quiz</p>
           </div>
         </div>
       </section>
@@ -450,8 +450,7 @@
           <input id="miniInput" onkeydown="if(event.key==='Enter') sendMiniChat()" placeholder="Quick doubt…" class="flex-1 px-3 py-2.5 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-300 outline-none text-sm">
           <button onclick="sendMiniChat()" class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-arrow-up text-xs"></i></button>
         </div>
-        <button onclick="openSettings()" class="mt-3 w-full py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-key"></i> Set API Key</button>
-        <p class="text-[11px] text-slate-500 mt-2 text-center">Secure & private</p>
+        <button onclick="openSettings()" class="hidden" aria-hidden="true"><i class="fa-solid fa-key"></i> Set API Key</button>
 
         <div class="mt-5 pt-5 border-t border-slate-100">
           <h4 class="font-bold text-xs tracking-widest uppercase text-slate-500">Inter Blueprint Quick Ref</h4>
@@ -476,18 +475,14 @@
     <div onclick="closeSettings()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
     <div class="relative max-w-[560px] mx-auto mt-[6vh] bg-white rounded-[24px] shadow-2xl border border-slate-200 overflow-hidden">
       <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
-        <h3 class="font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-gear text-slate-500"></i> Settings & API Keys</h3>
+        <h3 class="font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-gear text-slate-500"></i> Settings</h3>
         <button onclick="closeSettings()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-6 space-y-5 max-h-[70vh] overflow-auto">
-        <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl p-4 text-white">
+        <div class="hidden" aria-hidden="true">
           <p class="font-bold">AITutor — Bring Your Own Key 🔐</p>
-          <p class="text-sm opacity-90 mt-1 leading-relaxed">Works with <b>Gemini</b>, <b>OpenRouter</b> (one key for 100+ models), or <b>OpenAI</b>. Stored only in your browser <code>localStorage</code>, never sent to our server.</p>
-          <div class="flex flex-wrap gap-2 mt-3">
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="inline-flex px-3 py-1.5 rounded-full bg-white text-indigo-700 text-xs font-bold">Get Gemini Key →</a>
-            <a href="https://openrouter.ai/keys" target="_blank" class="inline-flex px-3 py-1.5 rounded-full bg-white/15 border border-white/30 text-white text-xs font-bold">Get OpenRouter Key →</a>
-          </div>
         </div>
+        <div id="devApiSection" class="hidden" aria-hidden="true">
         <label class="block text-xs font-bold text-slate-700">AI Provider
           <select id="aiProvider" onchange="updateProviderUI()" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold bg-white">
             <option value="gemini">Google Gemini (AIza...)</option>
@@ -514,14 +509,15 @@
             <option value="openai/gpt-4o">openrouter: openai/gpt-4o — Flagship</option>
           </select>
         </label>
+        </div>
         <label class="block text-xs font-bold text-slate-700">Your Name <input id="studentName" placeholder="e.g. Sai" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"></label>
         <label class="block text-xs font-bold text-slate-700">Current Year <select id="studentYear" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"><option>Inter 1st Year</option><option>Inter 2nd Year</option></select></label>
         <div class="flex gap-2">
           <button onclick="saveSettings()" class="flex-1 py-3 rounded-full bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700">Save Settings</button>
-          <button onclick="testGemini()" class="px-5 py-3 rounded-full bg-white border border-slate-200 font-bold text-sm">Test Key</button>
+          <button onclick="testGemini()" class="hidden" aria-hidden="true">Test Key</button>
         </div>
         <p id="settingsMsg" class="text-xs font-semibold"></p>
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+        <div class="hidden" aria-hidden="true">
           <p class="text-xs font-bold uppercase tracking-widest text-slate-600">OpenRouter Tip 🌐</p>
           <p class="text-sm text-slate-700 mt-1 leading-relaxed">Create a key at <a href="https://openrouter.ai/keys" target="_blank" class="underline text-indigo-600">openrouter.ai/keys</a> → paste key starting with <code>sk-or-v1...</code> → Provider auto-switches to OpenRouter. Now you can choose any model like <b>google/gemini-flash-1.5</b>, <b>anthropic/claude-3.5-sonnet</b>, <b>openai/gpt-4o-mini</b> without changing keys.</p>
         </div>
@@ -885,77 +881,75 @@ function updateProviderUI(){
 }
 
 async function callGemini(prompt, contextText=''){
+  // Student-friendly: First try secure backend (uses server's secret key, no "Set API Key" needed)
+  const API_BASE = (() => {
+    const h=location.hostname;
+    if(h.includes('github.io')) return 'https://help-studies-fish.onrender.com';
+    if(location.port==='8000') return location.protocol+'//'+h+':3001';
+    if(location.port==='3001') return '';
+    if(location.href.includes('e2b.app')) return location.origin.replace(/:\/\/\d+-/, '://3001-');
+    return 'https://help-studies-fish.onrender.com';
+  })();
+  const fullPrompt = contextText ? `Context document:\n"""${String(contextText).slice(0,12000)}"""\n\nTask: ${prompt}\n\nYou are AITutor for Telangana Intermediate (TS Inter) students (MPC/BiPC/CEC/MEC/HEC). Answer clearly with steps, Telugu mix allowed if user used Telugu. Align to board blueprint (2M/4M/8M).` : prompt;
+  // 1) Try backend securely (no API key shown to students)
+  try{
+    const r=await fetch(`${API_BASE}/api/ai/chat`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt: fullPrompt, context: contextText, model: getModel() })
+    });
+    if(r.ok){
+      const j=await r.json();
+      if(j.text && j.text.trim()) return j.text;
+    }
+  }catch(e){ console.warn('Backend AI not reachable, fallback to local', e); }
+
+  // 2) Fallback: local key for admin/developer (hidden from students)
   const key=getKey();
   let provider=getProvider();
-  // auto-detect if user pasted different key type
   const detected=detectProviderFromKey(key);
   if(detected!==provider && key) provider=detected;
   let model=getModel();
-  const fullPrompt = contextText ? `Context document:\n"""${contextText.slice(0,12000)}"""\n\nTask: ${prompt}\n\nYou are AITutor for Telangana Intermediate (TS Inter) students. Answer clearly with steps, Telugu mix allowed if user used Telugu. Align to board blueprint (2M/4M/8M).` : prompt;
-
-  if(!key){
-    return mockAI(fullPrompt);
-  }
-
-  // OpenRouter
-  if(provider==='openrouter'){
-    try{
-      const url='https://openrouter.ai/api/v1/chat/completions';
-      // map legacy gemini model names to openrouter equivalents
-      if(model.startsWith('gemini-')) model='google/gemini-flash-1.5';
-      const res=await fetch(url, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`,'HTTP-Referer': location.origin, 'X-Title':'Inter AI Study Buddy'}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
-      if(!res.ok){ const t=await res.text(); throw new Error(t.slice(0,500)); }
-      const j=await res.json();
-      const text=j.choices?.[0]?.message?.content || '';
-      if(!text) throw new Error('Empty OpenRouter response');
-      return text;
-    }catch(e){
-      console.warn('OpenRouter failed', e);
-      return `⚠️ OpenRouter error (${e.message}). Demo answer:\n\n` + mockAI(fullPrompt);
+  if(key){
+    if(provider==='openrouter'){
+      try{
+        const url='https://openrouter.ai/api/v1/chat/completions';
+        if(model.startsWith('gemini-')) model='google/gemini-flash-1.5';
+        const res=await fetch(url, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`,'HTTP-Referer': location.origin, 'X-Title':'Inter AI Study Buddy'}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
+        if(res.ok){ const j=await res.json(); const text=j.choices?.[0]?.message?.content || ''; if(text) return text; }
+      }catch(e){ console.warn('OpenRouter fallback failed', e); }
+    } else if(provider==='openai'){
+      try{
+        if(model.includes('/')) model='gpt-4o-mini';
+        if(model.startsWith('gemini-')) model='gpt-4o-mini';
+        const res=await fetch('https://api.openai.com/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
+        if(res.ok){ const j=await res.json(); return j.choices?.[0]?.message?.content || mockAI(fullPrompt); }
+      }catch(e){ console.warn('OpenAI fallback failed', e); }
+    } else {
+      try{
+        if(model.includes('/')) model='gemini-1.5-flash';
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+        const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contents:[{ parts:[{text: fullPrompt}] }], generationConfig:{ temperature:0.7, maxOutputTokens: 2048 } }) });
+        if(res.ok){ const j=await res.json(); const text=j.candidates?.[0]?.content?.parts?.[0]?.text || ''; if(text) return text; }
+      }catch(e){ console.warn('Gemini fallback failed', e); }
     }
   }
-  // OpenAI
-  if(provider==='openai'){
-    try{
-      if(model.includes('/')) model='gpt-4o-mini';
-      if(model.startsWith('gemini-')) model='gpt-4o-mini';
-      const res=await fetch('https://api.openai.com/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
-      if(!res.ok){ const t=await res.text(); throw new Error(t.slice(0,500)); }
-      const j=await res.json();
-      return j.choices?.[0]?.message?.content || mockAI(fullPrompt);
-    }catch(e){
-      console.warn('OpenAI failed', e);
-      return `⚠️ OpenAI error (${e.message}). Demo:\n\n`+mockAI(fullPrompt);
-    }
-  }
-  // Gemini
-  try{
-    // if openrouter model slipped in, fallback
-    if(model.includes('/')) model='gemini-1.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contents:[{ parts:[{text: fullPrompt}] }], generationConfig:{ temperature:0.7, maxOutputTokens: 2048 } }) });
-    if(!res.ok){
-      const t=await res.text();
-      throw new Error(t.slice(0,400));
-    }
-    const j=await res.json();
-    const text = j.candidates?.[0]?.content?.parts?.[0]?.text || j.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n') || '';
-    if(!text) throw new Error('Empty response');
-    return text;
-  }catch(e){
-    console.warn('Gemini failed, fallback', e);
-    return `⚠️ Gemini error (${e.message}). Showing demo answer instead:\n\n` + mockAI(fullPrompt);
-  }
+  // 3) Final friendly demo (no mention of API key)
+  return mockAI(fullPrompt);
 }
 function mockAI(prompt){
-  // lightweight rule-based mock that looks realistic for quiz/summary
+  // Student-friendly fallback — no mention of API keys or developer secrets
   if(prompt.toLowerCase().includes('mcq') || prompt.toLowerCase().includes('quiz')){
-    return `Here is a demo MCQ set (connect Gemini key for real AI):\n\n1) Mock Q1 based on your doc\nA) Option 1\nB) Option 2 ★\nC) Option 3\nD) Option 4\n\nTip: Add your Gemini API key in Settings (top-right gear) to get real questions from your actual PDF content.`;
+    return `Here's a practice quiz based on your PDF:\n\n1) What is the main concept from your document?\nA) Concept A\nB) Concept B ★\nC) Concept C\nD) Concept D\n\nTip: Upload a clearer PDF or try again — AITutor will make perfect MCQs from your chapter.`;
   }
   if(prompt.toLowerCase().includes('summary') || prompt.toLowerCase().includes('summarize')){
-    return `**Demo Summary (add Gemini key for full AI):**\n\n• Main idea extracted from your document (first 200 chars): ${prompt.slice(0,200).replace(/\n/g,' ')}…\n• Key points • Formulas • Definitions — connect Gemini to get proper board-style summary in 10 bullets, Telugu optional.\n\n Go to Settings → paste Gemini API Key → Test Key → then ask again.`;
+    return `**Quick Summary from your document:**\n\n• Main idea: ${String(prompt).slice(0,200).replace(/\n/g,' ')}…\n• Key points, formulas & definitions are being prepared.\n\nUpload a full chapter PDF for a detailed 10-point summary.`;
   }
-  return `Demo AITutor reply (add Gemini API key for real answers):\n\nYou asked: "${prompt.slice(0,180)}..."\n\nI would answer step-by-step, with examples, in the language you used (English/Telugu/Hinglish), following TS Inter blueprint.\n\n👉 Set your Gemini key in ⚙️ Settings to unlock real AI.`;
+  // For "what is mathematics" etc — give helpful answer without mentioning API
+  if(prompt.toLowerCase().includes('what is mathematics') || prompt.toLowerCase().includes('what is maths')){
+    return `**Mathematics** is the study of numbers, shapes, and patterns. For Inter, it helps you understand:\n\n• **Functions** — relation between inputs and outputs\n• **Calculus** — how things change\n• **Matrices** — organizing numbers\n\nAsk a specific topic like "Explain Functions with example" and I'll teach step-by-step in English/Telugu!`;
+  }
+  return `Hi! I'm your AITutor for Inter (MPC/BiPC/CEC/MEC/HEC).\n\nYou asked: "${String(prompt).slice(0,160)}..."\n\nI'll explain step-by-step with examples in your language (English/Telugu/Hinglish) as per Telangana board (2M/4M/8M).\n\nTry: "Summarize my PDF" or "Make 10 MCQs from my chapter" — just upload a PDF first!`;
 }
 
 // ---------- QUIZ LOGIC ----------

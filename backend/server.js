@@ -182,6 +182,81 @@ app.get('/api/admin/users', async (req,res)=>{
   res.json({ count: users.length, users });
 });
 
+// AI Proxy — Secure, uses server's OPENROUTER key (students never see "Set API Key")
+const OPENROUTER_KEY = (process.env.OPENROUTER_API_KEY || '').trim();
+const GEMINI_KEY = (process.env.GEMINI_API_KEY || '').trim();
+
+app.post('/api/ai/chat', async (req,res)=>{
+  try{
+    const { prompt, context, lang } = req.body;
+    if(!prompt) return res.status(400).json({ error: 'Prompt required' });
+    const fullPrompt = context ? `Context document:\n"""${String(context).slice(0,12000)}"""\n\nTask: ${prompt}\n\nYou are AITutor for Telangana Intermediate (TS Inter) students (MPC/BiPC/CEC/MEC/HEC). Answer clearly with steps, Telugu mix allowed if user used Telugu. Align to board blueprint (2M/4M/8M).` : prompt;
+
+    // Prefer server key, fallback to demo if not configured
+    if(!OPENROUTER_KEY && !GEMINI_KEY){
+      return res.json({ demo:true, text: `Demo AITutor: You asked "${prompt.slice(0,120)}..." — Add OPENROUTER_API_KEY in backend/.env to enable real AI. This is demo fallback.` });
+    }
+
+    // Try OpenRouter first if available (one key for 100+ models)
+    if(OPENROUTER_KEY){
+      const model = req.body.model || 'openai/gpt-4o-mini';
+      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${OPENROUTER_KEY}`, 'HTTP-Referer': process.env.DOMAIN || 'https://mahicouragw.github.io', 'X-Title':'Inter AI Study Buddy' },
+        body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 })
+      });
+      if(!r.ok){
+        const t=await r.text();
+        console.error('OpenRouter proxy error', t.slice(0,500));
+        return res.status(502).json({ error: 'AI provider error', detail: t.slice(0,400) });
+      }
+      const j=await r.json();
+      const text=j.choices?.[0]?.message?.content || '';
+      return res.json({ text, model, provider:'openrouter' });
+    }
+
+    // Fallback Gemini server key
+    if(GEMINI_KEY){
+      const model='gemini-1.5-flash';
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ contents:[{ parts:[{text: fullPrompt}] }], generationConfig:{ temperature:0.7, maxOutputTokens: 2048 } })
+      });
+      if(!r.ok){ const t=await r.text(); return res.status(502).json({ error: 'Gemini error', detail:t.slice(0,400)}); }
+      const j=await r.json();
+      const text=j.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      return res.json({ text, model, provider:'gemini' });
+    }
+  }catch(e){ console.error('AI chat',e); res.status(500).json({ error:'AI error', detail:e.message}); }
+});
+
+// AI Quiz generator via server (real, not mock) — hides key
+app.post('/api/ai/quiz', async (req,res)=>{
+  try{
+    const { docText, subject, type, count, diff, lang } = req.body;
+    if(!docText) return res.status(400).json({ error:'docText required' });
+    const prompt = `Create ${count||10} quiz questions of type "${type||'mcq'}" for ${subject||'General'} in ${lang||'English'}. Difficulty: ${diff||'Medium'}. Use ONLY this document content. Return JSON array with objects {q, options[4], answerIndex (0-3), explanation, marks}. If not MCQ, options can be []. Ensure blueprint style (2M/4M/8M). Document text: """${String(docText).slice(0,10000)}""" . Return ONLY JSON, no markdown.`;
+    // Reuse chat logic but force JSON
+    req.body.prompt = prompt;
+    req.body.context = '';
+    // Call internal logic — we can just proxy to chat and parse
+    // Instead call OpenRouter directly with JSON instruction
+    if(!OPENROUTER_KEY) return res.status(503).json({ error:'AI not configured', demo:true });
+    const r=await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${OPENROUTER_KEY}`, 'HTTP-Referer': process.env.DOMAIN || 'https://mahicouragw.github.io', 'X-Title':'Inter AI Study Buddy'},
+      body: JSON.stringify({ model:'openai/gpt-4o-mini', messages:[{role:'user', content: prompt}], temperature:0.7, max_tokens: 3000 })
+    });
+    if(!r.ok){ const t=await r.text(); return res.status(502).json({error:'Quiz AI error', detail:t.slice(0,400)}); }
+    const j=await r.json();
+    let text=j.choices?.[0]?.message?.content || '[]';
+    // Try extract JSON array
+    const cleaned=text.replace(/```json|```/g,'').trim();
+    let parsed;
+    try{ parsed=JSON.parse(cleaned); if(!Array.isArray(parsed) && parsed.questions) parsed=parsed.questions; } catch(e){ return res.json({ text, raw:true }); }
+    res.json({ questions: parsed });
+  }catch(e){ console.error('AI quiz',e); res.status(500).json({error:e.message}); }
+});
+
 // Sitemap for Google Search Console
 app.get('/sitemap.xml', (req,res)=>{
   const domain = process.env.DOMAIN || 'https://mahicouragw.github.io';
