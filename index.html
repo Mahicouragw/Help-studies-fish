@@ -47,7 +47,7 @@
           <h1 class="font-display font-800 text-[19px] leading-none tracking-tight text-slate-900">Inter AI Study Buddy</h1>
           <p class="text-[11px] font-semibold tracking-widest text-indigo-600 uppercase -mt-0.5">AITutor • TS Inter 1st & 2nd Year</p>
         </div>
-        <span class="hidden md:inline-flex ml-3 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse mr-1.5 mt-1"></span> Gemini Ready</span>
+        <span class="hidden md:inline-flex ml-3 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse mr-1.5 mt-1"></span> Gemini • OpenRouter • OpenAI</span>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
         <div class="hidden lg:flex items-center gap-2 bg-white border border-slate-200 rounded-full px-2 py-1.5 shadow-sm">
@@ -435,8 +435,8 @@
           <input id="miniInput" onkeydown="if(event.key==='Enter') sendMiniChat()" placeholder="Quick doubt…" class="flex-1 px-3 py-2.5 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-300 outline-none text-sm">
           <button onclick="sendMiniChat()" class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-arrow-up text-xs"></i></button>
         </div>
-        <button onclick="openSettings()" class="mt-3 w-full py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-key"></i> Set Gemini API Key</button>
-        <p class="text-[11px] text-slate-500 mt-2 text-center">Your key stays in your browser only.</p>
+        <button onclick="openSettings()" class="mt-3 w-full py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-key"></i> Set API Key (Gemini / OpenRouter)</button>
+        <p class="text-[11px] text-slate-500 mt-2 text-center">Gemini, OpenRouter, OpenAI — all supported</p>
 
         <div class="mt-5 pt-5 border-t border-slate-100">
           <h4 class="font-bold text-xs tracking-widest uppercase text-slate-500">Inter Blueprint Quick Ref</h4>
@@ -468,21 +468,37 @@
       </div>
       <div class="p-6 space-y-5 max-h-[70vh] overflow-auto">
         <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl p-4 text-white">
-          <p class="font-bold">AITutor — Bring Your Own Key</p>
-          <p class="text-sm opacity-90 mt-1 leading-relaxed">Paste your <b>Google Gemini API key</b> (or OpenAI / any). Stored only in your browser <code>localStorage</code>, never sent to our server.</p>
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="inline-flex mt-3 px-3 py-1.5 rounded-full bg-white text-indigo-700 text-xs font-bold">Get Gemini Key →</a>
+          <p class="font-bold">AITutor — Bring Your Own Key 🔐</p>
+          <p class="text-sm opacity-90 mt-1 leading-relaxed">Works with <b>Gemini</b>, <b>OpenRouter</b> (one key for 100+ models), or <b>OpenAI</b>. Stored only in your browser <code>localStorage</code>, never sent to our server.</p>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="inline-flex px-3 py-1.5 rounded-full bg-white text-indigo-700 text-xs font-bold">Get Gemini Key →</a>
+            <a href="https://openrouter.ai/keys" target="_blank" class="inline-flex px-3 py-1.5 rounded-full bg-white/15 border border-white/30 text-white text-xs font-bold">Get OpenRouter Key →</a>
+          </div>
         </div>
-        <label class="block text-xs font-bold text-slate-700">Gemini API Key <span class="font-normal text-slate-500">(starts with AIza…)</span>
+        <label class="block text-xs font-bold text-slate-700">AI Provider
+          <select id="aiProvider" onchange="updateProviderUI()" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold bg-white">
+            <option value="gemini">Google Gemini (AIza...)</option>
+            <option value="openrouter">OpenRouter — One key for All Models (sk-or-v1...)</option>
+            <option value="openai">OpenAI (sk-...)</option>
+          </select>
+        </label>
+        <label class="block text-xs font-bold text-slate-700"><span id="keyLabel">Gemini API Key</span> <span id="keyHint" class="font-normal text-slate-500">(starts with AIza…)</span>
           <div class="mt-1 flex gap-2">
             <input id="geminiKey" type="password" placeholder="paste AIza…" class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 text-sm font-mono">
             <button onclick="toggleKey()" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm"><i class="fa-solid fa-eye"></i></button>
           </div>
+          <p id="keyHelp" class="text-[11px] font-medium text-slate-500 mt-1">Get free Gemini key: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 underline">aistudio.google.com/app/apikey</a></p>
         </label>
         <label class="block text-xs font-bold text-slate-700">Preferred Model
           <select id="geminiModel" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm">
             <option value="gemini-1.5-flash">gemini-1.5-flash — Fast & cheap (Recommended)</option>
             <option value="gemini-1.5-pro">gemini-1.5-pro — Best quality</option>
             <option value="gemini-2.0-flash">gemini-2.0-flash — Latest</option>
+            <option value="openai/gpt-4o-mini">openrouter: openai/gpt-4o-mini — Cheap & smart</option>
+            <option value="google/gemini-flash-1.5">openrouter: google/gemini-flash-1.5</option>
+            <option value="anthropic/claude-3.5-sonnet">openrouter: anthropic/claude-3.5-sonnet — Best reasoning</option>
+            <option value="meta-llama/llama-3.1-70b-instruct">openrouter: meta-llama/llama-3.1-70b</option>
+            <option value="openai/gpt-4o">openrouter: openai/gpt-4o — Flagship</option>
           </select>
         </label>
         <label class="block text-xs font-bold text-slate-700">Your Name <input id="studentName" placeholder="e.g. Sai" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"></label>
@@ -493,8 +509,8 @@
         </div>
         <p id="settingsMsg" class="text-xs font-semibold"></p>
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-600">OpenAI Compatible?</p>
-          <p class="text-sm text-slate-700 mt-1 leading-relaxed">If you have OpenAI key, paste it in same field and switch model to <b>gpt-4o-mini</b> — app auto-detects. Or add <code>?provider=openai</code> in future.</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-600">OpenRouter Tip 🌐</p>
+          <p class="text-sm text-slate-700 mt-1 leading-relaxed">Create a key at <a href="https://openrouter.ai/keys" target="_blank" class="underline text-indigo-600">openrouter.ai/keys</a> → paste key starting with <code>sk-or-v1...</code> → Provider auto-switches to OpenRouter. Now you can choose any model like <b>google/gemini-flash-1.5</b>, <b>anthropic/claude-3.5-sonnet</b>, <b>openai/gpt-4o-mini</b> without changing keys.</p>
         </div>
       </div>
     </div>
@@ -833,21 +849,76 @@ function askTutor(id){
   setTimeout(()=> callTutor(`Give me a crisp summary and 5 important questions with answers from this document: ${d.text.slice(0,8000)}`), 200);
 }
 
-// ---------- AI / GEMINI ----------
+// ---------- AI / GEMINI / OPENROUTER / OPENAI ----------
 function getKey(){ return localStorage.getItem('gemini_key')||''; }
 function getModel(){ return localStorage.getItem('gemini_model')||'gemini-1.5-flash'; }
+function getProvider(){ return localStorage.getItem('ai_provider')||'gemini'; }
+function detectProviderFromKey(k){
+  if(!k) return 'gemini';
+  if(k.startsWith('sk-or-')) return 'openrouter';
+  if(k.startsWith('sk-')) return 'openai';
+  if(k.startsWith('AIza')) return 'gemini';
+  return localStorage.getItem('ai_provider')||'gemini';
+}
+function updateProviderUI(){
+  const prov=document.getElementById('aiProvider').value;
+  const label=document.getElementById('keyLabel');
+  const hint=document.getElementById('keyHint');
+  const inp=document.getElementById('geminiKey');
+  const help=document.getElementById('keyHelp');
+  if(prov==='openrouter'){ label.textContent='OpenRouter API Key'; hint.textContent='(sk-or-v1...)'; inp.placeholder='sk-or-v1-...'; help.innerHTML='Get key: <a href="https://openrouter.ai/keys" target="_blank" class="text-indigo-600 underline">openrouter.ai/keys</a> → 100+ models with one key'; }
+  else if(prov==='openai'){ label.textContent='OpenAI API Key'; hint.textContent='(sk-...)'; inp.placeholder='sk-...'; help.innerHTML='Get key: <a href="https://platform.openai.com/api-keys" target="_blank" class="text-indigo-600 underline">platform.openai.com/api-keys</a>'; }
+  else { label.textContent='Gemini API Key'; hint.textContent='(AIza...)'; inp.placeholder='paste AIza…'; help.innerHTML='Get free Gemini key: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 underline">aistudio.google.com/app/apikey</a>'; }
+}
 
 async function callGemini(prompt, contextText=''){
   const key=getKey();
-  const model=getModel();
+  let provider=getProvider();
+  // auto-detect if user pasted different key type
+  const detected=detectProviderFromKey(key);
+  if(detected!==provider && key) provider=detected;
+  let model=getModel();
   const fullPrompt = contextText ? `Context document:\n"""${contextText.slice(0,12000)}"""\n\nTask: ${prompt}\n\nYou are AITutor for Telangana Intermediate (TS Inter) students. Answer clearly with steps, Telugu mix allowed if user used Telugu. Align to board blueprint (2M/4M/8M).` : prompt;
 
   if(!key){
-    // Demo mock - heuristic generation
     return mockAI(fullPrompt);
   }
-  // Try Gemini API
+
+  // OpenRouter
+  if(provider==='openrouter'){
+    try{
+      const url='https://openrouter.ai/api/v1/chat/completions';
+      // map legacy gemini model names to openrouter equivalents
+      if(model.startsWith('gemini-')) model='google/gemini-flash-1.5';
+      const res=await fetch(url, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`,'HTTP-Referer': location.origin, 'X-Title':'Inter AI Study Buddy'}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
+      if(!res.ok){ const t=await res.text(); throw new Error(t.slice(0,500)); }
+      const j=await res.json();
+      const text=j.choices?.[0]?.message?.content || '';
+      if(!text) throw new Error('Empty OpenRouter response');
+      return text;
+    }catch(e){
+      console.warn('OpenRouter failed', e);
+      return `⚠️ OpenRouter error (${e.message}). Demo answer:\n\n` + mockAI(fullPrompt);
+    }
+  }
+  // OpenAI
+  if(provider==='openai'){
+    try{
+      if(model.includes('/')) model='gpt-4o-mini';
+      if(model.startsWith('gemini-')) model='gpt-4o-mini';
+      const res=await fetch('https://api.openai.com/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
+      if(!res.ok){ const t=await res.text(); throw new Error(t.slice(0,500)); }
+      const j=await res.json();
+      return j.choices?.[0]?.message?.content || mockAI(fullPrompt);
+    }catch(e){
+      console.warn('OpenAI failed', e);
+      return `⚠️ OpenAI error (${e.message}). Demo:\n\n`+mockAI(fullPrompt);
+    }
+  }
+  // Gemini
   try{
+    // if openrouter model slipped in, fallback
+    if(model.includes('/')) model='gemini-1.5-flash';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contents:[{ parts:[{text: fullPrompt}] }], generationConfig:{ temperature:0.7, maxOutputTokens: 2048 } }) });
     if(!res.ok){
@@ -1175,25 +1246,36 @@ async function summarizeDoc(id, inModal=false){
 }
 
 // ---------- SETTINGS ----------
-function openSettings(){ document.getElementById('settingsModal').classList.remove('hidden'); document.getElementById('geminiKey').value=getKey(); document.getElementById('geminiModel').value=getModel(); document.getElementById('studentName').value=localStorage.getItem('student_name')||''; document.getElementById('studentYear').value=localStorage.getItem('student_year')||'Inter 1st Year'; }
+function openSettings(){ document.getElementById('settingsModal').classList.remove('hidden'); document.getElementById('geminiKey').value=getKey(); document.getElementById('geminiModel').value=getModel(); document.getElementById('aiProvider').value=getProvider(); updateProviderUI(); document.getElementById('studentName').value=localStorage.getItem('student_name')||''; document.getElementById('studentYear').value=localStorage.getItem('student_year')||'Inter 1st Year'; }
 function closeSettings(){ document.getElementById('settingsModal').classList.add('hidden'); }
 function toggleKey(){ const i=document.getElementById('geminiKey'); i.type=i.type==='password'?'text':'password'; }
 function saveSettings(){
-  localStorage.setItem('gemini_key', document.getElementById('geminiKey').value.trim());
+  const rawKey=document.getElementById('geminiKey').value.trim();
+  let prov=document.getElementById('aiProvider').value;
+  // auto-correct provider based on key prefix
+  const detected=detectProviderFromKey(rawKey);
+  if(rawKey && detected!==prov) prov=detected;
+  localStorage.setItem('gemini_key', rawKey);
+  localStorage.setItem('ai_provider', prov);
   localStorage.setItem('gemini_model', document.getElementById('geminiModel').value);
   localStorage.setItem('student_name', document.getElementById('studentName').value.trim());
   localStorage.setItem('student_year', document.getElementById('studentYear').value);
-  document.getElementById('settingsMsg').textContent='✓ Saved! AITutor will now use your Gemini key.';
+  document.getElementById('settingsMsg').textContent=`✓ Saved! Provider: ${prov} • Model: ${document.getElementById('geminiModel').value}`;
   document.getElementById('settingsMsg').className='text-xs font-bold text-emerald-600';
-  setTimeout(closeSettings, 900);
+  setTimeout(closeSettings, 1200);
 }
 async function testGemini(){
   const key=document.getElementById('geminiKey').value.trim();
   if(!key) return alert('Paste key first');
-  document.getElementById('settingsMsg').textContent='Testing…';
+  // update provider before test
+  const detected=detectProviderFromKey(key);
+  if(detected) localStorage.setItem('ai_provider', detected);
+  localStorage.setItem('gemini_key', key);
+  localStorage.setItem('gemini_model', document.getElementById('geminiModel').value);
+  document.getElementById('settingsMsg').textContent='Testing… ('+getProvider()+')';
   document.getElementById('settingsMsg').className='text-xs font-bold text-slate-600';
-  const ans=await callGemini('Reply with exactly: Gemini key is working — Inter AITutor ready! And give one study tip for Inter students.');
-  document.getElementById('settingsMsg').textContent = ans.slice(0,200);
+  const ans=await callGemini('Reply with exactly: API key is working — Inter AITutor ready! Provider='+getProvider()+' And give one study tip for Inter students in 2 lines.');
+  document.getElementById('settingsMsg').textContent = ans.slice(0,350);
   document.getElementById('settingsMsg').className='text-xs font-semibold text-slate-700 whitespace-pre-wrap bg-slate-50 border rounded-xl p-2';
 }
 
