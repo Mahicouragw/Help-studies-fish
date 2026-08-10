@@ -798,7 +798,7 @@
         b.id='authBanner';
         b.className='mb-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between gap-4';
         b.setAttribute('role','alert');
-        b.innerHTML=`<div><p class="font-bold text-sm text-amber-900">🔐 Login to save your library across devices</p><p class="text-xs text-amber-700 mt-1">SQL database (SQLite) — email + OTP verification. No Supabase.</p></div><div class="flex gap-2 shrink-0"><button onclick="openAuth('login')" class="px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-bold">Login</button><button onclick="openAuth('signup')" class="px-4 py-2 rounded-full bg-white border text-xs font-bold">Sign Up</button></div>`;
+        b.innerHTML=`<div><p class="font-bold text-sm text-amber-900">🔐 Login to save your library</p><p class="text-xs text-amber-700 mt-1">Your docs & quizzes stay safe across devices</p></div><div class="flex gap-2 shrink-0"><button onclick="openAuth('login')" class="px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-bold">Login</button><button onclick="openAuth('signup')" class="px-4 py-2 rounded-full bg-white border text-xs font-bold">Sign Up</button></div>`;
         dash.prepend(b);
       }
     } else {
@@ -850,15 +850,9 @@
     const dbCard=document.createElement('div');
     dbCard.className='bg-slate-50 border border-slate-200 rounded-2xl p-4';
     dbCard.innerHTML=`
-      <p class="text-xs font-bold uppercase tracking-widest text-slate-600">🗄️ Own SQL Database (No Supabase)</p>
-      <p class="text-sm text-slate-700 mt-1">SQLite at <code>backend/database.db</code> — Tables: users, otps, documents, quiz_attempts.</p>
-      <div class="mt-2 flex gap-2">
-        <button id="checkDbBtn" class="px-3 py-1.5 rounded-full bg-white border text-xs font-bold">Check DB Health</button>
-        <a href="/api/health" target="_blank" class="px-3 py-1.5 rounded-full bg-white border text-xs font-bold">/api/health</a>
-        <a href="/sitemap.xml" target="_blank" class="px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold">Sitemap.xml</a>
-      </div>
+      <p class="text-xs font-bold uppercase tracking-widest text-slate-600">🔒 Secure & Private</p>
+      <p class="text-sm text-slate-700 mt-1">Your data is encrypted and safe. Login to sync across devices.</p>
       <p id="dbStatus" class="text-xs mt-2 min-h-[16px]" aria-live="polite"></p>
-      <p class="text-[11px] text-slate-500 mt-2">Email OTP via Gmail App Password. Set <code>GMAIL_USER</code> & <code>GMAIL_APP_PASSWORD</code> in <code>backend/.env</code>. Google Search Console: set <code>GSC_VERIFICATION_TOKEN</code> & <code>DOMAIN</code>.</p>
     `;
     container.appendChild(dbCard);
     document.getElementById('checkDbBtn').addEventListener('click', async ()=>{

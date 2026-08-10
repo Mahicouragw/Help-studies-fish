@@ -13,6 +13,23 @@
       "Zoology": ["Animal Diversity","Human Physiology","Reproduction","Evolution"],
       "Physics": ["Motion","Work Energy","Thermodynamics","Waves"],
       "Chemistry": ["Atomic Structure","Periodicity","Organic"]
+    },
+    CEC: {
+      "Commerce": ["Fundamentals","Forms of Business","Entrepreneurship","Modern Business"],
+      "Economics": ["Central Problems","Consumer Behaviour","Money & Banking","National Income"],
+      "Civics": ["Political Science Basics","Government","Constitution","Rights"],
+      "History": ["Ancient Civilisations","Medieval India","Modern India","World"]
+    },
+    MEC: {
+      "Maths": ["Functions","Matrices","Trigonometry","Calculus Basics"],
+      "Economics": ["Central Problems","Consumer Behaviour","Money & Banking"],
+      "Commerce": ["Business Forms","Entrepreneurship","Accounts Basics"]
+    },
+    HEC: {
+      "History": ["Ancient","Medieval","Modern India","World History"],
+      "Economics": ["Central Problems","Consumer Behaviour","Money & Banking","National Income"],
+      "Civics": ["Political Science","Government","Constitution","Rights & Duties"],
+      "English": ["Prose","Poetry","Grammar","Composition"]
     }
   };
   const FORMULAS = {

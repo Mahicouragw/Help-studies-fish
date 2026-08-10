@@ -450,8 +450,8 @@
           <input id="miniInput" onkeydown="if(event.key==='Enter') sendMiniChat()" placeholder="Quick doubt…" class="flex-1 px-3 py-2.5 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-300 outline-none text-sm">
           <button onclick="sendMiniChat()" class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-arrow-up text-xs"></i></button>
         </div>
-        <button onclick="openSettings()" class="mt-3 w-full py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-key"></i> Set API Key (Gemini / OpenRouter)</button>
-        <p class="text-[11px] text-slate-500 mt-2 text-center">Gemini, OpenRouter, OpenAI — all supported</p>
+        <button onclick="openSettings()" class="mt-3 w-full py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-key"></i> Set API Key</button>
+        <p class="text-[11px] text-slate-500 mt-2 text-center">Secure & private</p>
 
         <div class="mt-5 pt-5 border-t border-slate-100">
           <h4 class="font-bold text-xs tracking-widest uppercase text-slate-500">Inter Blueprint Quick Ref</h4>
@@ -463,11 +463,9 @@
           <p class="text-[11px] text-slate-500 mt-2 leading-relaxed">Total 60 marks + 40 internal/practical. AITutor generates exact pattern.</p>
         </div>
 
-        <div class="mt-5 bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
-          <p class="text-xs font-bold tracking-widest uppercase text-emerald-700">GitHub Ready</p>
-          <p class="text-sm font-semibold text-emerald-900 mt-1">Push to your repo in 1 command</p>
-          <code class="mt-2 block bg-white border border-emerald-200 rounded-xl px-3 py-2 text-[11px] font-mono leading-relaxed break-all">git remote add origin YOUR_GITHUB_URL<br>git push -u origin main</code>
-          <button onclick="openDeployHelp()" class="mt-3 w-full py-2 rounded-full bg-emerald-600 text-white font-bold text-xs">How to create repo?</button>
+        <div class="mt-5 bg-slate-50 border border-slate-200 rounded-2xl p-4 hidden">
+          <p class="text-xs font-bold tracking-widest uppercase text-slate-600">Developer</p>
+          <button onclick="openDeployHelp()" class="mt-2 w-full py-2 rounded-full bg-white border font-bold text-xs">How to create repo?</button>
         </div>
       </div>
     </aside>
