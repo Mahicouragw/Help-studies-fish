@@ -173,3 +173,60 @@ MIT — free for students & teachers.
 **Made with ❤️ in Secunderabad for Inter toppers.**  
 Questions? Paste your GitHub URL and your Gemini API key (or ask me to guide you) — I'll wire it up.
 
+
+---
+
+## 🆕 v2 — Accessibility, TTS, Pomodoro & SQL Auth
+
+### ♿ Accessibility (ARIA)
+- All buttons/inputs have `aria-label`, `role="dialog"`, `aria-live` regions
+- Skip link, focus-visible outlines, keyboard navigable
+- Screen-reader announcements for quiz, TTS, timer
+
+### 🔊 Auto TTS + Translate + Language Detect
+- **Web Speech API** TTS engine with voice/speed/pitch controls
+- **Translate** via MyMemory API — English ↔ Telugu / Tamil / Hindi
+- **Auto-detect**: Unicode range detection (Telugu U+0C00, Tamil U+0B80, Hindi U+0900) — badge shows `English • Auto` etc.
+- Read any PDF/OCR text aloud in detected language; translate button shows translated copy + “Read Translated”
+
+### ⏱️ Pomodoro 25/5 with Water-Photo Break Lock
+- **25 min Study → 5 min Break** (very important)
+- Floating widget (desktop bottom-left, mobile bottom bar) with Start/Pause/Reset
+- After 25 min, **full-screen lock** → must drink water & show photo (camera capture) or wait 5 min auto-unlock
+- Countdown `05:00` with progress bar; early unlock via photo verification (on-device demo)
+- Toggle in **⚙️ Settings → Study Reminder** (enabled by default, can disable)
+- Notifications + title bar countdown + break sound
+
+### 🗄️ Own SQL Database (No Supabase)
+- **SQLite** at `backend/database.db` — created automatically via `backend/db.js`
+- Tables: `users`, `otps`, `sessions`, `documents`, `quiz_attempts`, `study_sessions`
+- Check health: `GET /api/health` & `GET /api/admin/users`
+- Not Supabase / no external DB — your own file, frustrating? No, simple!
+
+### 🔐 Auth — Email + OTP (Real Email)
+- **Signup**: name, email, password, confirm → 409 if email exists → OTP 6-digit (10 min) → verify → JWT
+- **Login**: email, password → 404 “Your account is not found” if no user → 401 if wrong pass → 403 if not verified
+- **Forgot**: email → 404 if not found → OTP → new password + confirm → reset
+- Emails via **Gmail App Password** (one domain) using `nodemailer` — set `GMAIL_USER` & `GMAIL_APP_PASSWORD` in `backend/.env`
+- JWT stored in `localStorage` (`inter_token` + `inter_user`), 7-day expiry
+- OTPs logged to console in dev mode if Gmail not configured
+
+### 🔍 Google Search Console — Auto
+- `GET /sitemap.xml` & `/robots.txt` dynamic (also static files for GH Pages)
+- Set `GSC_VERIFICATION_TOKEN` & `DOMAIN` in `backend/.env` → auto meta + verification file
+- Sitemap submitted to `https://mahicouragw.github.io/Help-studies-fish/sitemap.xml`
+
+### 🔧 Backend API (Express + SQLite)
+- `POST /api/auth/signup`, `/verify-otp`, `/resend-otp`, `/login`, `/forgot-password`, `/reset-password`
+- `GET /api/auth/me` (Bearer JWT), `GET /api/health`, `GET /api/admin/users`
+- CORS, Helmet, Rate-limit, bcrypt, JWT
+
+**Run backend:**
+```bash
+cd backend
+npm install
+cp .env.example .env  # set GMAIL_USER & GMAIL_APP_PASSWORD
+npm start  # http://localhost:3001 also serves frontend
+```
+Frontend auto-detects `API_BASE` (e2b preview, localhost, GH Pages fallback to demo).
+

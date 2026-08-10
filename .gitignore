@@ -2,11 +2,19 @@
 node_modules/
 package-lock.json
 yarn.lock
+backend/node_modules/
+backend/package-lock.json
 
 # Env
 .env
 .env.local
 .env.*.local
+backend/.env
+
+# DB
+database.db
+backend/database.db
+*.db
 
 # OS
 .DS_Store
