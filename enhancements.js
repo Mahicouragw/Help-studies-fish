@@ -9,16 +9,16 @@
   const API_BASE = (() => {
     // If served from backend (3001) -> same origin
     // If served from python 8000 -> backend is 3001
-    // If on GitHub Pages -> try backend if env set, else demo
+    // If on GitHub Pages -> use permanent Render backend
     const h = location.hostname;
-    if (h.includes('github.io')) return ''; // demo mode on GH Pages (no backend)
+    if (h.includes('github.io')) return 'https://help-studies-fish.onrender.com';
     if (location.port === '8000') return location.protocol + '//' + h + ':3001';
     if (location.port === '3001') return '';
     // e2b preview: https://8000-xxx.e2b.app -> backend is https://3001-xxx.e2b.app
     if (location.href.includes('e2b.app')) {
       return location.origin.replace(/:\/\/\d+-/, '://3001-');
     }
-    return 'http://localhost:3001';
+    return 'https://help-studies-fish.onrender.com';
   })();
   console.log('API_BASE', API_BASE);
 
