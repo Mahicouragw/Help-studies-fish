@@ -988,7 +988,7 @@ async function generateQuiz(){
   const lang=document.getElementById('quizLang').value;
   document.getElementById('quizProgress').classList.remove('hidden');
   document.getElementById('genQuizBtn').disabled=true;
-  document.getElementById('quizProgressText').textContent='Real LLM is creating '+count+' questions from middle of your PDF ('+type+')…';
+  document.getElementById('quizProgressText').textContent='Generating quiz and answer — reading ALL chapters (50-60 sec)…';
 
   let questions=null;
   const API_BASE = (() => {
@@ -1002,7 +1002,7 @@ async function generateQuiz(){
 
   // 1) Try REAL LLM via backend (secure, no fake) — scans middle of PDF, blueprint style
   try{
-    document.getElementById('quizProgressText').textContent='🧠 Real AI reading your PDF (not Page 1 only)...';
+    document.getElementById('quizProgressText').textContent='🧠 Real LLM reading ALL chapters (50-60 sec)...';
     const resp = await fetch(`${API_BASE}/api/ai/quiz`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -1027,7 +1027,7 @@ async function generateQuiz(){
   // 2) Fallback: try callGemini (also tries backend /api/ai/chat)
   if(!questions || !questions.length){
     document.getElementById('quizProgressText').textContent='Trying AI again...';
-    const prompt = `You are expert for TS Inter ${state.stream} ${doc.subject} ${doc.year}. Create ${count} REAL exam-style questions of type "${type}" in ${lang}, difficulty ${diff}. Use ONLY the document content below, focusing on MIDDLE chapters (not just introduction/Page 1). Return ONLY JSON array with objects {q: "question in ${lang}", options: ["A","B","C","D"] (4 options for MCQ, [] for theory), answerIndex: 0-3, explanation: "why correct, in ${lang}", marks: 1 for MCQ, 2/4/8 for theory}. Blueprint: 2M very short, 4M short, 8M long. Make questions like real IPE exam, not "What is main idea of Page 1". Document: """${doc.text.slice(0,12000)}"""`;
+    const prompt = `You are expert for TS Inter ${state.stream} ${doc.subject} ${doc.year}. Read the ENTIRE document below (ALL chapters, all answers) and create ${count} REAL exam-style questions of type "${type}" in ${lang}, difficulty ${diff}. Use FULL context (entire PDF, all chapters) — generate blueprint-accurate: 2M very short, 4M short with example, 8M long with steps. For MCQ, 4 plausible shuffled options. Return ONLY JSON array with objects {q: "question in ${lang}", options: ["A","B","C","D"] (4 options for MCQ, [] for theory), answerIndex: 0-3, explanation: "why correct, in ${lang}", marks: 1 for MCQ else 2/4/8}. Do NOT make Page 1 questions — base on real concepts from ALL chapters. Document (full): """${doc.text.slice(0,15000)}"""`;
     let raw = await callGemini(prompt, doc.text);
     try{
       const cleaned = raw.replace(/```json|```/g,'').trim();
