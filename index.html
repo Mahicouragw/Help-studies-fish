@@ -244,6 +244,59 @@
               <button onclick="quickGenerate()" class="px-5 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm hover:bg-black"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Save + Generate Quiz</button>
             </div>
           </div>
+
+          <!-- InVision AI Style — Advanced PDF Viewer (Prev/Next, Export, Transfer, Ask AI) -->
+          <div id="pdfViewer" class="hidden mt-6 bg-white border border-slate-200 rounded-[20px] overflow-hidden card-shadow" role="region" aria-label="PDF Viewer like InVision AI">
+            <div class="px-4 py-3 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <button id="pdfPrev" onclick="pdfViewerPrev()" aria-label="Previous page" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <span id="pdfPageInfo" class="text-xs font-bold px-3 py-1 rounded-full bg-white/15" aria-live="polite">Page 1 / 1</span>
+                <button id="pdfNext" onclick="pdfViewerNext()" aria-label="Next page" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                <span id="pdfZoomInfo" class="hidden sm:inline text-xs opacity-70">100%</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="pdfViewerZoom(-0.2)" aria-label="Zoom out" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-magnifying-glass-minus text-xs"></i></button>
+                <button onclick="pdfViewerZoom(0.2)" aria-label="Zoom in" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-magnifying-glass-plus text-xs"></i></button>
+                <button onclick="pdfViewerExport()" aria-label="Export PDF" class="px-3 py-1.5 rounded-full bg-white text-slate-900 font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-file-arrow-down"></i> Export</button>
+                <button onclick="pdfViewerTransfer()" aria-label="Transfer or Share" class="px-3 py-1.5 rounded-full bg-emerald-500 text-white font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-share-nodes"></i> Transfer</button>
+                <button onclick="pdfViewerAskAI()" aria-label="Ask AI about this PDF" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-robot"></i> Ask AI</button>
+              </div>
+            </div>
+            <div class="relative bg-slate-100 flex items-center justify-center p-4 min-h-[420px] overflow-auto" id="pdfViewerWrap">
+              <canvas id="pdfCanvas" class="bg-white shadow-lg rounded-lg max-w-full" role="img" aria-label="PDF page canvas"></canvas>
+              <div id="pdfViewerEmpty" class="absolute inset-0 flex items-center justify-center text-slate-400 text-sm">Upload a PDF to view</div>
+            </div>
+            <div class="px-4 py-2 bg-slate-50 border-t flex items-center justify-between text-xs">
+              <span class="text-slate-500">InVision AI Style • Pinch to zoom • Swipe for pages</span>
+              <span id="pdfViewerLang" class="font-bold text-indigo-600">Auto-detected: English</span>
+            </div>
+          </div>
+
+          <!-- Invigilator Scanning Overlay — Hides everything, plays music, advanced like InVision AI -->
+          <div id="pdfScanOverlay" class="hidden fixed inset-0 z-[80] bg-slate-900/95 backdrop-blur flex flex-col items-center justify-center p-6 text-center" role="dialog" aria-modal="true" aria-label="Scanning PDF like invigilator, please wait">
+            <div class="w-full max-w-[520px] bg-white rounded-[24px] p-6 shadow-2xl">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center mx-auto text-2xl animate-pulse" aria-hidden="true"><i class="fa-solid fa-expand"></i></div>
+              <h3 class="font-display font-bold text-xl mt-4">Invigilator Scanning…</h3>
+              <p class="text-sm text-slate-600 mt-1">Reading all chapters like <b>InVision AI</b> — please wait, music playing</p>
+              <div class="mt-4 relative bg-slate-900 rounded-2xl overflow-hidden h-[220px] flex items-center justify-center">
+                <div class="absolute inset-4 border-2 border-white/20 rounded-xl"></div>
+                <div class="absolute inset-4 border border-dashed border-white/10 rounded-xl"></div>
+                <div id="scanLaser" class="absolute left-4 right-4 h-[3px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_rgba(16,185,129,0.8)]" style="top:20%; animation: scanMove 1.8s infinite linear;"></div>
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur px-3 py-1 rounded-full text-xs text-white flex items-center gap-2"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Scanning document...</div>
+                <i class="fa-solid fa-file-pdf text-5xl text-white/20"></i>
+              </div>
+              <div class="mt-4">
+                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div id="scanMusicBar" class="h-full bg-indigo-600 transition-all" style="width:0%"></div></div>
+                <p class="text-xs font-bold text-indigo-600 mt-2 flex items-center justify-center gap-2"><i class="fa-solid fa-music animate-pulse"></i> <span id="scanMusicText">Music playing — Analyzing PDF...</span></p>
+                <p class="text-[11px] text-slate-500 mt-1">Everything hidden until scan completes (like InVision AI) • Advanced • 50-60 sec for 10 MCQs</p>
+              </div>
+              <button onclick="pdfScanCancel()" class="mt-4 w-full py-2 rounded-full bg-white border font-bold text-sm">Cancel Scan</button>
+            </div>
+            <audio id="scanAudio" loop preload="auto" aria-hidden="true"></audio>
+          </div>
+          <style>
+            @keyframes scanMove{ 0%{top:16px} 50%{top:calc(100% - 16px)} 100%{top:16px} }
+          </style>
         </div>
 
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3">
@@ -660,37 +713,59 @@ async function handlePdf(e){ const f=e.target.files[0]; if(f) processPdf(f); }
 async function handleQuickUpload(e){ const f=e.target.files[0]; if(!f) return; nav('upload'); processPdf(f); }
 async function processPdf(file){
   if(file.type!=='application/pdf'){ alert('Please upload a PDF'); return; }
+  // InVision AI Style — Hide everything, show invigilator scanning with music
+  showPdfScanOverlay();
+  // Small delay to show scanning like InVision AI (advanced, every student uses)
+  await new Promise(r=>setTimeout(r, 800));
   pendingName = file.name.replace(/\.pdf$/i,'');
   document.getElementById('docTitle').value = pendingName;
   document.getElementById('pdfFileName').textContent = file.name + ' • ' + (file.size/1024/1024).toFixed(2)+' MB';
   document.getElementById('pdfProgress').classList.remove('hidden');
   document.getElementById('pdfBar').style.width='10%';
-  document.getElementById('pdfStatus').textContent='Extracting text… (page 1)';
+  document.getElementById('pdfStatus').textContent='Invigilator scanning… (page 1)';
   document.getElementById('pdfPreview').textContent='';
   document.getElementById('saveDocBtn').disabled=true;
+  let pdfDocForViewer = null;
   try{
     const buf = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+    pdfDocForViewer = pdf;
     let full='';
     for(let i=1;i<=pdf.numPages;i++){
-      document.getElementById('pdfStatus').textContent=`Reading page ${i} / ${pdf.numPages}…`;
+      document.getElementById('pdfStatus').textContent=`Scanning page ${i} / ${pdf.numPages}… like InVision AI`;
       document.getElementById('pdfBar').style.width = Math.round(10 + (i/pdf.numPages)*60)+'%';
+      // Update scan music bar too
+      const scanBar=document.getElementById('scanMusicBar');
+      if(scanBar) scanBar.style.width = Math.round(10 + (i/pdf.numPages)*60)+'%';
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
       const str = content.items.map(it=>it.str).join(' ');
       full += `\n\n--- Page ${i} ---\n` + str;
       if(i<=3) document.getElementById('pdfPreview').textContent = full.slice(0,6000);
+      // Invigilator delay per page (like real scanning)
+      await new Promise(r=>setTimeout(r, 300));
     }
     pendingText = full.trim();
-    if(!pendingText || pendingText.length < 50) pendingText = `[Scanned PDF detected — text layer empty. Use AutoScan OCR or enable Gemini to extract.]\n\nPreview extracted ${full.length} chars.`;
+    if(!pendingText || pendingText.length < 50) pendingText = `[Scanned PDF detected — text layer empty. Use AutoScan OCR or enable AI to extract.]\n\nPreview extracted ${full.length} chars.`;
     document.getElementById('pdfPreview').textContent = pendingText.slice(0,8000) + (pendingText.length>8000? '\n\n… truncated':'');
     document.getElementById('pdfBar').style.width='100%';
     document.getElementById('pdfStatus').textContent=`Done • ${pdf.numPages} pages • ${pendingText.length.toLocaleString()} chars`;
     document.getElementById('saveDocBtn').disabled=false;
+    // Keep scanning overlay a bit more like InVision AI, then show advanced viewer
+    await new Promise(r=>setTimeout(r, 900));
+    hidePdfScanOverlay();
+    // Show advanced viewer with Prev/Next, Export, Transfer, Ask AI (like InVision AI)
+    await pdfViewerShow(file, pdfDocForViewer);
+    const bar=document.getElementById('scanMusicBar');
+    if(bar) bar.style.width='100%';
+    document.getElementById('scanMusicText').textContent='Scan complete — Music stopped';
+    stopScanMusic();
   }catch(err){
     console.error(err);
     document.getElementById('pdfStatus').textContent='Failed: '+err.message;
     pendingText = '';
+    hidePdfScanOverlay();
+    stopScanMusic();
   }
 }
 function saveDocument(){
@@ -709,6 +784,168 @@ async function quickGenerate(){
   saveDocument();
   nav('quiz');
   setTimeout(generateQuiz, 300);
+}
+
+// ---------- InVision AI Style — PDF Viewer (Prev/Next, Export, Transfer, Ask AI) + Invigilator Scan with Music ----------
+let pdfViewerState = { pdf: null, page: 1, total: 1, scale: 1.2, file: null, fileName: '' };
+
+async function pdfViewerShow(file, pdf){
+  pdfViewerState.file = file;
+  pdfViewerState.pdf = pdf;
+  pdfViewerState.total = pdf.numPages;
+  pdfViewerState.page = 1;
+  pdfViewerState.fileName = file.name;
+  document.getElementById('pdfViewer').classList.remove('hidden');
+  document.getElementById('pdfViewerEmpty').classList.add('hidden');
+  updatePdfViewerLang();
+  await pdfViewerRender();
+}
+
+async function pdfViewerRender(){
+  const canvas=document.getElementById('pdfCanvas');
+  const wrap=document.getElementById('pdfViewerWrap');
+  if(!pdfViewerState.pdf || !canvas) return;
+  try{
+    const page = await pdfViewerState.pdf.getPage(pdfViewerState.page);
+    const viewport = page.getViewport({scale: pdfViewerState.scale});
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    canvas.style.width = Math.min(viewport.width, wrap.clientWidth-32) + 'px';
+    canvas.style.height = 'auto';
+    const ctx = canvas.getContext('2d');
+    await page.render({canvasContext: ctx, viewport}).promise;
+    document.getElementById('pdfPageInfo').textContent = `Page ${pdfViewerState.page} / ${pdfViewerState.total}`;
+    document.getElementById('pdfZoomInfo').textContent = Math.round(pdfViewerState.scale*100) + '%';
+    document.getElementById('pdfPrev').disabled = pdfViewerState.page<=1;
+    document.getElementById('pdfNext').disabled = pdfViewerState.page>=pdfViewerState.total;
+  }catch(e){ console.error('pdf render',e); }
+}
+function pdfViewerPrev(){ if(pdfViewerState.page>1){ pdfViewerState.page--; pdfViewerRender(); } }
+function pdfViewerNext(){ if(pdfViewerState.page<pdfViewerState.total){ pdfViewerState.page++; pdfViewerRender(); } }
+function pdfViewerZoom(d){
+  pdfViewerState.scale = Math.max(0.6, Math.min(2.5, pdfViewerState.scale + d));
+  pdfViewerRender();
+}
+function pdfViewerExport(){
+  if(!pdfViewerState.file) return alert('No PDF loaded');
+  // Export original PDF + also export extracted text as .txt
+  const url = URL.createObjectURL(pdfViewerState.file);
+  const a=document.createElement('a');
+  a.href=url; a.download=pdfViewerState.fileName; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  // Also offer text export
+  if(pendingText){
+    const blob=new Blob([pendingText],{type:'text/plain'});
+    const u2=URL.createObjectURL(blob);
+    const b=document.createElement('a');
+    b.href=u2; b.download=pendingName+'_extracted.txt'; 
+    setTimeout(()=>{ b.click(); URL.revokeObjectURL(u2); }, 600);
+  }
+}
+async function pdfViewerTransfer(){
+  if(!pdfViewerState.file) return alert('No PDF');
+  const file = new File([pdfViewerState.file], pdfViewerState.fileName, {type:'application/pdf'});
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({title: pdfViewerState.fileName, text: 'Inter AI Study Buddy — PDF', files:[file]}); return; }catch(e){}
+  }
+  // Fallback: copy link or download
+  try{
+    await navigator.clipboard.writeText(location.href);
+    alert('Link copied! Share it — or use Export to send PDF');
+  }catch{ alert('Share: use Export to download and send via WhatsApp/Email'); }
+}
+function pdfViewerAskAI(){
+  if(!pendingText) return alert('Upload PDF first');
+  // Use existing askTutor flow with current doc context
+  const tempDoc = { id: 'temp_'+Date.now(), title: pendingName, subject: document.getElementById('docSubject')?.value||'General', text: pendingText };
+  state.docs.unshift(tempDoc);
+  save(); refreshQuizDocs();
+  askTutor(tempDoc.id);
+  // Also send to chat directly
+  setTimeout(()=> quickAsk('Explain this PDF in simple steps with important 4M questions'), 400);
+}
+function updatePdfViewerLang(){
+  const lang = (typeof detectLang==='function' ? detectLang(pendingText) : 'en');
+  const name = (typeof langName==='function' ? langName(lang) : lang);
+  const el=document.getElementById('pdfViewerLang');
+  if(el) el.textContent = 'Auto-detected: ' + name;
+}
+
+// Invigilator Scan — hides everything, plays music, advanced like InVision AI
+let scanAudioCtx=null, scanOsc=null, scanMusicInterval=null;
+function playScanMusic(){
+  try{
+    const audioEl=document.getElementById('scanAudio');
+    // Use Web Audio for scanning tone (no external file, works offline)
+    if(!scanAudioCtx) scanAudioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    if(scanAudioCtx.state==='suspended') scanAudioCtx.resume();
+    // Create subtle scanning hum
+    if(scanOsc) try{scanOsc.stop();}catch{}
+    scanOsc = scanAudioCtx.createOscillator();
+    const gain = scanAudioCtx.createGain();
+    scanOsc.type='sine';
+    scanOsc.frequency.value=180;
+    gain.gain.value=0.03;
+    scanOsc.connect(gain).connect(scanAudioCtx.destination);
+    scanOsc.start();
+    // Pulsing
+    let up=true;
+    scanMusicInterval=setInterval(()=>{
+      if(!scanOsc) return;
+      try{ scanOsc.frequency.linearRampToValueAtTime(up?220:180, scanAudioCtx.currentTime+0.6); up=!up; }catch{}
+      const bar=document.getElementById('scanMusicBar');
+      if(bar){
+        const w=parseFloat(bar.style.width)||0;
+        bar.style.width = Math.min(98, w + Math.random()*8) + '%';
+      }
+    }, 600);
+    // Also try audio element fallback (if user wants real music, we keep silent WebAudio)
+    if(audioEl){
+      // Keep muted WebAudio as primary, audioEl as fallback if needed
+      audioEl.volume=0.4;
+      // We don't have external file, so keep WebAudio
+    }
+  }catch(e){ console.warn('audio',e); }
+}
+function stopScanMusic(){
+  try{
+    if(scanOsc){ try{scanOsc.stop();}catch{} scanOsc=null; }
+    if(scanMusicInterval){ clearInterval(scanMusicInterval); scanMusicInterval=null; }
+    if(scanAudioCtx){ try{scanAudioCtx.suspend();}catch{} }
+    const bar=document.getElementById('scanMusicBar');
+    if(bar) bar.style.width='100%';
+    const audioEl=document.getElementById('scanAudio');
+    if(audioEl){ audioEl.pause(); audioEl.currentTime=0; }
+  }catch{}
+}
+function showPdfScanOverlay(){
+  const overlay=document.getElementById('pdfScanOverlay');
+  if(!overlay) return;
+  // Hide everything like InVision AI — only scanning visible
+  document.getElementById('dropZone')?.classList.add('hidden');
+  document.getElementById('pdfProgress')?.classList.add('hidden');
+  document.getElementById('pdfViewer')?.classList.add('hidden');
+  overlay.classList.remove('hidden');
+  overlay.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  playScanMusic();
+  const bar=document.getElementById('scanMusicBar');
+  if(bar) bar.style.width='8%';
+  const txt=document.getElementById('scanMusicText');
+  if(txt) txt.textContent='Music playing — Invigilator scanning your PDF...';
+}
+function hidePdfScanOverlay(){
+  const overlay=document.getElementById('pdfScanOverlay');
+  if(overlay){ overlay.classList.add('hidden'); overlay.setAttribute('aria-hidden','true'); }
+  document.body.style.overflow='';
+  stopScanMusic();
+  // Show viewer again
+  document.getElementById('dropZone')?.classList.remove('hidden');
+}
+function pdfScanCancel(){
+  hidePdfScanOverlay();
+  document.getElementById('pdfProgress')?.classList.add('hidden');
+  stopScanMusic();
 }
 
 // ---------- SCAN / OCR ----------
