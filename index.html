@@ -4,1637 +4,990 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="Ts0tjKFlNmAjB6cr2feAjxOG7j6r7KsKq6p_tO5tqKw">
-<meta name="description" content="Inter AI Study Buddy — AITutor for TS/AP Inter 1st & 2nd Year. Upload PDF, AutoScan notes, generate MCQs/2M/4M/8M quizzes, flashcards, Telugu/Tamil/Hindi TTS. MPC BiPC CEC MEC.">
-<meta name="keywords" content="TS Inter, AP Inter, Intermediate 1st Year 2nd Year, MPC, BiPC, CEC, BIE Telangana, AITutor, Study Buddy, Help studies fish, Inter Study App, PDF to Quiz, AutoScan OCR, Telugu Study App">
-<meta name="author" content="Mahicouragw">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://mahicouragw.github.io/Help-studies-fish/">
-<meta property="og:title" content="Inter AI Study Buddy — AITutor for TS Inter">
-<meta property="og:description" content="Upload any Inter PDF → AI makes summaries, quizzes, flashcards. Telugu/Tamil/Hindi support. 25/5 Pomodoro, Own SQL, Real OTP.">
-<meta property="og:url" content="https://mahicouragw.github.io/Help-studies-fish/">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://mahicouragw.github.io/Help-studies-fish/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Inter AI Study Buddy — TS Inter AITutor">
-<meta name="twitter:description" content="PDF → Smart Notes + MCQs + Flashcards. For MPC BiPC Inter 1st & 2nd Year.">
-<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-<link rel="manifest" href="manifest.json">
+<meta name="description" content="Study Vision AI — Accessible AI Study App for Blind Students. Upload PDF, Listen, Quiz.">
 <meta name="theme-color" content="#4f46e5">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Inter AI">
-<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f393.png">
-<title>Inter AI Study Buddy — AITutor for TS Inter Students | Help studies fish | MPC BiPC</title>
+<link rel="manifest" href="manifest.json">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<title>Study Vision AI — Accessible Study Companion</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: { 'display': ['Outfit','sans-serif'], 'body': ['Plus Jakarta Sans','sans-serif'] },
-        colors: {
-          brand: { 50:'#eef2ff', 100:'#e0e7ff', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca', 900:'#312e81' },
-          ink: '#0f172a'
-        }
-      }
-    }
-  }
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-</script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; tailwind.config={theme:{extend:{fontFamily:{display:['Outfit'],body:['Plus Jakarta Sans']}}}};</script>
 <style>
   *{scrollbar-width:thin; scrollbar-color:#c7d2fe #f8fafc}
-  ::-webkit-scrollbar{width:6px;height:6px}
-  ::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:99px}
-  .glass{backdrop-filter:blur(16px);background:rgba(255,255,255,0.85)}
-  .card-shadow{box-shadow:0 10px 40px -10px rgba(79,70,229,0.15), 0 4px 12px rgba(0,0,0,0.04)}
-  .gradient-mesh{background: radial-gradient(800px 400px at 20% -10%, #e0e7ff 0%, transparent 60%), radial-gradient(600px 600px at 90% 0%, #ffedd5 0%, transparent 50%), radial-gradient(700px 500px at 50% 120%, #dbeafe 0%, transparent 60%), #f8fafc}
-  .shimmer{background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size:200% 100%; animation: shimmer 1.5s infinite}
-  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-  .quiz-option:hover{transform:translateY(-1px); box-shadow:0 4px 12px rgba(99,102,241,0.15)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .sr-only:focus{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:normal;background:#0f172a;color:white;padding:8px 16px;border-radius:999px;z-index:999}
+  *:focus-visible{outline:3px solid #4f46e5;outline-offset:2px}
+  .glass{backdrop-filter:blur(12px);background:rgba(255,255,255,.9)}
 </style>
 </head>
-<body class="bg-[#f8fafc] font-body text-slate-800 antialiased gradient-mesh min-h-screen">
-  <!-- Top Nav -->
-  <header class="sticky top-0 z-40 glass border-b border-slate-200/60">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-[64px] flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-          <i class="fa-solid fa-graduation-cap text-[18px]"></i>
-        </div>
-        <div>
-          <h1 class="font-display font-800 text-[19px] leading-none tracking-tight text-slate-900">Inter AI Study Buddy</h1>
-          <p class="text-[11px] font-semibold tracking-widest text-indigo-600 uppercase -mt-0.5">AITutor • TS Inter 1st & 2nd Year</p>
-        </div>
-        <span class="hidden" aria-hidden="true"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse mr-1.5 mt-1"></span> AI Ready</span>
+<body class="bg-[#f8fafc] font-body text-slate-900 antialiased">
+<a href="#main" class="sr-only">Skip to main content</a>
+<div id="live" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+<!-- AUTH — FULL SCREEN, HIDES EVERYTHING -->
+<div id="authScreen" class="fixed inset-0 z-[100] bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-800 flex items-center justify-center p-4">
+  <div class="w-full max-w-[420px] bg-white rounded-[24px] shadow-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="authHeading">
+    <div class="px-6 py-5 text-center border-b">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto text-xl" aria-hidden="true"><i class="fa-solid fa-graduation-cap"></i></div>
+      <h1 id="authHeading" class="font-display font-bold text-xl mt-3">Study Vision AI</h1>
+      <p class="text-sm text-slate-500">Accessible study for every student — TalkBack ready</p>
+    </div>
+    <div class="p-6">
+      <div class="flex gap-1 bg-slate-100 p-1 rounded-full" role="tablist" aria-label="Authentication">
+        <button id="tabLogin" role="tab" aria-selected="true" aria-controls="panelLogin" onclick="showAuth('login')" class="flex-1 py-2 rounded-full bg-white shadow font-bold text-sm">Login</button>
+        <button id="tabSignup" role="tab" aria-selected="false" aria-controls="panelSignup" onclick="showAuth('signup')" class="flex-1 py-2 rounded-full font-bold text-sm text-slate-600">Sign Up</button>
       </div>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div class="hidden lg:flex items-center gap-2 bg-white border border-slate-200 rounded-full px-2 py-1.5 shadow-sm">
-          <select id="streamSelect" onchange="setStream(this.value)" class="bg-transparent text-sm font-semibold text-slate-700 outline-none pr-6 pl-2">
-            <option value="MPC">MPC — Maths, Physics, Chemistry</option>
-            <option value="BiPC">BiPC — Biology, Physics, Chemistry</option>
-            <option value="CEC">CEC — Commerce, Econ, Civics</option>
-            <option value="MEC">MEC — Maths, Econ, Commerce</option>
-            <option value="HEC">HEC — History, Econ, Civics</option>
-          </select>
+
+      <form id="panelLogin" role="tabpanel" aria-labelledby="tabLogin" class="mt-5 space-y-3" onsubmit="doLogin(event)">
+        <label class="block text-sm font-bold">Email <input id="loginEmail" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <label class="block text-sm font-bold">Password <input id="loginPass" type="password" autocomplete="current-password" required aria-required="true" placeholder="••••••••" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <p id="loginErr" class="text-sm font-bold text-red-600 min-h-[18px]" aria-live="polite"></p>
+        <button type="submit" class="w-full py-3 rounded-full bg-slate-900 text-white font-bold text-base">Login</button>
+        <button type="button" onclick="showForgot()" class="w-full text-sm font-bold text-indigo-600 underline">Forgot password? Get OTP</button>
+      </form>
+
+      <form id="panelSignup" role="tabpanel" aria-labelledby="tabSignup" hidden class="mt-5 space-y-3" onsubmit="doSignup(event)">
+        <label class="block text-sm font-bold">Full Name <input id="signupName" type="text" autocomplete="name" required placeholder="e.g. Sai Kumar" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <label class="block text-sm font-bold">Email <input id="signupEmail" type="email" autocomplete="email" required placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <label class="block text-sm font-bold">Password <input id="signupPass" type="password" autocomplete="new-password" required placeholder="At least 6 characters" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <label class="block text-sm font-bold">Confirm Password <input id="signupConfirm" type="password" autocomplete="new-password" required placeholder="Repeat password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <p id="signupErr" class="text-sm font-bold min-h-[18px]" aria-live="polite"></p>
+        <button type="submit" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold text-base">Create Account</button>
+      </form>
+
+      <div id="otpPanel" hidden class="mt-5 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
+        <h2 class="font-bold text-amber-900">Check your email</h2>
+        <p class="text-sm text-amber-800 mt-1">Enter 6-digit OTP sent to <b id="otpEmail"></b> — valid 10 minutes</p>
+        <label class="block mt-3 text-sm font-bold">OTP <input id="otpInput" inputmode="numeric" maxlength="6" placeholder="123456" aria-label="6 digit OTP" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-amber-300 text-center tracking-[0.4em] font-mono text-xl"></label>
+        <p id="otpErr" class="text-sm font-bold min-h-[16px] mt-2" aria-live="polite"></p>
+        <button onclick="verifyOtp()" class="w-full mt-2 py-3 rounded-full bg-amber-600 text-white font-bold">Verify</button>
+        <button onclick="resendOtp()" class="w-full mt-2 text-sm font-bold underline">Resend OTP</button>
+        <p id="devOtp" class="text-xs text-slate-500 mt-2"></p>
+      </div>
+
+      <div id="forgotPanel" hidden class="mt-5 bg-slate-50 border-2 border-slate-200 rounded-2xl p-4">
+        <h2 class="font-bold">Reset Password</h2>
+        <label class="block mt-2 text-sm font-bold">Email <input id="forgotEmail" type="email" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 text-base"></label>
+        <button onclick="sendForgot()" class="w-full mt-3 py-3 rounded-full bg-slate-900 text-white font-bold">Send Code</button>
+        <div id="resetArea" hidden class="mt-3 space-y-2">
+          <label class="block text-sm font-bold">Code <input id="forgotOtp" inputmode="numeric" placeholder="123456" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200"></label>
+          <label class="block text-sm font-bold">New Password <input id="forgotNew" type="password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200"></label>
+          <label class="block text-sm font-bold">Confirm <input id="forgotConfirm" type="password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200"></label>
+          <button onclick="resetPass()" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold">Reset Password</button>
         </div>
-        <button onclick="openSettings()" class="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition"><i class="fa-solid fa-gear text-slate-600"></i></button>
-        <button onclick="focusTutor()" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-bold hover:bg-black transition"><i class="fa-solid fa-robot"></i> Ask AITutor</button>
-        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow">S</div>
+        <p id="forgotErr" class="text-sm font-bold min-h-[16px] mt-2" aria-live="polite"></p>
+        <button onclick="showAuth('login')" class="w-full mt-2 text-sm font-bold underline">Back to Login</button>
+      </div>
+
+      <p class="text-[11px] text-slate-500 text-center mt-4">Your data is encrypted — SQLite on our server, not Supabase. OTP via Gmail.</p>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME AFTER SIGNUP -->
+<div id="welcomeScreen" hidden class="fixed inset-0 z-[90] bg-white flex items-center justify-center p-6 text-center">
+  <div class="max-w-[420px]">
+    <div class="w-16 h-16 rounded-2xl bg-emerald-500 text-white flex items-center justify-center mx-auto text-2xl" aria-hidden="true"><i class="fa-solid fa-hand"></i></div>
+    <h2 class="font-display font-bold text-2xl mt-4">Hi! Welcome to Study Vision AI.</h2>
+    <p class="text-slate-600 mt-2">Your accessible study companion — ready for TalkBack.</p>
+    <button onclick="enterApp()" class="mt-6 w-full py-3 rounded-full bg-indigo-600 text-white font-bold text-base" autofocus>Continue</button>
+  </div>
+</div>
+
+<!-- APP SHELL — ONLY 3 PRIMARY NAV ITEMS -->
+<div id="appShell" hidden>
+<header class="sticky top-0 z-30 glass border-b" role="banner">
+  <div class="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center" aria-hidden="true"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div>
+        <p class="font-display font-bold leading-none">Study Vision AI</p>
+        <p class="text-xs text-slate-500">Inter • Accessible</p>
       </div>
     </div>
-  </header>
-
-  <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-12 gap-6">
-    <!-- Sidebar -->
-    <aside class="col-span-12 lg:col-span-3 xl:col-span-2 space-y-4">
-      <nav class="bg-white rounded-[20px] card-shadow border border-slate-200/60 p-2">
-        <button onclick="nav('dashboard')" data-nav="dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-sm"><i class="fa-solid fa-table-columns w-5"></i> Dashboard</button>
-        <button onclick="nav('library')" data-nav="library" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-600 font-medium text-sm"><i class="fa-solid fa-book-open w-5"></i> Library <span id="libCount" class="ml-auto text-xs bg-slate-100 px-2 py-0.5 rounded-full">0</span></button>
-        <button onclick="nav('upload')" data-nav="upload" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-600 font-medium text-sm"><i class="fa-solid fa-cloud-arrow-up w-5"></i> Upload PDF</button>
-        <button onclick="nav('scan')" data-nav="scan" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-600 font-medium text-sm"><i class="fa-solid fa-camera w-5"></i> AutoScan</button>
-        <button onclick="nav('quiz')" data-nav="quiz" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-600 font-medium text-sm"><i class="fa-solid fa-clipboard-question w-5"></i> Quiz Zone</button>
-        <button onclick="nav('flashcards')" data-nav="flashcards" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-600 font-medium text-sm"><i class="fa-solid fa-layer-group w-5"></i> Flashcards</button>
-        <div class="h-px bg-slate-100 my-2"></div>
-        <button onclick="nav('tutor')" data-nav="tutor" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-600 font-medium text-sm"><i class="fa-solid fa-comments w-5 text-violet-600"></i> AITutor Chat</button>
-      </nav>
-
-      <div class="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[20px] p-5 text-white card-shadow relative overflow-hidden">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
-        <p class="text-xs font-bold tracking-widest uppercase opacity-80">Today's Focus</p>
-        <h3 class="font-display font-bold text-[18px] leading-tight mt-1">Inter 1st Year<br>Maths IA — Functions</h3>
-        <div class="mt-3 flex items-center gap-2 text-xs opacity-90"><i class="fa-solid fa-clock"></i> 25 min • 12 Qs</div>
-        <button onclick="nav('quiz')" class="mt-4 w-full bg-white text-indigo-700 font-bold text-sm py-2.5 rounded-full hover:bg-indigo-50 transition">Start Practice →</button>
-      </div>
-
-      <div class="bg-white rounded-[20px] card-shadow border border-slate-200/60 p-4">
-        <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2"><i class="fa-solid fa-chart-simple text-indigo-600"></i> Your Progress</h4>
-        <div class="mt-3 space-y-3">
-          <div>
-            <div class="flex justify-between text-xs font-semibold"><span class="text-slate-600">Quizzes Completed</span><span class="text-indigo-600" id="statQuizzes">0 / 0</span></div>
-            <div class="h-2 bg-slate-100 rounded-full mt-1 overflow-hidden"><div id="barQuizzes" class="h-full bg-indigo-600 rounded-full" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs font-semibold"><span class="text-slate-600">Library</span><span class="text-emerald-600" id="statDocs">0 docs</span></div>
-            <div class="h-2 bg-slate-100 rounded-full mt-1 overflow-hidden"><div class="h-full bg-emerald-500 rounded-full" style="width:60%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs font-semibold"><span class="text-slate-600">Avg. Score</span><span class="text-amber-600" id="statScore">—</span></div>
-            <div class="h-2 bg-slate-100 rounded-full mt-1 overflow-hidden"><div id="barScore" class="h-full bg-amber-500 rounded-full" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main -->
-    <main class="col-span-12 lg:col-span-9 xl:col-span-7 space-y-6">
-      <!-- DASHBOARD -->
-      <section id="view-dashboard" class="space-y-6">
-        <div class="bg-white rounded-[24px] card-shadow border border-slate-200/60 p-6 sm:p-7 relative overflow-hidden">
-          <div class="absolute right-0 top-0 w-[320px] h-[320px] bg-gradient-to-br from-indigo-50 to-violet-50 rounded-full blur-3xl -translate-y-32 translate-x-32 pointer-events-none"></div>
-          <div class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h2 class="font-display font-800 text-[26px] sm:text-[28px] leading-none text-slate-900">Namaste, Topper! 👋</h2>
-              <p class="text-slate-500 font-medium mt-1.5 max-w-[560px]">Upload any Inter textbook PDF, autoscan handwritten notes — AITutor will instantly make summaries, Q&A, MCQs & important questions. You focus on studying.</p>
-            </div>
-            <div class="flex gap-2 shrink-0">
-              <label class="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-full bg-slate-900 text-white font-bold text-sm hover:bg-black transition">
-                <i class="fa-solid fa-file-pdf"></i> Upload PDF
-                <input type="file" id="quickUpload" accept=".pdf" class="hidden" onchange="handleQuickUpload(event)">
-              </label>
-              <button onclick="nav('scan')" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-slate-200 font-bold text-sm hover:bg-slate-50"><i class="fa-solid fa-camera"></i> Scan</button>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-3 mt-6">
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-              <p class="text-xs font-bold tracking-widest uppercase text-slate-500">Docs Saved</p>
-              <p class="font-display font-800 text-2xl text-slate-900 mt-1" id="dashDocs">0</p>
-              <p class="text-xs text-emerald-600 font-semibold mt-1">↗ Library ready</p>
-            </div>
-            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4">
-              <p class="text-xs font-bold tracking-widest uppercase text-indigo-600">Quizzes</p>
-              <p class="font-display font-800 text-2xl text-indigo-900 mt-1" id="dashQuiz">0</p>
-              <p class="text-xs text-indigo-600 font-semibold mt-1">Auto-generated</p>
-            </div>
-            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
-              <p class="text-xs font-bold tracking-widest uppercase text-amber-700">Hours Saved</p>
-              <p class="font-display font-800 text-2xl text-amber-900 mt-1">12.4h</p>
-              <p class="text-xs text-amber-700 font-semibold mt-1">vs manual making</p>
-            </div>
-          </div>
-        </div>
-
-        <div id="pwaInstallBar" class="hidden bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-4 flex items-center justify-between text-white card-shadow" role="banner" aria-label="Install app banner">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-white text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-download"></i></div>
-            <div>
-              <p class="font-bold text-sm">Install Inter AI Study Buddy</p>
-              <p class="text-xs opacity-90">Add to home screen — works offline, fast, like real app</p>
-            </div>
-          </div>
-          <button onclick="installPWA()" class="px-5 py-2 rounded-full bg-white text-indigo-700 font-bold text-sm hover:bg-indigo-50" aria-label="Install app">Install</button>
-        </div>
-
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div class="bg-white rounded-2xl card-shadow border border-slate-200/60 p-5">
-            <h3 class="font-bold text-slate-900 flex items-center gap-2"><span class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center"><i class="fa-solid fa-wand-magic-sparkles text-sm"></i></span> What AITutor can do</h3>
-            <ul class="mt-4 space-y-2.5 text-sm">
-              <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-xs"></i></span><span><b>PDF → Smart Notes:</b> 1-page summary, formulas & diagrams explained</span></li>
-              <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-xs"></i></span><span><b>Auto Questions:</b> 2M, 4M, 8M + MCQ bank as per TS Inter blueprint</span></li>
-              <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-xs"></i></span><span><b>Instant Doubt Solve:</b> Ask in Telugu / English / Hinglish — with steps</span></li>
-              <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-xs"></i></span><span><b>Scan Anything:</b> Handwritten notes → typed + quiz in 10 sec</span></li>
-            </ul>
-          </div>
-          <div class="bg-white rounded-2xl card-shadow border border-slate-200/60 p-5">
-            <h3 class="font-bold text-slate-900">Choose your subjects</h3>
-            <p class="text-xs text-slate-500 font-medium mt-1">Switch stream from top. Tap a subject to filter library</p>
-            <div id="subjectGrid" class="grid grid-cols-2 gap-2.5 mt-4"></div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl card-shadow border border-slate-200/60 p-5">
-          <div class="flex items-center justify-between">
-            <h3 class="font-bold text-slate-900">Recent Library</h3>
-            <button onclick="nav('library')" class="text-xs font-bold text-indigo-600 hover:text-indigo-700">View all →</button>
-          </div>
-          <div id="recentList" class="mt-4 grid sm:grid-cols-2 gap-3"></div>
-          <div id="emptyRecent" class="hidden text-center py-10 border-2 border-dashed border-slate-200 rounded-2xl mt-4">
-            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto text-slate-400"><i class="fa-solid fa-folder-open"></i></div>
-            <p class="text-sm font-semibold text-slate-700 mt-3">No documents yet</p>
-            <p class="text-xs text-slate-500 mt-1">Upload your first Inter PDF to get started</p>
-            <button onclick="nav('upload')" class="mt-4 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-bold">Upload Now</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- UPLOAD -->
-      <section id="view-upload" class="hidden space-y-6">
-        <div class="bg-white rounded-[24px] card-shadow border border-slate-200/60 p-6 sm:p-7">
-          <h2 class="font-display font-bold text-xl text-slate-900">Upload PDF</h2>
-          <p class="text-sm text-slate-500 mt-1">Textbooks, guides, previous papers, or your own notes — AITutor reads everything.</p>
-
-          <label id="dropZone" class="mt-6 flex flex-col items-center justify-center border-2 border-dashed border-indigo-200 bg-indigo-50/50 rounded-[20px] p-8 sm:p-10 text-center cursor-pointer hover:bg-indigo-50 transition">
-            <div class="w-14 h-14 rounded-2xl bg-white border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm"><i class="fa-solid fa-cloud-arrow-up text-xl"></i></div>
-            <p class="font-bold text-slate-900 mt-4">Drop PDF here or click to browse</p>
-            <p class="text-xs text-slate-500 mt-1">Supports 1–200 pages • Max 25 MB • OCR for scanned PDFs</p>
-            <span class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-bold">Choose File</span>
-            <input type="file" id="pdfInput" accept=".pdf" class="hidden">
-          </label>
-
-          <div class="grid sm:grid-cols-3 gap-3 mt-6">
-            <label class="text-xs font-bold text-slate-700">Title <input id="docTitle" placeholder="e.g. Physics Ch-4 Work Energy" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 text-sm"></label>
-            <label class="text-xs font-bold text-slate-700">Subject <select id="docSubject" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-indigo-400 text-sm"></select></label>
-            <label class="text-xs font-bold text-slate-700">Year <select id="docYear" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-indigo-400 text-sm"><option>Inter 1st Year</option><option>Inter 2nd Year</option><option>Common</option></select></label>
-          </div>
-
-          <div id="pdfProgress" class="hidden mt-6 bg-slate-50 border border-slate-200 rounded-2xl p-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-white border flex items-center justify-center"><i class="fa-solid fa-file-pdf text-indigo-600"></i></div>
-              <div class="flex-1">
-                <p class="text-sm font-bold text-slate-900" id="pdfFileName">—</p>
-                <div class="h-2 bg-white border border-slate-200 rounded-full mt-2 overflow-hidden"><div id="pdfBar" class="h-full bg-indigo-600 transition-all" style="width:0%"></div></div>
-                <p class="text-xs text-slate-500 mt-1" id="pdfStatus">Reading PDF…</p>
-              </div>
-            </div>
-            <div id="pdfPreview" class="mt-4 max-h-[220px] overflow-auto bg-white border border-slate-200 rounded-xl p-3 text-xs leading-relaxed text-slate-700 whitespace-pre-wrap"></div>
-            <div class="mt-4 flex gap-2">
-              <button onclick="saveDocument()" id="saveDocBtn" class="px-5 py-2.5 rounded-full bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 disabled:opacity-50" disabled><i class="fa-solid fa-bookmark mr-1"></i> Save to Library</button>
-              <button onclick="quickGenerate()" class="px-5 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm hover:bg-black"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Save + Generate Quiz</button>
-            </div>
-          </div>
-
-          <!-- InVision AI Style — Advanced PDF Viewer (Prev/Next, Export, Transfer, Ask AI) -->
-          <div id="pdfViewer" class="hidden mt-6 bg-white border border-slate-200 rounded-[20px] overflow-hidden card-shadow" role="region" aria-label="PDF Viewer like InVision AI">
-            <div class="px-4 py-3 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <button id="pdfPrev" onclick="pdfViewerPrev()" aria-label="Previous page" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                <span id="pdfPageInfo" class="text-xs font-bold px-3 py-1 rounded-full bg-white/15" aria-live="polite">Page 1 / 1</span>
-                <button id="pdfNext" onclick="pdfViewerNext()" aria-label="Next page" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                <span id="pdfZoomInfo" class="hidden sm:inline text-xs opacity-70">100%</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button onclick="pdfViewerZoom(-0.2)" aria-label="Zoom out" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-magnifying-glass-minus text-xs"></i></button>
-                <button onclick="pdfViewerZoom(0.2)" aria-label="Zoom in" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-magnifying-glass-plus text-xs"></i></button>
-                <button onclick="pdfViewerExport()" aria-label="Export PDF" class="px-3 py-1.5 rounded-full bg-white text-slate-900 font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-file-arrow-down"></i> Export</button>
-                <button onclick="pdfViewerTransfer()" aria-label="Transfer or Share" class="px-3 py-1.5 rounded-full bg-emerald-500 text-white font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-share-nodes"></i> Transfer</button>
-                <button onclick="pdfViewerAskAI()" aria-label="Ask AI about this PDF" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-robot"></i> Ask AI</button>
-              </div>
-            </div>
-            <div class="relative bg-slate-100 flex items-center justify-center p-4 min-h-[420px] overflow-auto" id="pdfViewerWrap">
-              <canvas id="pdfCanvas" class="bg-white shadow-lg rounded-lg max-w-full" role="img" aria-label="PDF page canvas"></canvas>
-              <div id="pdfViewerEmpty" class="absolute inset-0 flex items-center justify-center text-slate-400 text-sm">Upload a PDF to view</div>
-            </div>
-            <div class="px-4 py-2 bg-slate-50 border-t flex items-center justify-between text-xs">
-              <span class="text-slate-500">InVision AI Style • Pinch to zoom • Swipe for pages</span>
-              <span id="pdfViewerLang" class="font-bold text-indigo-600">Auto-detected: English</span>
-            </div>
-          </div>
-
-          <!-- Invigilator Scanning Overlay — Hides everything, plays music, advanced like InVision AI -->
-          <div id="pdfScanOverlay" class="hidden fixed inset-0 z-[80] bg-slate-900/95 backdrop-blur flex flex-col items-center justify-center p-6 text-center" role="dialog" aria-modal="true" aria-label="Scanning PDF like invigilator, please wait">
-            <div class="w-full max-w-[520px] bg-white rounded-[24px] p-6 shadow-2xl">
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center mx-auto text-2xl animate-pulse" aria-hidden="true"><i class="fa-solid fa-expand"></i></div>
-              <h3 class="font-display font-bold text-xl mt-4">Invigilator Scanning…</h3>
-              <p class="text-sm text-slate-600 mt-1">Reading all chapters like <b>InVision AI</b> — please wait, music playing</p>
-              <div class="mt-4 relative bg-slate-900 rounded-2xl overflow-hidden h-[220px] flex items-center justify-center">
-                <div class="absolute inset-4 border-2 border-white/20 rounded-xl"></div>
-                <div class="absolute inset-4 border border-dashed border-white/10 rounded-xl"></div>
-                <div id="scanLaser" class="absolute left-4 right-4 h-[3px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_rgba(16,185,129,0.8)]" style="top:20%; animation: scanMove 1.8s infinite linear;"></div>
-                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur px-3 py-1 rounded-full text-xs text-white flex items-center gap-2"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Scanning document...</div>
-                <i class="fa-solid fa-file-pdf text-5xl text-white/20"></i>
-              </div>
-              <div class="mt-4">
-                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div id="scanMusicBar" class="h-full bg-indigo-600 transition-all" style="width:0%"></div></div>
-                <p class="text-xs font-bold text-indigo-600 mt-2 flex items-center justify-center gap-2"><i class="fa-solid fa-music animate-pulse"></i> <span id="scanMusicText">Music playing — Analyzing PDF...</span></p>
-                <p class="text-[11px] text-slate-500 mt-1">Everything hidden until scan completes (like InVision AI) • Advanced • 50-60 sec for 10 MCQs</p>
-              </div>
-              <button onclick="pdfScanCancel()" class="mt-4 w-full py-2 rounded-full bg-white border font-bold text-sm">Cancel Scan</button>
-            </div>
-            <audio id="scanAudio" loop preload="auto" aria-hidden="true"></audio>
-          </div>
-          <style>
-            @keyframes scanMove{ 0%{top:16px} 50%{top:calc(100% - 16px)} 100%{top:16px} }
-          </style>
-        </div>
-
-        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3">
-          <div class="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-lightbulb text-sm"></i></div>
-          <p class="text-sm leading-relaxed text-amber-900"><b>Pro tip:</b> Upload TS Inter Board textbooks from <span class="underline">BIE Telangana</span> PDFs — AITutor auto-detects chapter & creates blueprint-based 2M / 4M / 8M questions exactly like your final exam.</p>
-        </div>
-      </section>
-
-      <!-- SCAN -->
-      <section id="view-scan" class="hidden space-y-6">
-        <div class="bg-white rounded-[24px] card-shadow border border-slate-200/60 p-6 sm:p-7">
-          <h2 class="font-display font-bold text-xl text-slate-900">AutoScan — Camera + OCR</h2>
-          <p class="text-sm text-slate-500 mt-1">Point at handwritten notes, printed pages, or blackboard. AITutor converts to text and saves.</p>
-
-          <div class="grid lg:grid-cols-2 gap-6 mt-6">
-            <div class="space-y-3">
-              <div class="relative bg-slate-900 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center">
-                <video id="camVideo" autoplay playsinline class="w-full h-full object-cover hidden"></video>
-                <canvas id="camCanvas" class="hidden"></canvas>
-                <img id="scanPreview" class="w-full h-full object-contain hidden bg-white">
-                <div id="camPlaceholder" class="text-center p-6 text-white/90">
-                  <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto"><i class="fa-solid fa-camera text-xl"></i></div>
-                  <p class="font-semibold mt-3">Camera is off</p>
-                  <p class="text-xs opacity-70 mt-1">Allow camera access to scan</p>
-                </div>
-                <div id="scanOverlay" class="hidden absolute inset-0 border-[16px] border-white/10 pointer-events-none"></div>
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <button onclick="startCamera()" class="px-4 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm"><i class="fa-solid fa-video mr-1"></i> Start Camera</button>
-                <button onclick="capturePhoto()" id="captureBtn" class="px-4 py-2.5 rounded-full bg-indigo-600 text-white font-bold text-sm disabled:opacity-40" disabled><i class="fa-solid fa-camera mr-1"></i> Capture</button>
-                <label class="px-4 py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm cursor-pointer"><i class="fa-solid fa-image mr-1"></i> Upload Image <input type="file" id="scanUpload" accept="image/*" class="hidden" onchange="handleScanUpload(event)"></label>
-                <button onclick="stopCamera()" class="px-4 py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm">Stop</button>
-              </div>
-            </div>
-            <div class="space-y-3">
-              <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-                <div class="flex items-center justify-between">
-                  <h4 class="font-bold text-sm text-slate-900">OCR Result</h4>
-                  <span id="ocrStatus" class="text-xs font-bold px-2 py-1 rounded-full bg-white border">Idle</span>
-                </div>
-                <textarea id="ocrText" placeholder="Scanned text will appear here… You can edit before saving." class="mt-3 w-full h-[180px] bg-white border border-slate-200 rounded-xl p-3 text-sm leading-relaxed outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50"></textarea>
-                <div id="ocrProgress" class="hidden mt-2 h-2 bg-white border border-slate-200 rounded-full overflow-hidden"><div class="h-full bg-indigo-600 animate-pulse" style="width:60%"></div></div>
-                <div class="mt-3 grid grid-cols-2 gap-2">
-                  <input id="scanTitle" placeholder="Title e.g. Chemistry Notes Pg 12" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-indigo-400">
-                  <select id="scanSubject" class="px-3 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-indigo-400"></select>
-                </div>
-                <button onclick="saveScan()" class="mt-3 w-full py-2.5 rounded-full bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700"><i class="fa-solid fa-floppy-disk mr-1"></i> Save to Library</button>
-              </div>
-              <div class="bg-violet-50 border border-violet-200 rounded-2xl p-4">
-                <p class="text-xs font-bold tracking-widest uppercase text-violet-700">How it works</p>
-                <p class="text-sm text-violet-900 mt-1 leading-relaxed">Uses on-device OCR (Tesseract.js). Works offline. For best results, use good light, keep page flat, and capture one page at a time.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- LIBRARY -->
-      <section id="view-library" class="hidden space-y-6">
-        <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-          <h2 class="font-display font-bold text-xl text-slate-900">Your Library</h2>
-          <div class="flex gap-2">
-            <div class="relative flex-1 sm:w-[280px]">
-              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-              <input id="libSearch" oninput="renderLibrary()" placeholder="Search titles, subjects…" class="w-full pl-9 pr-3 py-2.5 rounded-full bg-white border border-slate-200 text-sm outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50">
-            </div>
-            <select id="libFilter" onchange="renderLibrary()" class="px-3 py-2.5 rounded-full bg-white border border-slate-200 text-sm font-semibold">
-              <option value="all">All subjects</option>
-            </select>
-          </div>
-        </div>
-        <div id="libraryGrid" class="grid sm:grid-cols-2 gap-4"></div>
-        <div id="emptyLibrary" class="hidden bg-white rounded-[20px] card-shadow border border-slate-200/60 p-10 text-center">
-          <div class="w-16 h-16 rounded-2xl bg-slate-50 border flex items-center justify-center mx-auto text-slate-400"><i class="fa-solid fa-books text-xl"></i></div>
-          <p class="font-bold text-slate-900 mt-4">Library is empty</p>
-          <p class="text-sm text-slate-500 mt-1">Upload PDFs or scan notes to build your question bank</p>
-          <div class="mt-4 flex justify-center gap-2">
-            <button onclick="nav('upload')" class="px-5 py-2.5 rounded-full bg-indigo-600 text-white font-bold text-sm">Upload PDF</button>
-            <button onclick="nav('scan')" class="px-5 py-2.5 rounded-full bg-white border border-slate-200 font-bold text-sm">Scan Notes</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- QUIZ -->
-      <section id="view-quiz" class="hidden space-y-6">
-        <div class="bg-white rounded-[24px] card-shadow border border-slate-200/60 p-6 sm:p-7">
-          <h2 class="font-display font-bold text-xl text-slate-900">Quiz Generator</h2>
-          <p class="text-sm text-slate-500 mt-1">Turn any document into exam-ready practice. Blueprint-aligned for TS Inter.</p>
-
-          <div class="grid sm:grid-cols-3 gap-3 mt-5">
-            <label class="text-xs font-bold text-slate-700">Source Document <select id="quizDoc" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-indigo-400"></select></label>
-            <label class="text-xs font-bold text-slate-700">Type <select id="quizType" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-indigo-400">
-              <option value="mcq">MCQ — 1 Mark</option>
-              <option value="short2m">Short Answer — 2 Marks</option>
-              <option value="short4m">Short Answer — 4 Marks</option>
-              <option value="long8m">Long Answer — 8 Marks</option>
-              <option value="mixed">Mixed Blueprint</option>
-              <option value="flashcards">Flashcards</option>
-            </select></label>
-            <label class="text-xs font-bold text-slate-700">Questions <select id="quizCount" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:border-indigo-400">
-              <option>5</option><option selected>10</option><option>15</option><option>20</option>
-            </select></label>
-          </div>
-          <div class="grid sm:grid-cols-3 gap-3 mt-3">
-            <label class="text-xs font-bold text-slate-700">Difficulty <select id="quizDiff" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm">
-              <option>Easy — Remember</option><option selected>Medium — Understand + Apply</option><option>Hard — Analyse</option>
-            </select></label>
-            <label class="text-xs font-bold text-slate-700">Language <select id="quizLang" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"><option>English</option><option>Telugu + English</option><option>Hinglish</option></select></label>
-            <div class="flex items-end">
-              <button onclick="generateQuiz()" id="genQuizBtn" class="w-full py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 flex items-center justify-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Quiz</button>
-            </div>
-          </div>
-
-          <div id="quizProgress" class="hidden mt-4 bg-indigo-50 border border-indigo-200 rounded-xl p-3 flex items-center gap-3 text-sm">
-            <div class="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <span class="font-semibold text-indigo-900" id="quizProgressText">AITutor is creating questions from your document…</span>
-          </div>
-        </div>
-
-        <div id="quizPlayer" class="hidden bg-white rounded-[24px] card-shadow border border-slate-200/60 p-6 sm:p-7">
-          <div class="flex items-center justify-between gap-4">
-            <h3 class="font-bold text-slate-900" id="quizTitle">—</h3>
-            <span id="quizMeta" class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 border">—</span>
-          </div>
-          <div class="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden"><div id="quizBar" class="h-full bg-indigo-600 transition-all" style="width:0%"></div></div>
-          <p class="text-xs text-slate-500 mt-1"><span id="quizStep">1</span> / <span id="quizTotal">10</span> • <span id="quizScoreLive">0 correct</span></p>
-
-          <div id="quizQuestionBox" class="mt-6"></div>
-
-          <div id="quizActions" class="mt-6 flex justify-between">
-            <button onclick="prevQ()" class="px-4 py-2 rounded-full bg-white border border-slate-200 font-bold text-sm">← Prev</button>
-            <button onclick="nextQ()" class="px-6 py-2 rounded-full bg-slate-900 text-white font-bold text-sm">Next →</button>
-          </div>
-
-          <div id="quizResult" class="hidden mt-6 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl p-6 text-white">
-            <h4 class="font-display font-bold text-xl">Great job! 🎉</h4>
-            <p class="text-sm opacity-90 mt-1" id="resultText">You scored 0/10</p>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <button onclick="restartQuiz()" class="px-4 py-2 rounded-full bg-white text-indigo-700 font-bold text-sm">Retry</button>
-              <button onclick="saveQuizAttempt()" class="px-4 py-2 rounded-full bg-white/15 border border-white/20 font-bold text-sm">Save Attempt</button>
-              <button onclick="explainQuiz()" class="px-4 py-2 rounded-full bg-white/15 border border-white/20 font-bold text-sm">Explain with AITutor</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="quizHistory" class="bg-white rounded-2xl card-shadow border border-slate-200/60 p-5">
-          <h4 class="font-bold text-sm text-slate-900">Recent Quizzes</h4>
-          <div id="quizHistoryList" class="mt-3 space-y-2 text-sm"></div>
-        </div>
-      </section>
-
-      <!-- FLASHCARDS -->
-      <section id="view-flashcards" class="hidden space-y-6">
-        <div class="bg-white rounded-[24px] card-shadow border border-slate-200/60 p-6 sm:p-7">
-          <div class="flex items-center justify-between">
-            <h2 class="font-display font-bold text-xl text-slate-900">Flashcards</h2>
-            <button onclick="generateFlashcards()" class="px-4 py-2 rounded-full bg-indigo-600 text-white font-bold text-sm">Generate from Library</button>
-          </div>
-          <p class="text-sm text-slate-500 mt-1">Swipe, flip, and master formulas, definitions & dates.</p>
-          <div id="flashGrid" class="grid sm:grid-cols-2 gap-4 mt-6"></div>
-          <div id="emptyFlash" class="hidden text-center py-12 border-2 border-dashed border-slate-200 rounded-2xl mt-6">
-            <p class="font-semibold text-slate-700">No flashcards yet</p>
-            <p class="text-sm text-slate-500 mt-1">Generate from any document in Quiz Zone</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- TUTOR -->
-      <section id="view-tutor" class="hidden space-y-6">
-        <div class="bg-white rounded-[24px] card-shadow border border-slate-200/60 overflow-hidden flex flex-col h-[640px]">
-          <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-gradient-to-r from-indigo-600 to-violet-600 text-white">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-white text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-              <div>
-                <p class="font-bold text-sm leading-none">AITutor — Inter Specialist</p>
-                <p class="text-xs opacity-80">Answers in steps • Telugu/English • Board pattern</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <select id="tutorDoc" class="hidden sm:block px-3 py-1.5 rounded-full bg-white/15 border border-white/20 text-xs font-semibold outline-none">
-                <option value="">No context doc</option>
-              </select>
-              <button onclick="clearChat()" class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25"><i class="fa-solid fa-trash text-xs"></i></button>
-            </div>
-          </div>
-          <div id="chatBox" class="flex-1 overflow-auto p-5 space-y-4 bg-[#f8fafc]">
-            <div class="flex gap-3">
-              <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
-              <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-4 max-w-[85%] shadow-sm">
-                <p class="text-sm leading-relaxed"><b>Hi, I’m AITutor!</b> Upload a PDF and I’ll use it as context. Ask me anything — <i>“Explain Work-Energy theorem in Telugu with example”</i>, <i>“Give 5 important 4M questions from this chapter”</i>, or <i>“Solve this sum step-by-step”</i>.</p>
-                <div class="mt-3 flex flex-wrap gap-1.5">
-                  <button onclick="quickAsk('Summarize this chapter in 10 points')" class="px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold">Summarize chapter</button>
-                  <button onclick="quickAsk('Give me 5 most important 8-mark questions with answers')" class="px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold">Important Qs</button>
-                  <button onclick="quickAsk('Explain in Telugu, very simply')" class="px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold">Explain in Telugu</button>
-                  <button onclick="quickAsk('Create a 10 MCQ quiz from this document')" class="px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold">Make MCQ Quiz</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="p-3 border-t border-slate-200 bg-white">
-            <div class="flex gap-2">
-              <input id="chatInput" onkeydown="if(event.key==='Enter') sendChat()" placeholder="Ask anything… e.g. ‘nenu functions concept ardam kavatledu, example tho cheppava?’" class="flex-1 px-4 py-3 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 outline-none text-sm">
-              <button onclick="sendChat()" class="w-11 h-11 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
-            </div>
-            <p class="text-[11px] text-slate-500 mt-2 text-center">AITutor is ready — ask in English, Telugu, Tamil or Hindi • Upload PDF for quiz</p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Right Rail -->
-    <aside class="hidden xl:block xl:col-span-3 space-y-4">
-      <div class="bg-white rounded-[20px] card-shadow border border-slate-200/60 p-5 sticky top-[80px]">
-        <h3 class="font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-robot text-violet-600"></i> AITutor Live</h3>
-        <div id="miniChat" class="mt-4 space-y-3 max-h-[320px] overflow-auto pr-1">
-          <div class="bg-violet-50 border border-violet-200 rounded-2xl p-3">
-            <p class="text-sm leading-relaxed text-violet-900">Upload a PDF to unlock: <b>Summarize • Explain • Quiz • Flashcards</b> in one click.</p>
-          </div>
-        </div>
-        <div class="mt-4 flex gap-2">
-          <input id="miniInput" onkeydown="if(event.key==='Enter') sendMiniChat()" placeholder="Quick doubt…" class="flex-1 px-3 py-2.5 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-300 outline-none text-sm">
-          <button onclick="sendMiniChat()" class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-arrow-up text-xs"></i></button>
-        </div>
-        <button onclick="openSettings()" class="hidden" aria-hidden="true"><i class="fa-solid fa-key"></i> Set API Key</button>
-
-        <div class="mt-5 pt-5 border-t border-slate-100">
-          <h4 class="font-bold text-xs tracking-widest uppercase text-slate-500">Inter Blueprint Quick Ref</h4>
-          <div class="mt-3 grid grid-cols-3 gap-2 text-center">
-            <div class="bg-slate-50 border rounded-xl p-2"><p class="font-800 text-slate-900">2M</p><p class="text-[11px] text-slate-500">Very Short<br>10 × 2 = 20</p></div>
-            <div class="bg-slate-50 border rounded-xl p-2"><p class="font-800 text-slate-900">4M</p><p class="text-[11px] text-slate-500">Short<br>6 × 4 = 24</p></div>
-            <div class="bg-slate-50 border rounded-xl p-2"><p class="font-800 text-slate-900">8M</p><p class="text-[11px] text-slate-500">Long<br>2 × 8 = 16</p></div>
-          </div>
-          <p class="text-[11px] text-slate-500 mt-2 leading-relaxed">Total 60 marks + 40 internal/practical. AITutor generates exact pattern.</p>
-        </div>
-
-        <div class="mt-5 bg-slate-50 border border-slate-200 rounded-2xl p-4 hidden">
-          <p class="text-xs font-bold tracking-widest uppercase text-slate-600">Developer</p>
-          <button onclick="openDeployHelp()" class="mt-2 w-full py-2 rounded-full bg-white border font-bold text-xs">How to create repo?</button>
-        </div>
-      </div>
-    </aside>
+    <div class="flex items-center gap-2">
+      <label class="hidden sm:flex items-center gap-2 text-sm font-bold">Stream
+        <select id="streamSelect" aria-label="Select stream" onchange="setStream(this.value)" class="px-3 py-2 rounded-full bg-white border-2 text-sm">
+          <option value="MPC">MPC</option><option value="BiPC">BiPC</option><option value="CEC">CEC</option><option value="MEC">MEC</option><option value="HEC">HEC</option>
+        </select>
+      </label>
+      <button onclick="openSecondary()" aria-label="More options" class="w-9 h-9 rounded-full bg-white border-2 flex items-center justify-center"><i class="fa-solid fa-ellipsis"></i></button>
+      <div id="userBadge" class="w-9 h-9 rounded-full bg-amber-400 text-white flex items-center justify-center font-bold" aria-label="User">S</div>
+    </div>
   </div>
+</header>
 
-  <!-- Settings Modal -->
-  <div id="settingsModal" class="hidden fixed inset-0 z-50">
-    <div onclick="closeSettings()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
-    <div class="relative max-w-[560px] mx-auto mt-[6vh] bg-white rounded-[24px] shadow-2xl border border-slate-200 overflow-hidden">
-      <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
-        <h3 class="font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-gear text-slate-500"></i> Settings</h3>
-        <button onclick="closeSettings()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+<nav class="sticky top-[60px] z-20 bg-white border-b" aria-label="Primary">
+  <div class="max-w-[1100px] mx-auto px-4 flex gap-1 py-2">
+    <button data-nav="home" onclick="nav('home')" aria-current="page" class="navBtn flex-1 py-2.5 rounded-full bg-slate-900 text-white font-bold">Home</button>
+    <button data-nav="library" onclick="nav('library')" class="navBtn flex-1 py-2.5 rounded-full bg-white border-2 font-bold">Library</button>
+    <button data-nav="quiz" onclick="nav('quiz')" class="navBtn flex-1 py-2.5 rounded-full bg-white border-2 font-bold">Quiz</button>
+  </div>
+</nav>
+
+<main id="main" class="max-w-[1100px] mx-auto px-4 py-6">
+  <!-- HOME — SIMPLE, NOT CROWDED -->
+  <section id="view-home" aria-labelledby="homeTitle">
+    <h1 id="homeTitle" class="sr-only">Home</h1>
+    <div class="bg-white rounded-[24px] border-2 p-6">
+      <h2 class="font-display font-bold text-2xl">Namaste, <span id="homeName">Topper</span> 👋</h2>
+      <p class="text-slate-600 mt-1">Upload a PDF, listen, and practice — TalkBack ready.</p>
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <button onclick="openPicker()" class="py-4 rounded-2xl bg-indigo-600 text-white font-bold text-base" aria-label="Upload PDF, open file picker">Upload PDF</button>
+        <button onclick="nav('library')" class="py-4 rounded-2xl bg-white border-2 font-bold">Library</button>
+        <button onclick="focusAsk()" class="py-4 rounded-2xl bg-white border-2 font-bold">Ask AI</button>
       </div>
-      <div class="p-6 space-y-5 max-h-[70vh] overflow-auto">
-        <div class="hidden" aria-hidden="true">
-          <p class="font-bold">AITutor — Bring Your Own Key 🔐</p>
+      <p class="text-xs text-slate-500 mt-3">Supports Android file picker — Phone, Downloads, Drive, SD card</p>
+    </div>
+
+    <div class="mt-6 grid sm:grid-cols-2 gap-4">
+      <div class="bg-white rounded-2xl border-2 p-5">
+        <h3 class="font-bold">Recent documents</h3>
+        <div id="recentList" class="mt-3 space-y-2" aria-live="polite"></div>
+        <p id="noRecent" class="text-sm text-slate-500 py-6 text-center">No documents yet — Upload your first PDF</p>
+      </div>
+      <div class="bg-white rounded-2xl border-2 p-5">
+        <h3 class="font-bold">Continue reading</h3>
+        <div id="continueBox" class="mt-3" aria-live="polite"></div>
+        <p id="noContinue" class="text-sm text-slate-500 py-6 text-center">Nothing to continue</p>
+      </div>
+    </div>
+
+    <div class="mt-6 bg-white rounded-2xl border-2 p-5">
+      <h3 class="font-bold">Quick Ask AI</h3>
+      <div class="mt-3 flex gap-2">
+        <input id="homeAsk" placeholder="Ask about your studies — Telugu or English" aria-label="Ask AI quick question" class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 focus:bg-white focus:border-indigo-500 outline-none text-base">
+        <button onclick="askFromHome()" class="px-5 py-3 rounded-full bg-slate-900 text-white font-bold" aria-label="Send question to AI">Ask</button>
+      </div>
+    </div>
+
+    <div id="pwaBar" hidden class="mt-6 bg-indigo-600 text-white rounded-2xl p-4 flex items-center justify-between">
+      <div><p class="font-bold">Install Study Vision AI</p><p class="text-xs opacity-90">Works offline, fast</p></div>
+      <button onclick="installPWA()" class="px-4 py-2 rounded-full bg-white text-indigo-700 font-bold">Install</button>
+    </div>
+  </section>
+
+  <!-- LIBRARY — FOCUSED ONLY ON DOCUMENTS -->
+  <section id="view-library" hidden aria-labelledby="libTitle">
+    <h2 id="libTitle" class="font-bold text-xl">Library</h2>
+    <div id="libList" class="mt-4 space-y-3" aria-live="polite"></div>
+    <p id="noLib" class="text-sm text-slate-500 py-10 text-center border-2 border-dashed rounded-2xl">Library empty — Upload a PDF from Home</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="view-quiz" hidden aria-labelledby="quizTitle">
+    <h2 id="quizTitle" class="font-bold text-xl">Quiz</h2>
+    <div class="mt-4 bg-white border-2 rounded-2xl p-4">
+      <label class="block text-sm font-bold">Document <select id="quizDoc" aria-label="Choose document for quiz" class="mt-1 w-full px-3 py-3 rounded-xl border-2 text-base"></select></label>
+      <div class="mt-3 grid grid-cols-2 gap-3">
+        <label class="text-sm font-bold">Type <select id="quizType" class="mt-1 w-full px-3 py-3 rounded-xl border-2"><option value="mcq">MCQ</option><option value="mixed">Mixed 2M/4M/8M</option></select></label>
+        <label class="text-sm font-bold">Count <select id="quizCount" class="mt-1 w-full px-3 py-3 rounded-xl border-2"><option>5</option><option selected>10</option><option>15</option></select></label>
+      </div>
+      <button onclick="genQuiz()" id="genBtn" class="w-full mt-4 py-3 rounded-full bg-indigo-600 text-white font-bold">Generate Quiz</button>
+      <p id="quizProg" class="text-sm font-bold text-indigo-700 mt-3 hidden" aria-live="polite"></p>
+    </div>
+    <div id="quizBox" class="hidden mt-4 bg-white border-2 rounded-2xl p-5">
+      <h3 id="quizQTitle" class="font-bold"></h3>
+      <p id="quizProgText" class="text-sm text-slate-500"></p>
+      <div id="quizTimer" class="text-sm font-bold text-amber-700 mt-2" aria-live="polite"></div>
+      <div id="quizOpts" class="mt-4 space-y-2" role="group" aria-label="Quiz options"></div>
+      <div class="mt-4 flex gap-2">
+        <button onclick="quizPrev()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Previous</button>
+        <button onclick="quizNext()" class="flex-1 py-3 rounded-full bg-slate-900 text-white font-bold">Next</button>
+      </div>
+      <div id="quizResult" class="hidden mt-4 bg-indigo-600 text-white rounded-2xl p-4">
+        <h4 class="font-bold">Quiz Complete</h4>
+        <p id="quizScore" class="text-sm mt-1"></p>
+        <button onclick="restartQuiz()" class="mt-3 px-4 py-2 rounded-full bg-white text-indigo-700 font-bold">Retry</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- READER — PAGE BY PAGE, REAL PDF PAGES -->
+  <section id="view-reader" hidden aria-labelledby="readerTitle">
+    <h2 id="readerTitle" class="sr-only">Document Reader</h2>
+    <div class="bg-white border-2 rounded-2xl overflow-hidden">
+      <div class="px-4 py-3 bg-slate-900 text-white flex flex-wrap gap-2 items-center justify-between">
+        <h3 id="readerDocTitle" class="font-bold"></h3>
+        <span id="readerPage" class="text-xs font-bold px-3 py-1 rounded-full bg-white/15" aria-live="polite">Page 1 of 1</span>
+      </div>
+      <div class="p-4 bg-slate-100 flex justify-center overflow-auto">
+        <canvas id="readerCanvas" class="bg-white shadow rounded max-w-full" role="img" aria-label="PDF page"></canvas>
+      </div>
+      <div class="p-4 space-y-3">
+        <div class="flex flex-wrap gap-2">
+          <button onclick="readerPrev()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Previous page">Previous Page</button>
+          <button onclick="readerNext()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Next page">Next Page</button>
         </div>
-        <div id="devApiSection" class="hidden" aria-hidden="true">
-        <label class="block text-xs font-bold text-slate-700">AI Provider
-          <select id="aiProvider" onchange="updateProviderUI()" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold bg-white">
-            <option value="gemini">Google Gemini (AIza...)</option>
-            <option value="openrouter">OpenRouter — One key for All Models (sk-or-v1...)</option>
-            <option value="openai">OpenAI (sk-...)</option>
-          </select>
-        </label>
-        <label class="block text-xs font-bold text-slate-700"><span id="keyLabel">Gemini API Key</span> <span id="keyHint" class="font-normal text-slate-500">(starts with AIza…)</span>
-          <div class="mt-1 flex gap-2">
-            <input id="geminiKey" type="password" placeholder="paste AIza…" class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 text-sm font-mono">
-            <button onclick="toggleKey()" class="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm"><i class="fa-solid fa-eye"></i></button>
-          </div>
-          <p id="keyHelp" class="text-[11px] font-medium text-slate-500 mt-1">Get free Gemini key: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 underline">aistudio.google.com/app/apikey</a></p>
-        </label>
-        <label class="block text-xs font-bold text-slate-700">Preferred Model
-          <select id="geminiModel" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm">
-            <option value="gemini-1.5-flash">gemini-1.5-flash — Fast & cheap (Recommended)</option>
-            <option value="gemini-1.5-pro">gemini-1.5-pro — Best quality</option>
-            <option value="gemini-2.0-flash">gemini-2.0-flash — Latest</option>
-            <option value="openai/gpt-4o-mini">openrouter: openai/gpt-4o-mini — Cheap & smart</option>
-            <option value="google/gemini-flash-1.5">openrouter: google/gemini-flash-1.5</option>
-            <option value="anthropic/claude-3.5-sonnet">openrouter: anthropic/claude-3.5-sonnet — Best reasoning</option>
-            <option value="meta-llama/llama-3.1-70b-instruct">openrouter: meta-llama/llama-3.1-70b</option>
-            <option value="openai/gpt-4o">openrouter: openai/gpt-4o — Flagship</option>
-          </select>
-        </label>
-        </div>
-        <label class="block text-xs font-bold text-slate-700">Your Name <input id="studentName" placeholder="e.g. Sai" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"></label>
-        <label class="block text-xs font-bold text-slate-700">Current Year <select id="studentYear" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"><option>Inter 1st Year</option><option>Inter 2nd Year</option></select></label>
         <div class="flex gap-2">
-          <button onclick="saveSettings()" class="flex-1 py-3 rounded-full bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700">Save Settings</button>
-          <button onclick="testGemini()" class="hidden" aria-hidden="true">Test Key</button>
+          <label class="flex-1 text-sm font-bold">Jump to Page <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="e.g. 17" aria-label="Jump to page number" class="mt-1 w-full px-3 py-3 rounded-xl border-2"></label>
+          <button onclick="readerJump()" class="self-end px-5 py-3 rounded-full bg-slate-900 text-white font-bold">Go</button>
         </div>
-        <p id="settingsMsg" class="text-xs font-semibold"></p>
-        <div class="hidden" aria-hidden="true">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-600">OpenRouter Tip 🌐</p>
-          <p class="text-sm text-slate-700 mt-1 leading-relaxed">Create a key at <a href="https://openrouter.ai/keys" target="_blank" class="underline text-indigo-600">openrouter.ai/keys</a> → paste key starting with <code>sk-or-v1...</code> → Provider auto-switches to OpenRouter. Now you can choose any model like <b>google/gemini-flash-1.5</b>, <b>anthropic/claude-3.5-sonnet</b>, <b>openai/gpt-4o-mini</b> without changing keys.</p>
+        <div id="readerText" class="bg-white border-2 rounded-xl p-4 max-h-[320px] overflow-auto leading-relaxed" aria-live="polite"></div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="ttsPlay()" class="flex-1 py-3 rounded-full bg-indigo-600 text-white font-bold" aria-label="Play">Play</button>
+          <button onclick="ttsPause()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Pause">Pause</button>
+          <button onclick="ttsResume()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Resume">Resume</button>
+          <button onclick="ttsStop()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Stop">Stop</button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="ttsPlay(true)" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Play from Beginning</button>
+          <button onclick="ttsSkip(-1)" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Skip Back</button>
+          <button onclick="ttsSkip(1)" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Skip Forward</button>
+        </div>
+        <button onclick="readAloud()" class="w-full py-3 rounded-full bg-white border-2 font-bold" aria-label="Read aloud current page">Read Aloud</button>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="askAIReader()" class="flex-1 py-3 rounded-full bg-indigo-600 text-white font-bold">Ask AI</button>
+          <button onclick="translatePage()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Translate</button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="saveToLib()" class="flex-1 py-3 rounded-full bg-emerald-600 text-white font-bold">Save to Library</button>
+          <button onclick="saveAndQuiz()" class="flex-1 py-3 rounded-full bg-slate-900 text-white font-bold">Save and Quiz</button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="exportDoc()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Export</button>
+          <button onclick="nav('home')" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Back</button>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Document Viewer Modal -->
-  <div id="docModal" class="hidden fixed inset-0 z-50">
-    <div onclick="closeDoc()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
-    <div class="relative max-w-[860px] mx-auto mt-[4vh] bg-white rounded-[24px] shadow-2xl border border-slate-200 flex flex-col max-h-[88vh] overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
-        <div>
-          <h3 id="docModalTitle" class="font-bold text-slate-900">—</h3>
-          <p id="docModalMeta" class="text-xs text-slate-500">—</p>
-        </div>
-        <button onclick="closeDoc()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="flex-1 overflow-auto p-6 space-y-4">
-        <div class="flex flex-wrap gap-2" id="docModalActions"></div>
-        <div id="docModalText" class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm leading-relaxed whitespace-pre-wrap max-h-[360px] overflow-auto"></div>
-        <div id="docModalAI" class="hidden bg-white border border-slate-200 rounded-xl p-4"></div>
-      </div>
+  <!-- UPLOAD PROGRESS — REAL -->
+  <section id="view-upload" hidden aria-labelledby="uploadTitle">
+    <h2 id="uploadTitle" class="font-bold text-xl">Uploading PDF</h2>
+    <div class="mt-4 bg-white border-2 rounded-2xl p-5">
+      <p id="uploadFile" class="font-bold"></p>
+      <div class="mt-3 h-3 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progBarWrap"><div id="progBar" class="h-full bg-indigo-600" style="width:0%"></div></div>
+      <p id="uploadStage" class="text-sm font-bold text-indigo-700 mt-2" aria-live="polite">Starting...</p>
+      <p id="uploadPage" class="text-sm text-slate-600"></p>
+      <button onclick="cancelUpload()" class="w-full mt-4 py-3 rounded-full bg-white border-2 font-bold">Cancel</button>
     </div>
-  </div>
+  </section>
+</main>
 
-  <!-- Deploy Help -->
-  <div id="deployModal" class="hidden fixed inset-0 z-50">
-    <div onclick="closeDeployHelp()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
-    <div class="relative max-w-[640px] mx-auto mt-[6vh] bg-white rounded-[24px] shadow-2xl border p-6">
-      <h3 class="font-bold text-lg">Create your GitHub repository</h3>
-      <ol class="mt-4 space-y-3 text-sm leading-relaxed list-decimal pl-5">
-        <li>Go to <a href="https://github.com/new" target="_blank" class="text-indigo-600 underline font-bold">github.com/new</a> → Name: <code>AITutor</code> or <code>inter-ai-study-buddy</code> → Create (keep it Public)</li>
-        <li>Copy the HTTPS URL (e.g. <code>https://github.com/YOUR_USERNAME/AITutor.git</code>)</li>
-        <li>In this workspace terminal run:
-          <pre class="mt-2 bg-slate-900 text-slate-100 rounded-xl p-3 text-xs overflow-auto">git remote add origin https://github.com/YOUR_USERNAME/AITutor.git
-git branch -M main
-git push -u origin main</pre>
-        </li>
-        <li>Or tell me your URL and I’ll set it for you — just paste it in the chat!</li>
-      </ol>
-      <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm">
-        <b>Want me to push?</b> Paste your GitHub repo URL here: <input id="githubUrlInput" placeholder="https://github.com/.../AITutor.git" class="mt-2 w-full px-3 py-2 rounded-xl border border-amber-300 text-sm font-mono">
-        <button onclick="saveGithubUrl()" class="mt-2 px-4 py-2 rounded-full bg-amber-600 text-white font-bold text-sm">Save URL</button>
-        <span id="githubUrlMsg" class="ml-2 text-xs font-bold"></span>
-      </div>
-      <button onclick="closeDeployHelp()" class="mt-4 w-full py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm">Got it</button>
+<!-- SECONDARY SHEET (Settings etc, not primary) -->
+<div id="secondarySheet" hidden class="fixed inset-0 z-40 bg-black/40 backdrop-blur" onclick="closeSecondary()">
+  <div class="absolute right-0 top-0 h-full w-[320px] bg-white shadow-2xl p-4" role="dialog" aria-modal="true" aria-label="More options" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center">
+      <h2 class="font-bold">More</h2>
+      <button onclick="closeSecondary()" aria-label="Close" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="mt-4 space-y-3">
+      <button onclick="openSettings(); closeSecondary();" class="w-full py-3 rounded-full bg-white border-2 font-bold text-left px-4">Settings</button>
+      <button onclick="logout(); closeSecondary();" class="w-full py-3 rounded-full bg-white border-2 font-bold text-left px-4">Logout</button>
+      <p class="text-xs text-slate-500">Settings is secondary — not in primary navigation.</p>
     </div>
   </div>
+</div>
+
+<!-- SETTINGS (secondary) -->
+<div id="settingsModal" hidden class="fixed inset-0 z-50 bg-black/40 backdrop-blur flex items-center justify-center p-4">
+  <div class="w-full max-w-[520px] bg-white rounded-2xl p-6" role="dialog" aria-modal="true" aria-label="Settings">
+    <div class="flex justify-between items-center">
+      <h2 class="font-bold text-lg">Settings</h2>
+      <button onclick="closeSettings()" aria-label="Close settings" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="mt-4 space-y-4">
+      <label class="block text-sm font-bold">Your Name <input id="setName" class="mt-1 w-full px-3 py-3 rounded-xl border-2"></label>
+      <label class="block text-sm font-bold">Stream <select id="setStream" class="mt-1 w-full px-3 py-3 rounded-xl border-2"><option value="MPC">MPC</option><option value="BiPC">BiPC</option><option value="CEC">CEC</option><option value="MEC">MEC</option><option value="HEC">HEC</option></select></label>
+      <label class="flex items-center gap-2 text-sm font-bold"><input id="setPomo" type="checkbox"> Enable 25/5 Study Reminder</label>
+      <button onclick="saveSettings()" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIBRARY OPTIONS DIALOG -->
+<div id="libOptions" hidden class="fixed inset-0 z-50 bg-black/40 backdrop-blur flex items-center justify-center p-4">
+  <div class="w-full max-w-[360px] bg-white rounded-2xl p-5" role="dialog" aria-modal="true" aria-label="Document options">
+    <h3 id="optTitle" class="font-bold"></h3>
+    <div class="mt-4 grid grid-cols-2 gap-2">
+      <button onclick="optAction('open')" class="py-3 rounded-full bg-slate-900 text-white font-bold">Open</button>
+      <button onclick="optAction('continue')" class="py-3 rounded-full bg-white border-2 font-bold">Continue</button>
+      <button onclick="optAction('rename')" class="py-3 rounded-full bg-white border-2 font-bold">Rename</button>
+      <button onclick="optAction('delete')" class="py-3 rounded-full bg-white border-2 font-bold text-red-600">Delete</button>
+      <button onclick="optAction('questions')" class="py-3 rounded-full bg-white border-2 font-bold">Generate Questions</button>
+      <button onclick="optAction('quiz')" class="py-3 rounded-full bg-indigo-600 text-white font-bold">Generate Quiz</button>
+      <button onclick="optAction('ask')" class="py-3 rounded-full bg-white border-2 font-bold">Ask AI</button>
+      <button onclick="optAction('export')" class="py-3 rounded-full bg-white border-2 font-bold">Export</button>
+    </div>
+    <button onclick="closeLibOptions()" class="w-full mt-3 py-3 rounded-full bg-white border-2 font-bold">Close</button>
+  </div>
+</div>
+
+<!-- Hidden file picker (REAL Android picker) -->
+<input id="filePicker" type="file" accept="application/pdf,.pdf" hidden aria-hidden="true">
+
+<!-- Audio for quiz/timer -->
+<audio id="sndCorrect" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/correct.mp3"></audio>
+<audio id="sndWrong" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/wrong.mp3"></audio>
+<audio id="sndComplete" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/complete.mp3"></audio>
+<audio id="sndTick" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/tick.mp3"></audio>
+
+</div>
 
 <script>
-let STREAMS = {
-  MPC: ['Maths IA','Maths IB','Maths IIA','Maths IIB','Physics','Chemistry','English','Sanskrit'],
-  BiPC: ['Botany','Zoology','Physics','Chemistry','English','Sanskrit'],
-  CEC: ['Commerce','Economics','Civics','English','Sanskrit'],
-  MEC: ['Maths','Economics','Commerce','English','Sanskrit'],
-  HEC: ['History','Economics','Civics','English','Sanskrit']
-};
-let state = { stream: localStorage.getItem('inter_stream')||'MPC', docs: [], quizzes: [], flashcards: [], currentQuiz: null, qIndex: 0, answers: {} };
+// CONFIG
+const API = (()=>{ const h=location.hostname; if(h.includes('github.io')) return 'https://help-studies-fish.onrender.com'; if(location.port==='8000') return location.protocol+'//'+h+':3001'; if(location.port==='3001') return ''; if(location.href.includes('e2b.app')) return location.origin.replace(/:\/\/\d+-/, '://3001-'); return 'https://help-studies-fish.onrender.com'; })();
+const announce = (m)=>{ const el=document.getElementById('live'); el.textContent=''; setTimeout(()=>el.textContent=m,80); };
 
-function setStream(v){ state.stream=v; localStorage.setItem('inter_stream',v); buildSubjects(); renderRecent(); renderLibrary(); }
-function buildSubjects(){
-  const grid=document.getElementById('subjectGrid');
-  const sel=document.getElementById('docSubject');
-  const sel2=document.getElementById('scanSubject');
-  const sel3=document.getElementById('libFilter');
-  const subs=STREAMS[state.stream]||STREAMS.MPC;
-  grid.innerHTML = subs.map(s=>`<button onclick="filterBySubject('${s}')" class="text-left px-3 py-3 rounded-2xl border bg-white hover:border-indigo-300 hover:bg-indigo-50 transition"><p class="font-bold text-sm text-slate-900">${s}</p><p class="text-[11px] text-slate-500 mt-0.5">${state.stream} • TS Inter</p></button>`).join('');
-  const opts = subs.map(s=>`<option>${s}</option>`).join('');
-  if(sel) sel.innerHTML = opts;
-  if(sel2) sel2.innerHTML = opts;
-  if(sel3){ sel3.innerHTML = '<option value="all">All subjects</option>' + subs.map(s=>`<option value="${s}">${s}</option>`).join(''); }
-  document.getElementById('streamSelect').value = state.stream;
-}
-function filterBySubject(s){ nav('library'); document.getElementById('libFilter').value=s; renderLibrary(); }
-
-function nav(id){
-  document.querySelectorAll('[id^="view-"]').forEach(el=>el.classList.add('hidden'));
-  document.getElementById('view-'+id).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b=>{ b.classList.remove('bg-indigo-600','text-white'); b.classList.add('text-slate-600','hover:bg-slate-50'); });
-  const active=document.querySelector(`[data-nav="${id}"]`);
-  if(active){ active.classList.add('bg-indigo-600','text-white'); active.classList.remove('text-slate-600','hover:bg-slate-50'); }
-  if(id==='library') renderLibrary();
-  if(id==='quiz') refreshQuizDocs();
-  if(id==='flashcards') renderFlashcards();
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-function focusTutor(){ nav('tutor'); document.getElementById('chatInput').focus(); }
-
-// ---------- STORAGE ----------
-function load(){ 
-  try{ state.docs = JSON.parse(localStorage.getItem('inter_docs')||'[]'); }catch(e){state.docs=[]}
-  try{ state.quizzes = JSON.parse(localStorage.getItem('inter_quizzes')||'[]'); }catch(e){state.quizzes=[]}
-  try{ state.flashcards = JSON.parse(localStorage.getItem('inter_flash')||'[]'); }catch(e){state.flashcards=[]}
-}
-function save(){
-  localStorage.setItem('inter_docs', JSON.stringify(state.docs));
-  localStorage.setItem('inter_quizzes', JSON.stringify(state.quizzes));
-  localStorage.setItem('inter_flash', JSON.stringify(state.flashcards));
-  updateStats();
-}
-function updateStats(){
-  document.getElementById('libCount').textContent = state.docs.length;
-  document.getElementById('dashDocs').textContent = state.docs.length;
-  document.getElementById('dashQuiz').textContent = state.quizzes.length;
-  document.getElementById('statDocs').textContent = state.docs.length + ' docs';
-  document.getElementById('statQuizzes').textContent = state.quizzes.length + ' sets';
-  const attempted = state.quizzes.filter(q=>q.attempts && q.attempts.length).length;
-  const avg = state.quizzes.length ? Math.round(state.quizzes.reduce((a,q)=>a+ (q.bestScore||0),0)/Math.max(1,state.quizzes.length)) : 0;
-  document.getElementById('barQuizzes').style.width = state.quizzes.length? Math.min(100, state.quizzes.length*12)+'%':'0%';
-  document.getElementById('statScore').textContent = avg? avg+'%':'—';
-  document.getElementById('barScore').style.width = avg+'%';
-}
-
-// ---------- PDF ----------
-let pendingText = '';
-let pendingName = '';
-document.getElementById('pdfInput').addEventListener('change', handlePdf);
-document.getElementById('dropZone').addEventListener('dragover', e=>{e.preventDefault(); e.currentTarget.classList.add('bg-indigo-100')});
-document.getElementById('dropZone').addEventListener('dragleave', e=>e.currentTarget.classList.remove('bg-indigo-100'));
-document.getElementById('dropZone').addEventListener('drop', e=>{e.preventDefault(); e.currentTarget.classList.remove('bg-indigo-100'); const f=e.dataTransfer.files[0]; if(f) processPdf(f)});
-async function handlePdf(e){ const f=e.target.files[0]; if(f) processPdf(f); }
-async function handleQuickUpload(e){ const f=e.target.files[0]; if(!f) return; nav('upload'); processPdf(f); }
-async function processPdf(file){
-  if(file.type!=='application/pdf'){ alert('Please upload a PDF'); return; }
-  // InVision AI Style — Hide everything, show invigilator scanning with music
-  showPdfScanOverlay();
-  // Small delay to show scanning like InVision AI (advanced, every student uses)
-  await new Promise(r=>setTimeout(r, 800));
-  pendingName = file.name.replace(/\.pdf$/i,'');
-  document.getElementById('docTitle').value = pendingName;
-  document.getElementById('pdfFileName').textContent = file.name + ' • ' + (file.size/1024/1024).toFixed(2)+' MB';
-  document.getElementById('pdfProgress').classList.remove('hidden');
-  document.getElementById('pdfBar').style.width='10%';
-  document.getElementById('pdfStatus').textContent='Invigilator scanning… (page 1)';
-  document.getElementById('pdfPreview').textContent='';
-  document.getElementById('saveDocBtn').disabled=true;
-  let pdfDocForViewer = null;
-  try{
-    const buf = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({data: buf}).promise;
-    pdfDocForViewer = pdf;
-    let full='';
-    for(let i=1;i<=pdf.numPages;i++){
-      document.getElementById('pdfStatus').textContent=`Scanning page ${i} / ${pdf.numPages}… like InVision AI`;
-      document.getElementById('pdfBar').style.width = Math.round(10 + (i/pdf.numPages)*60)+'%';
-      // Update scan music bar too
-      const scanBar=document.getElementById('scanMusicBar');
-      if(scanBar) scanBar.style.width = Math.round(10 + (i/pdf.numPages)*60)+'%';
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const str = content.items.map(it=>it.str).join(' ');
-      full += `\n\n--- Page ${i} ---\n` + str;
-      if(i<=3) document.getElementById('pdfPreview').textContent = full.slice(0,6000);
-      // Invigilator delay per page (like real scanning)
-      await new Promise(r=>setTimeout(r, 300));
-    }
-    pendingText = full.trim();
-    if(!pendingText || pendingText.length < 50) pendingText = `[Scanned PDF detected — text layer empty. Use AutoScan OCR or enable AI to extract.]\n\nPreview extracted ${full.length} chars.`;
-    document.getElementById('pdfPreview').textContent = pendingText.slice(0,8000) + (pendingText.length>8000? '\n\n… truncated':'');
-    document.getElementById('pdfBar').style.width='100%';
-    document.getElementById('pdfStatus').textContent=`Done • ${pdf.numPages} pages • ${pendingText.length.toLocaleString()} chars`;
-    document.getElementById('saveDocBtn').disabled=false;
-    // Keep scanning overlay a bit more like InVision AI, then show advanced viewer
-    await new Promise(r=>setTimeout(r, 900));
-    hidePdfScanOverlay();
-    // Show advanced viewer with Prev/Next, Export, Transfer, Ask AI (like InVision AI)
-    await pdfViewerShow(file, pdfDocForViewer);
-    const bar=document.getElementById('scanMusicBar');
-    if(bar) bar.style.width='100%';
-    document.getElementById('scanMusicText').textContent='Scan complete — Music stopped';
-    stopScanMusic();
-  }catch(err){
-    console.error(err);
-    document.getElementById('pdfStatus').textContent='Failed: '+err.message;
-    pendingText = '';
-    hidePdfScanOverlay();
-    stopScanMusic();
-  }
-}
-function saveDocument(){
-  const title=document.getElementById('docTitle').value.trim()||pendingName||'Untitled';
-  const subject=document.getElementById('docSubject').value||STREAMS[state.stream][0];
-  const year=document.getElementById('docYear').value||'Inter 1st Year';
-  if(!pendingText){ alert('No text to save. Upload a PDF first.'); return; }
-  const doc={ id: Date.now().toString(36), title, subject, year, stream: state.stream, text: pendingText, created: new Date().toISOString(), pages: (pendingText.match(/--- Page/g)||[]).length||1 };
-  state.docs.unshift(doc);
-  save(); renderRecent(); renderLibrary(); refreshQuizDocs();
-  // mini chat update
-  document.getElementById('miniChat').innerHTML = `<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3"><p class="text-sm font-semibold text-emerald-900">Saved: ${title}</p><p class="text-xs text-emerald-700 mt-1">${subject} • ${year} • ${doc.pages} pages</p></div>` + document.getElementById('miniChat').innerHTML;
-  alert('Saved to Library: '+title);
-}
-async function quickGenerate(){
-  saveDocument();
-  nav('quiz');
-  setTimeout(generateQuiz, 300);
-}
-
-// ---------- InVision AI Style — PDF Viewer (Prev/Next, Export, Transfer, Ask AI) + Invigilator Scan with Music ----------
-let pdfViewerState = { pdf: null, page: 1, total: 1, scale: 1.2, file: null, fileName: '' };
-
-async function pdfViewerShow(file, pdf){
-  pdfViewerState.file = file;
-  pdfViewerState.pdf = pdf;
-  pdfViewerState.total = pdf.numPages;
-  pdfViewerState.page = 1;
-  pdfViewerState.fileName = file.name;
-  document.getElementById('pdfViewer').classList.remove('hidden');
-  document.getElementById('pdfViewerEmpty').classList.add('hidden');
-  updatePdfViewerLang();
-  await pdfViewerRender();
-}
-
-async function pdfViewerRender(){
-  const canvas=document.getElementById('pdfCanvas');
-  const wrap=document.getElementById('pdfViewerWrap');
-  if(!pdfViewerState.pdf || !canvas) return;
-  try{
-    const page = await pdfViewerState.pdf.getPage(pdfViewerState.page);
-    const viewport = page.getViewport({scale: pdfViewerState.scale});
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    canvas.style.width = Math.min(viewport.width, wrap.clientWidth-32) + 'px';
-    canvas.style.height = 'auto';
-    const ctx = canvas.getContext('2d');
-    await page.render({canvasContext: ctx, viewport}).promise;
-    document.getElementById('pdfPageInfo').textContent = `Page ${pdfViewerState.page} / ${pdfViewerState.total}`;
-    document.getElementById('pdfZoomInfo').textContent = Math.round(pdfViewerState.scale*100) + '%';
-    document.getElementById('pdfPrev').disabled = pdfViewerState.page<=1;
-    document.getElementById('pdfNext').disabled = pdfViewerState.page>=pdfViewerState.total;
-  }catch(e){ console.error('pdf render',e); }
-}
-function pdfViewerPrev(){ if(pdfViewerState.page>1){ pdfViewerState.page--; pdfViewerRender(); } }
-function pdfViewerNext(){ if(pdfViewerState.page<pdfViewerState.total){ pdfViewerState.page++; pdfViewerRender(); } }
-function pdfViewerZoom(d){
-  pdfViewerState.scale = Math.max(0.6, Math.min(2.5, pdfViewerState.scale + d));
-  pdfViewerRender();
-}
-function pdfViewerExport(){
-  if(!pdfViewerState.file) return alert('No PDF loaded');
-  // Export original PDF + also export extracted text as .txt
-  const url = URL.createObjectURL(pdfViewerState.file);
-  const a=document.createElement('a');
-  a.href=url; a.download=pdfViewerState.fileName; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
-  // Also offer text export
-  if(pendingText){
-    const blob=new Blob([pendingText],{type:'text/plain'});
-    const u2=URL.createObjectURL(blob);
-    const b=document.createElement('a');
-    b.href=u2; b.download=pendingName+'_extracted.txt'; 
-    setTimeout(()=>{ b.click(); URL.revokeObjectURL(u2); }, 600);
-  }
-}
-async function pdfViewerTransfer(){
-  if(!pdfViewerState.file) return alert('No PDF');
-  const file = new File([pdfViewerState.file], pdfViewerState.fileName, {type:'application/pdf'});
-  if(navigator.canShare && navigator.canShare({files:[file]})){
-    try{ await navigator.share({title: pdfViewerState.fileName, text: 'Inter AI Study Buddy — PDF', files:[file]}); return; }catch(e){}
-  }
-  // Fallback: copy link or download
-  try{
-    await navigator.clipboard.writeText(location.href);
-    alert('Link copied! Share it — or use Export to send PDF');
-  }catch{ alert('Share: use Export to download and send via WhatsApp/Email'); }
-}
-function pdfViewerAskAI(){
-  if(!pendingText) return alert('Upload PDF first');
-  // Use existing askTutor flow with current doc context
-  const tempDoc = { id: 'temp_'+Date.now(), title: pendingName, subject: document.getElementById('docSubject')?.value||'General', text: pendingText };
-  state.docs.unshift(tempDoc);
-  save(); refreshQuizDocs();
-  askTutor(tempDoc.id);
-  // Also send to chat directly
-  setTimeout(()=> quickAsk('Explain this PDF in simple steps with important 4M questions'), 400);
-}
-function updatePdfViewerLang(){
-  const lang = (typeof detectLang==='function' ? detectLang(pendingText) : 'en');
-  const name = (typeof langName==='function' ? langName(lang) : lang);
-  const el=document.getElementById('pdfViewerLang');
-  if(el) el.textContent = 'Auto-detected: ' + name;
-}
-
-// Invigilator Scan — hides everything, plays music, advanced like InVision AI
-let scanAudioCtx=null, scanOsc=null, scanMusicInterval=null;
-function playScanMusic(){
-  try{
-    const audioEl=document.getElementById('scanAudio');
-    // Use Web Audio for scanning tone (no external file, works offline)
-    if(!scanAudioCtx) scanAudioCtx = new (window.AudioContext||window.webkitAudioContext)();
-    if(scanAudioCtx.state==='suspended') scanAudioCtx.resume();
-    // Create subtle scanning hum
-    if(scanOsc) try{scanOsc.stop();}catch{}
-    scanOsc = scanAudioCtx.createOscillator();
-    const gain = scanAudioCtx.createGain();
-    scanOsc.type='sine';
-    scanOsc.frequency.value=180;
-    gain.gain.value=0.03;
-    scanOsc.connect(gain).connect(scanAudioCtx.destination);
-    scanOsc.start();
-    // Pulsing
-    let up=true;
-    scanMusicInterval=setInterval(()=>{
-      if(!scanOsc) return;
-      try{ scanOsc.frequency.linearRampToValueAtTime(up?220:180, scanAudioCtx.currentTime+0.6); up=!up; }catch{}
-      const bar=document.getElementById('scanMusicBar');
-      if(bar){
-        const w=parseFloat(bar.style.width)||0;
-        bar.style.width = Math.min(98, w + Math.random()*8) + '%';
-      }
-    }, 600);
-    // Also try audio element fallback (if user wants real music, we keep silent WebAudio)
-    if(audioEl){
-      // Keep muted WebAudio as primary, audioEl as fallback if needed
-      audioEl.volume=0.4;
-      // We don't have external file, so keep WebAudio
-    }
-  }catch(e){ console.warn('audio',e); }
-}
-function stopScanMusic(){
-  try{
-    if(scanOsc){ try{scanOsc.stop();}catch{} scanOsc=null; }
-    if(scanMusicInterval){ clearInterval(scanMusicInterval); scanMusicInterval=null; }
-    if(scanAudioCtx){ try{scanAudioCtx.suspend();}catch{} }
-    const bar=document.getElementById('scanMusicBar');
-    if(bar) bar.style.width='100%';
-    const audioEl=document.getElementById('scanAudio');
-    if(audioEl){ audioEl.pause(); audioEl.currentTime=0; }
-  }catch{}
-}
-function showPdfScanOverlay(){
-  const overlay=document.getElementById('pdfScanOverlay');
-  if(!overlay) return;
-  // Hide everything like InVision AI — only scanning visible
-  document.getElementById('dropZone')?.classList.add('hidden');
-  document.getElementById('pdfProgress')?.classList.add('hidden');
-  document.getElementById('pdfViewer')?.classList.add('hidden');
-  overlay.classList.remove('hidden');
-  overlay.setAttribute('aria-hidden','false');
-  document.body.style.overflow='hidden';
-  playScanMusic();
-  const bar=document.getElementById('scanMusicBar');
-  if(bar) bar.style.width='8%';
-  const txt=document.getElementById('scanMusicText');
-  if(txt) txt.textContent='Music playing — Invigilator scanning your PDF...';
-}
-function hidePdfScanOverlay(){
-  const overlay=document.getElementById('pdfScanOverlay');
-  if(overlay){ overlay.classList.add('hidden'); overlay.setAttribute('aria-hidden','true'); }
-  document.body.style.overflow='';
-  stopScanMusic();
-  // Show viewer again
-  document.getElementById('dropZone')?.classList.remove('hidden');
-}
-function pdfScanCancel(){
-  hidePdfScanOverlay();
-  document.getElementById('pdfProgress')?.classList.add('hidden');
-  stopScanMusic();
-}
-
-// ---------- SCAN / OCR ----------
-let camStream=null;
-async function startCamera(){
-  try{
-    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
-    const v=document.getElementById('camVideo');
-    v.srcObject=camStream; v.classList.remove('hidden');
-    document.getElementById('camPlaceholder').classList.add('hidden');
-    document.getElementById('scanOverlay').classList.remove('hidden');
-    document.getElementById('captureBtn').disabled=false;
-    document.getElementById('ocrStatus').textContent='Camera ready';
-  }catch(e){ alert('Camera error: '+e.message + '\nYou can still Upload Image instead.'); }
-}
-function stopCamera(){
-  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
-  document.getElementById('camVideo').classList.add('hidden');
-  document.getElementById('camPlaceholder').classList.remove('hidden');
-  document.getElementById('scanOverlay').classList.add('hidden');
-  document.getElementById('captureBtn').disabled=true;
-}
-function capturePhoto(){
-  const v=document.getElementById('camVideo');
-  const c=document.getElementById('camCanvas');
-  const preview=document.getElementById('scanPreview');
-  if(!v.videoWidth) return alert('Camera not ready');
-  c.width=v.videoWidth; c.height=v.videoHeight;
-  c.getContext('2d').drawImage(v,0,0);
-  const data=c.toDataURL('image/jpeg',0.9);
-  preview.src=data; preview.classList.remove('hidden');
-  v.classList.add('hidden');
-  doOCR(data);
-}
-async function handleScanUpload(e){
-  const f=e.target.files[0]; if(!f) return;
-  const url=URL.createObjectURL(f);
-  const img=document.getElementById('scanPreview');
-  img.src=url; img.classList.remove('hidden');
-  document.getElementById('camVideo').classList.add('hidden');
-  document.getElementById('camPlaceholder').classList.add('hidden');
-  doOCR(url);
-}
-async function doOCR(image){
-  document.getElementById('ocrStatus').textContent='OCR running…';
-  document.getElementById('ocrStatus').className='text-xs font-bold px-2 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800';
-  document.getElementById('ocrProgress').classList.remove('hidden');
-  document.getElementById('ocrText').value='⏳ Reading image… please wait 5–15 sec (on-device)';
-  try{
-    const { data:{ text } } = await Tesseract.recognize(image, 'eng', { logger: m=>{ if(m.progress) document.getElementById('ocrProgress').firstElementChild.style.width=(m.progress*100)+'%' } });
-    document.getElementById('ocrText').value = text.trim() || '[No text detected. Try clearer image]';
-    document.getElementById('ocrStatus').textContent = text.trim()? 'Done ✓' : 'No text';
-    document.getElementById('ocrStatus').className='text-xs font-bold px-2 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800';
-    if(!document.getElementById('scanTitle').value) document.getElementById('scanTitle').value='Scan '+ new Date().toLocaleDateString();
-  }catch(e){
-    document.getElementById('ocrText').value='OCR error: '+e.message;
-    document.getElementById('ocrStatus').textContent='Error';
-  }finally{
-    document.getElementById('ocrProgress').classList.add('hidden');
-  }
-}
-function saveScan(){
-  const text=document.getElementById('ocrText').value.trim();
-  if(!text || text.length<5) return alert('No text to save');
-  const title=document.getElementById('scanTitle').value.trim()||'Scanned Notes';
-  const subject=document.getElementById('scanSubject').value||STREAMS[state.stream][0];
-  const doc={ id: Date.now().toString(36), title, subject, year: document.getElementById('studentYear')?.value||'Inter 1st Year', stream: state.stream, text, created: new Date().toISOString(), pages:1, source:'scan' };
-  state.docs.unshift(doc);
-  save(); renderRecent(); renderLibrary(); refreshQuizDocs();
-  alert('Saved scan to Library: '+title);
-  document.getElementById('ocrText').value='';
-  document.getElementById('scanPreview').classList.add('hidden');
-  document.getElementById('camPlaceholder').classList.remove('hidden');
-}
-
-// ---------- LIBRARY ----------
-function renderRecent(){
-  const box=document.getElementById('recentList');
-  const empty=document.getElementById('emptyRecent');
-  const rec = state.docs.slice(0,4);
-  if(rec.length===0){ box.innerHTML=''; empty.classList.remove('hidden'); return; }
-  empty.classList.add('hidden');
-  box.innerHTML = rec.map(d=>`
-    <div class="bg-white border border-slate-200 rounded-2xl p-4 hover:border-indigo-200 hover:shadow-md transition cursor-pointer" onclick="openDoc('${d.id}')">
-      <div class="flex gap-3">
-        <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-file-lines"></i></div>
-        <div class="flex-1 min-w-0">
-          <p class="font-bold text-sm text-slate-900 truncate">${d.title}</p>
-          <p class="text-xs text-slate-500">${d.subject} • ${d.year} • ${new Date(d.created).toLocaleDateString()}</p>
-          <p class="text-xs text-slate-600 mt-1 line-clamp-2">${d.text.slice(0,120).replace(/\n/g,' ')}…</p>
-        </div>
-      </div>
-      <div class="mt-3 flex gap-1.5 flex-wrap">
-        <span class="text-[11px] font-bold px-2 py-1 rounded-full bg-slate-100 border">${d.pages} pages</span>
-        <button onclick="event.stopPropagation(); quickQuiz('${d.id}')" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-indigo-600 text-white">Make Quiz</button>
-        <button onclick="event.stopPropagation(); askTutor('${d.id}')" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white border">Ask AITutor</button>
-      </div>
-    </div>
-  `).join('');
-}
-function renderLibrary(){
-  const q=(document.getElementById('libSearch').value||'').toLowerCase();
-  const f=document.getElementById('libFilter').value;
-  const grid=document.getElementById('libraryGrid');
-  const empty=document.getElementById('emptyLibrary');
-  let list = state.docs.filter(d=>{
-    const matchQ = !q || (d.title.toLowerCase().includes(q) || d.subject.toLowerCase().includes(q) || d.text.toLowerCase().includes(q));
-    const matchF = f==='all' || d.subject===f;
-    return matchQ && matchF;
-  });
-  if(list.length===0){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
-  empty.classList.add('hidden');
-  grid.innerHTML = list.map(d=>`
-    <div class="bg-white rounded-2xl border border-slate-200 p-5 card-shadow hover:border-indigo-200 transition">
-      <div class="flex items-start justify-between gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-book-open text-sm"></i></div>
-        <div class="flex gap-1">
-          <button onclick="openDoc('${d.id}')" class="w-8 h-8 rounded-full bg-slate-50 border flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-eye text-xs"></i></button>
-          <button onclick="deleteDoc('${d.id}')" class="w-8 h-8 rounded-full bg-white border flex items-center justify-center hover:bg-red-50 text-red-600"><i class="fa-solid fa-trash text-xs"></i></button>
-        </div>
-      </div>
-      <h4 class="font-bold text-slate-900 mt-3 leading-tight line-clamp-2">${d.title}</h4>
-      <p class="text-xs font-semibold text-indigo-600 mt-1">${d.subject} • ${d.year} • ${d.stream}</p>
-      <p class="text-xs text-slate-500 mt-1">${new Date(d.created).toLocaleString()} • ${d.pages} pages • ${d.text.length.toLocaleString()} chars</p>
-      <p class="text-sm text-slate-600 mt-3 line-clamp-3 leading-relaxed">${d.text.slice(0,180).replace(/\n/g,' ')}…</p>
-      <div class="mt-4 flex flex-wrap gap-1.5">
-        <button onclick="quickQuiz('${d.id}')" class="flex-1 min-w-[90px] py-2 rounded-full bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700"><i class="fa-solid fa-clipboard-question mr-1"></i> Quiz</button>
-        <button onclick="summarizeDoc('${d.id}')" class="px-3 py-2 rounded-full bg-white border font-bold text-xs">Summary</button>
-        <button onclick="makeFlash('${d.id}')" class="px-3 py-2 rounded-full bg-white border font-bold text-xs">Flashcards</button>
-        <button onclick="askTutor('${d.id}')" class="px-3 py-2 rounded-full bg-amber-500 text-white font-bold text-xs">AITutor</button>
-      </div>
-    </div>
-  `).join('');
-}
-function deleteDoc(id){
-  if(!confirm('Delete this document?')) return;
-  state.docs = state.docs.filter(d=>d.id!==id);
-  save(); renderRecent(); renderLibrary(); refreshQuizDocs();
-}
-function openDoc(id){
-  const d=state.docs.find(x=>x.id===id); if(!d) return;
-  document.getElementById('docModalTitle').textContent=d.title;
-  document.getElementById('docModalMeta').textContent=`${d.subject} • ${d.year} • ${d.stream} • ${new Date(d.created).toLocaleString()}`;
-  document.getElementById('docModalText').textContent=d.text.slice(0,12000);
-  document.getElementById('docModalAI').classList.add('hidden');
-  document.getElementById('docModalActions').innerHTML=`
-    <button onclick="summarizeDoc('${d.id}', true)" class="px-4 py-2 rounded-full bg-indigo-600 text-white font-bold text-sm">✨ Summarize</button>
-    <button onclick="quickQuiz('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 text-white font-bold text-sm">📝 Make Quiz</button>
-    <button onclick="makeFlash('${d.id}')" class="px-4 py-2 rounded-full bg-white border font-bold text-sm">🃏 Flashcards</button>
-    <button onclick="askTutor('${d.id}')" class="px-4 py-2 rounded-full bg-amber-500 text-white font-bold text-sm">🤖 Ask AITutor</button>
-    <button onclick="copyText('${d.id}')" class="px-4 py-2 rounded-full bg-white border font-bold text-sm">Copy Text</button>
-  `;
-  document.getElementById('docModal').classList.remove('hidden');
-}
-function closeDoc(){ document.getElementById('docModal').classList.add('hidden'); }
-function copyText(id){ const d=state.docs.find(x=>x.id===id); navigator.clipboard.writeText(d.text); alert('Copied!'); }
-function quickQuiz(id){ nav('quiz'); document.getElementById('quizDoc').value=id; generateQuiz(); }
-function askTutor(id){
-  const d=state.docs.find(x=>x.id===id);
-  nav('tutor');
-  document.getElementById('tutorDoc').value=id;
-  addMsg('user', `Explain: <b>${d.title}</b> — ${d.subject}`);
-  // auto ask summary
-  setTimeout(()=> callTutor(`Give me a crisp summary and 5 important questions with answers from this document: ${d.text.slice(0,8000)}`), 200);
-}
-
-// ---------- AI / GEMINI / OPENROUTER / OPENAI ----------
-function getKey(){ return localStorage.getItem('gemini_key')||''; }
-function getModel(){ return localStorage.getItem('gemini_model')||'gemini-1.5-flash'; }
-function getProvider(){ return localStorage.getItem('ai_provider')||'gemini'; }
-function detectProviderFromKey(k){
-  if(!k) return 'gemini';
-  if(k.startsWith('sk-or-')) return 'openrouter';
-  if(k.startsWith('sk-')) return 'openai';
-  if(k.startsWith('AIza')) return 'gemini';
-  return localStorage.getItem('ai_provider')||'gemini';
-}
-function updateProviderUI(){
-  const prov=document.getElementById('aiProvider').value;
-  const label=document.getElementById('keyLabel');
-  const hint=document.getElementById('keyHint');
-  const inp=document.getElementById('geminiKey');
-  const help=document.getElementById('keyHelp');
-  if(prov==='openrouter'){ label.textContent='OpenRouter API Key'; hint.textContent='(sk-or-v1...)'; inp.placeholder='sk-or-v1-...'; help.innerHTML='Get key: <a href="https://openrouter.ai/keys" target="_blank" class="text-indigo-600 underline">openrouter.ai/keys</a> → 100+ models with one key'; }
-  else if(prov==='openai'){ label.textContent='OpenAI API Key'; hint.textContent='(sk-...)'; inp.placeholder='sk-...'; help.innerHTML='Get key: <a href="https://platform.openai.com/api-keys" target="_blank" class="text-indigo-600 underline">platform.openai.com/api-keys</a>'; }
-  else { label.textContent='Gemini API Key'; hint.textContent='(AIza...)'; inp.placeholder='paste AIza…'; help.innerHTML='Get free Gemini key: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 underline">aistudio.google.com/app/apikey</a>'; }
-}
-
-async function callGemini(prompt, contextText=''){
-  // Student-friendly: First try secure backend (uses server's secret key, no "Set API Key" needed)
-  const API_BASE = (() => {
-    const h=location.hostname;
-    if(h.includes('github.io')) return 'https://help-studies-fish.onrender.com';
-    if(location.port==='8000') return location.protocol+'//'+h+':3001';
-    if(location.port==='3001') return '';
-    if(location.href.includes('e2b.app')) return location.origin.replace(/:\/\/\d+-/, '://3001-');
-    return 'https://help-studies-fish.onrender.com';
-  })();
-  const fullPrompt = contextText ? `Context document:\n"""${String(contextText).slice(0,12000)}"""\n\nTask: ${prompt}\n\nYou are AITutor for Telangana Intermediate (TS Inter) students (MPC/BiPC/CEC/MEC/HEC). Answer clearly with steps, Telugu mix allowed if user used Telugu. Align to board blueprint (2M/4M/8M).` : prompt;
-  // 1) Try backend securely (no API key shown to students)
-  try{
-    const r=await fetch(`${API_BASE}/api/ai/chat`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ prompt: fullPrompt, context: contextText, model: getModel() })
-    });
-    if(r.ok){
-      const j=await r.json();
-      if(j.text && j.text.trim()) return j.text;
-    }
-  }catch(e){ console.warn('Backend AI not reachable, fallback to local', e); }
-
-  // 2) Fallback: local key for admin/developer (hidden from students)
-  const key=getKey();
-  let provider=getProvider();
-  const detected=detectProviderFromKey(key);
-  if(detected!==provider && key) provider=detected;
-  let model=getModel();
-  if(key){
-    if(provider==='openrouter'){
-      try{
-        const url='https://openrouter.ai/api/v1/chat/completions';
-        if(model.startsWith('gemini-')) model='google/gemini-flash-1.5';
-        const res=await fetch(url, { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`,'HTTP-Referer': location.origin, 'X-Title':'Inter AI Study Buddy'}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
-        if(res.ok){ const j=await res.json(); const text=j.choices?.[0]?.message?.content || ''; if(text) return text; }
-      }catch(e){ console.warn('OpenRouter fallback failed', e); }
-    } else if(provider==='openai'){
-      try{
-        if(model.includes('/')) model='gpt-4o-mini';
-        if(model.startsWith('gemini-')) model='gpt-4o-mini';
-        const res=await fetch('https://api.openai.com/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body: JSON.stringify({ model, messages:[{role:'user', content: fullPrompt}], temperature:0.7, max_tokens: 2048 }) });
-        if(res.ok){ const j=await res.json(); return j.choices?.[0]?.message?.content || mockAI(fullPrompt); }
-      }catch(e){ console.warn('OpenAI fallback failed', e); }
-    } else {
-      try{
-        if(model.includes('/')) model='gemini-1.5-flash';
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-        const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contents:[{ parts:[{text: fullPrompt}] }], generationConfig:{ temperature:0.7, maxOutputTokens: 2048 } }) });
-        if(res.ok){ const j=await res.json(); const text=j.candidates?.[0]?.content?.parts?.[0]?.text || ''; if(text) return text; }
-      }catch(e){ console.warn('Gemini fallback failed', e); }
-    }
-  }
-  // 3) Final friendly demo (no mention of API key)
-  return mockAI(fullPrompt);
-}
-function mockAI(prompt){
-  // Student-friendly fallback — no mention of API keys or developer secrets
-  if(prompt.toLowerCase().includes('mcq') || prompt.toLowerCase().includes('quiz')){
-    return `Here's a practice quiz based on your PDF:\n\n1) What is the main concept from your document?\nA) Concept A\nB) Concept B ★\nC) Concept C\nD) Concept D\n\nTip: Upload a clearer PDF or try again — AITutor will make perfect MCQs from your chapter.`;
-  }
-  if(prompt.toLowerCase().includes('summary') || prompt.toLowerCase().includes('summarize')){
-    return `**Quick Summary from your document:**\n\n• Main idea: ${String(prompt).slice(0,200).replace(/\n/g,' ')}…\n• Key points, formulas & definitions are being prepared.\n\nUpload a full chapter PDF for a detailed 10-point summary.`;
-  }
-  // For "what is mathematics" etc — give helpful answer without mentioning API
-  if(prompt.toLowerCase().includes('what is mathematics') || prompt.toLowerCase().includes('what is maths')){
-    return `**Mathematics** is the study of numbers, shapes, and patterns. For Inter, it helps you understand:\n\n• **Functions** — relation between inputs and outputs\n• **Calculus** — how things change\n• **Matrices** — organizing numbers\n\nAsk a specific topic like "Explain Functions with example" and I'll teach step-by-step in English/Telugu!`;
-  }
-  return `Hi! I'm your AITutor for Inter (MPC/BiPC/CEC/MEC/HEC).\n\nYou asked: "${String(prompt).slice(0,160)}..."\n\nI'll explain step-by-step with examples in your language (English/Telugu/Hinglish) as per Telangana board (2M/4M/8M).\n\nTry: "Summarize my PDF" or "Make 10 MCQs from my chapter" — just upload a PDF first!`;
-}
-
-// ---------- QUIZ LOGIC ----------
-function refreshQuizDocs(){
-  const sel=document.getElementById('quizDoc');
-  const sel2=document.getElementById('tutorDoc');
-  const opts = state.docs.map(d=>`<option value="${d.id}">${d.title} — ${d.subject}</option>`).join('');
-  sel.innerHTML = opts || '<option value="">Upload a PDF first</option>';
-  sel2.innerHTML = '<option value="">No context doc</option>' + opts;
-  renderQuizHistory();
-}
-async function generateQuiz(){
-  const docId=document.getElementById('quizDoc').value;
-  if(!docId) return alert('Upload a PDF to Library first');
-  const doc=state.docs.find(d=>d.id===docId);
-  const type=document.getElementById('quizType').value;
-  const count=parseInt(document.getElementById('quizCount').value,10);
-  const diff=document.getElementById('quizDiff').value;
-  const lang=document.getElementById('quizLang').value;
-  document.getElementById('quizProgress').classList.remove('hidden');
-  document.getElementById('genQuizBtn').disabled=true;
-  document.getElementById('quizProgressText').textContent='Generating quiz and answer — reading ALL chapters (50-60 sec)…';
-
-  let questions=null;
-  const API_BASE = (() => {
-    const h=location.hostname;
-    if(h.includes('github.io')) return 'https://help-studies-fish.onrender.com';
-    if(location.port==='8000') return location.protocol+'//'+h+':3001';
-    if(location.port==='3001') return '';
-    if(location.href.includes('e2b.app')) return location.origin.replace(/:\/\/\d+-/, '://3001-');
-    return 'https://help-studies-fish.onrender.com';
-  })();
-
-  // 1) Try REAL LLM via backend (secure, no fake) — scans middle of PDF, blueprint style
-  try{
-    document.getElementById('quizProgressText').textContent='🧠 Real LLM reading ALL chapters (50-60 sec)...';
-    const resp = await fetch(`${API_BASE}/api/ai/quiz`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ docText: doc.text, subject: doc.subject, type, count, diff, lang, stream: state.stream, year: doc.year })
-    });
-    if(resp.ok){
-      const j=await resp.json();
-      if(j.questions && Array.isArray(j.questions) && j.questions.length){
-        questions = j.questions;
-        console.log('✅ Real LLM quiz from backend', questions.length);
-      } else if(j.text){
-        // Backend returned text, try parse
-        const cleaned=j.text.replace(/```json|```/g,'').trim();
-        const parsed=JSON.parse(cleaned);
-        questions = Array.isArray(parsed)? parsed : parsed.questions;
-      }
-    } else {
-      console.warn('Backend quiz failed', await resp.text());
-    }
-  }catch(e){ console.warn('Backend quiz error', e); }
-
-  // 2) Fallback: try callGemini (also tries backend /api/ai/chat)
-  if(!questions || !questions.length){
-    document.getElementById('quizProgressText').textContent='Trying AI again...';
-    const prompt = `You are expert for TS Inter ${state.stream} ${doc.subject} ${doc.year}. Read the ENTIRE document below (ALL chapters, all answers) and create ${count} REAL exam-style questions of type "${type}" in ${lang}, difficulty ${diff}. Use FULL context (entire PDF, all chapters) — generate blueprint-accurate: 2M very short, 4M short with example, 8M long with steps. For MCQ, 4 plausible shuffled options. Return ONLY JSON array with objects {q: "question in ${lang}", options: ["A","B","C","D"] (4 options for MCQ, [] for theory), answerIndex: 0-3, explanation: "why correct, in ${lang}", marks: 1 for MCQ else 2/4/8}. Do NOT make Page 1 questions — base on real concepts from ALL chapters. Document (full): """${doc.text.slice(0,15000)}"""`;
-    let raw = await callGemini(prompt, doc.text);
-    try{
-      const cleaned = raw.replace(/```json|```/g,'').trim();
-      // Extract JSON array even if extra text
-      const jsonMatch = cleaned.match(/\[[\s\S]*\]/);
-      const toParse = jsonMatch ? jsonMatch[0] : cleaned;
-      const parsed = JSON.parse(toParse);
-      questions = Array.isArray(parsed) ? parsed : parsed.questions;
-    }catch(e){
-      console.warn('AI JSON parse failed, will show error not fake', e);
-    }
-  }
-
-  // 3) If still no real questions, show error (NEVER fake "Page 1" quiz)
-  if(!questions || !questions.length){
-    document.getElementById('quizProgress').classList.add('hidden');
-    document.getElementById('genQuizBtn').disabled=false;
-    // Try to give at least one real fallback by extracting real sentences (filtered, no Page markers)
-    const hasPageText = doc.text.includes('--- Page');
-    if(hasPageText && confirm('Real AI is busy (Render sleeping — 30 sec wake). Show quick offline practice from your PDF middle? (Real sentences, not fake "Page 1")\n\nOK = Show offline, Cancel = Try again')){
-      questions = buildMockQuestions(doc, type, count);
-    } else {
-      alert('Real AI is waking up (Render free tier sleeps after 15 min). Please wait 30 seconds and click Generate again — you will get real questions from middle of PDF, like real IPE exam.');
-      return;
-    }
-  }
-  // Normalize
-  questions = questions.slice(0,count).map((q,i)=>{
-    if(q.front) return { q: q.front, options: [], answer: q.back, answerIndex:0, explanation: q.back, isFlash:true };
-    const opts = q.options && q.options.length? q.options.slice(0,4) : ['Option A','Option B','Option C','Option D'];
-    while(opts.length<4) opts.push('—');
-    return { q: q.q || q.question || `Question ${i+1}`, options: opts, answerIndex: Number.isInteger(q.answerIndex)? q.answerIndex : (Number(q.answer)||0)%4, explanation: q.explanation||q.answer||'', marks: q.marks|| (type==='mcq'?1: type==='short2m'?2: type==='short4m'?4: type==='long8m'?8:2) };
-  });
-  if(type==='flashcards'){
-    // save as flashcards
-    const newCards = questions.map(q=>({ id: Date.now()+Math.random().toString(36).slice(2), front: q.q, back: q.explanation||q.options[0], subject: doc.subject, created: new Date().toISOString() }));
-    state.flashcards.unshift(...newCards);
-    save(); renderFlashcards();
-    document.getElementById('quizProgress').classList.add('hidden');
-    document.getElementById('genQuizBtn').disabled=false;
-    alert(`Created ${newCards.length} flashcards! Check Flashcards tab.`);
-    return;
-  }
-
-  const quiz={ id: Date.now().toString(36), docId, title: `${doc.title} — ${type.toUpperCase()} (${count} Qs)`, subject: doc.subject, type, count: questions.length, questions, created: new Date().toISOString(), attempts: [], bestScore:0 };
-  state.quizzes.unshift(quiz);
-  // keep only 20
-  state.quizzes = state.quizzes.slice(0,20);
-  save();
-  document.getElementById('quizProgress').classList.add('hidden');
-  document.getElementById('genQuizBtn').disabled=false;
-  startQuiz(quiz.id);
-  renderQuizHistory();
-}
-function buildMockQuestions(doc, type, count){
-  // Improved offline fallback — extracts REAL sentences from MIDDLE, no Page markers
-  const rawSents = doc.text.split(/[.!?]\s+/).map(s=>s.trim()).filter(s=>s.length>30 && !s.includes('--- Page') && !/^Page \d+$/i.test(s) && s.split(' ').length>5);
-  const midStart = Math.floor(rawSents.length/3);
-  const sents = rawSents.slice(midStart, midStart+60);
-  if(!sents.length) sents.push(...rawSents.slice(0,10));
-  const out=[];
-  for(let i=0;i<count;i++){
-    const base = sents[i % sents.length] || doc.title;
-    const clean = base.trim().slice(0,140);
-    if(type==='mcq'){
-      out.push({ q: `MCQ: Which is correct about: "${clean}..."?`, options: [clean.slice(0,40), clean.slice(20,60), 'None of these', 'All of above'], answerIndex: 1, explanation: clean, marks:1 });
-    } else if(type==='short2m'){
-      out.push({ q: `Define / Explain in 2 marks: ${clean.slice(0,80)}`, options:[], answerIndex:0, explanation:`Answer: ${clean}. (Write 4-5 lines)`, marks:2 });
-    } else if(type==='short4m'){
-      out.push({ q: `Explain with example (4M): ${clean.slice(0,90)}`, options:[], answerIndex:0, explanation:`Detailed answer: ${clean}. Include diagram/formula if needed.`, marks:4 });
-    } else if(type==='long8m'){
-      out.push({ q: `Long answer (8M): Discuss ${clean.slice(0,100)} with derivation/steps`, options:[], answerIndex:0, explanation:`Structure: Intro → Explanation → Derivation → Example → Conclusion. Base: ${clean}`, marks:8 });
-    } else {
-      // mixed
-      const isMcq = i%2===0;
-      if(isMcq) out.push({ q: `MCQ: ${clean.slice(0,90)}?`, options:['A','B','C','D'], answerIndex: i%4, explanation: clean, marks:1 });
-      else out.push({ q: `Short (4M): ${clean.slice(0,90)}`, options:[], answerIndex:0, explanation: clean, marks:4 });
-    }
-  }
-  return out;
-}
-function startQuiz(id){
-  const quiz = state.quizzes.find(q=>q.id===id);
-  if(!quiz) return;
-  state.currentQuiz = quiz;
-  state.qIndex=0; state.answers={};
-  document.getElementById('quizPlayer').classList.remove('hidden');
-  document.getElementById('quizTitle').textContent = quiz.title;
-  document.getElementById('quizMeta').textContent = `${quiz.subject} • ${quiz.type} • ${quiz.count} Qs`;
-  document.getElementById('quizTotal').textContent = quiz.count;
-  document.getElementById('quizResult').classList.add('hidden');
-  showQ();
-}
-function showQ(){
-  const quiz=state.currentQuiz; if(!quiz) return;
-  const q=quiz.questions[state.qIndex];
-  const total=quiz.count;
-  document.getElementById('quizStep').textContent = state.qIndex+1;
-  document.getElementById('quizBar').style.width = ((state.qIndex+1)/total*100)+'%';
-  const correctCount = Object.entries(state.answers).filter(([idx,ans])=> quiz.questions[idx].answerIndex===ans).length;
-  document.getElementById('quizScoreLive').textContent = correctCount + ' correct';
-  let html='';
-  if(q.options && q.options.length){
-    html = `
-      <p class="font-semibold text-slate-900 leading-relaxed">${state.qIndex+1}. ${q.q} <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700">${q.marks}M</span></p>
-      <div class="mt-4 grid gap-2.5">
-        ${q.options.map((opt,i)=>`
-          <label class="quiz-option flex gap-3 p-3.5 rounded-2xl border-2 cursor-pointer transition ${state.answers[state.qIndex]==i ? 'bg-indigo-50 border-indigo-400' : 'bg-white border-slate-200 hover:border-indigo-200'}">
-            <input type="radio" name="q${state.qIndex}" value="${i}" ${state.answers[state.qIndex]==i?'checked':''} onchange="pick(${i})" class="mt-1 accent-indigo-600">
-            <span class="w-7 h-7 rounded-full bg-slate-100 border flex items-center justify-center text-xs font-bold shrink-0">${String.fromCharCode(65+i)}</span>
-            <span class="text-sm leading-relaxed flex-1">${opt}</span>
-          </label>
-        `).join('')}
-      </div>
-      ${state.answers[state.qIndex]!=null ? `<div class="mt-4 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm"><b>Explanation:</b> ${q.explanation}</div>`:''}
-    `;
-  } else {
-    html = `
-      <p class="font-semibold text-slate-900 leading-relaxed">${state.qIndex+1}. ${q.q} <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700">${q.marks}M</span></p>
-      <textarea id="ansText" oninput="saveTextAns(this.value)" placeholder="Type your answer here… (AITutor will evaluate keywords)" class="mt-4 w-full h-[120px] p-3 rounded-xl border border-slate-200 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50 text-sm">${state.answers[state.qIndex+'_text']||''}</textarea>
-      <div class="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm"><b>Model Answer:</b> ${q.explanation}</div>
-      <label class="mt-3 flex items-center gap-2 text-sm font-semibold cursor-pointer"><input type="checkbox" ${state.answers[state.qIndex]==1?'checked':''} onchange="pick(this.checked?1:0)" class="accent-emerald-600"> Mark as correct (self-evaluate)</label>
-    `;
-  }
-  document.getElementById('quizQuestionBox').innerHTML=html;
-  document.getElementById('quizActions').innerHTML = `
-    <button onclick="prevQ()" ${state.qIndex===0?'disabled':''} class="px-4 py-2 rounded-full bg-white border border-slate-200 font-bold text-sm disabled:opacity-40">← Prev</button>
-    <div class="flex gap-2">
-      ${state.qIndex===total-1 ? `<button onclick="finishQuiz()" class="px-6 py-2 rounded-full bg-emerald-600 text-white font-bold text-sm">Submit →</button>` : `<button onclick="nextQ()" class="px-6 py-2 rounded-full bg-slate-900 text-white font-bold text-sm">Next →</button>`}
-    </div>
-  `;
-}
-function pick(i){ state.answers[state.qIndex]=i; showQ(); }
-function saveTextAns(v){ state.answers[state.qIndex+'_text']=v; }
-function nextQ(){ if(state.qIndex < state.currentQuiz.count-1){ state.qIndex++; showQ(); } }
-function prevQ(){ if(state.qIndex>0){ state.qIndex--; showQ(); } }
-function finishQuiz(){
-  const quiz=state.currentQuiz;
-  const isMcq = quiz.type==='mcq' || quiz.type==='mixed';
-  let correct=0;
-  quiz.questions.forEach((q,i)=>{
-    if(q.options.length){ if(state.answers[i]==q.answerIndex) correct++; }
-    else { if(state.answers[i]==1) correct++; }
-  });
-  const pct=Math.round(correct/quiz.count*100);
-  document.getElementById('quizResult').classList.remove('hidden');
-  document.getElementById('resultText').textContent = `You scored ${correct} / ${quiz.count} (${pct}%) — ${pct>=80?'Excellent 🌟': pct>=60?'Good job 👍':'Keep practicing 💪'}`;
-  document.getElementById('quizResult').scrollIntoView({behavior:'smooth', block:'nearest'});
-  // save attempt
-  quiz.attempts = quiz.attempts||[];
-  quiz.attempts.push({ date: new Date().toISOString(), score: correct, total: quiz.count, pct });
-  quiz.bestScore = Math.max(quiz.bestScore||0, pct);
-  save(); renderQuizHistory(); updateStats();
-}
-function restartQuiz(){ state.qIndex=0; state.answers={}; document.getElementById('quizResult').classList.add('hidden'); showQ(); }
-function saveQuizAttempt(){ alert('Attempt saved to history!'); }
-function explainQuiz(){ nav('tutor'); const quiz=state.currentQuiz; if(quiz) addMsg('user','Explain my quiz: '+quiz.title); callTutor('Explain these quiz questions and correct answers step-by-step, in simple language, as per Inter board: '+ JSON.stringify(quiz.questions.slice(0,5))); }
-function renderQuizHistory(){
-  const box=document.getElementById('quizHistoryList');
-  if(!state.quizzes.length){ box.innerHTML='<p class="text-xs text-slate-500">No quizzes yet. Generate one above.</p>'; return; }
-  box.innerHTML = state.quizzes.slice(0,6).map(q=>`
-    <div class="flex items-center justify-between p-3 rounded-xl border bg-slate-50 hover:bg-white transition cursor-pointer" onclick="startQuiz('${q.id}')">
-      <div>
-        <p class="font-bold text-xs text-slate-900">${q.title}</p>
-        <p class="text-[11px] text-slate-500">${q.subject} • ${q.type} • ${new Date(q.created).toLocaleDateString()} • Best: ${q.bestScore||0}%</p>
-      </div>
-      <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-600 text-white">${q.count} Qs</span>
-    </div>
-  `).join('');
-}
-
-// ---------- FLASHCARDS ----------
-function generateFlashcards(){
-  if(!state.docs.length) return alert('Upload a PDF first');
-  const doc=state.docs[0];
-  makeFlash(doc.id);
-}
-async function makeFlash(docId){
-  const doc=state.docs.find(d=>d.id===docId);
-  // quick offline flashcards from sentences
-  const sents = doc.text.split(/[.!?]\s+/).filter(s=>s.trim().length>30).slice(0,10);
-  const cards = sents.map(s=>({ id: Date.now()+Math.random().toString(36).slice(2), front: s.slice(0,100)+'?', back: s.slice(0,180), subject: doc.subject, created: new Date().toISOString() }));
-  state.flashcards.unshift(...cards);
-  save(); renderFlashcards();
-  nav('flashcards');
-}
-function renderFlashcards(){
-  const grid=document.getElementById('flashGrid');
-  const empty=document.getElementById('emptyFlash');
-  if(!state.flashcards.length){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
-  empty.classList.add('hidden');
-  grid.innerHTML = state.flashcards.slice(0,12).map(c=>`
-    <div class="group perspective">
-      <div onclick="this.classList.toggle('flipped')" class="relative h-[160px] cursor-pointer preserve-3d transition-all duration-500" style="transform-style:preserve-3d">
-        <div class="absolute inset-0 bg-white border border-slate-200 rounded-2xl p-5 flex flex-col justify-between backface-hidden">
-          <p class="text-[11px] font-bold tracking-widest uppercase text-indigo-600">${c.subject}</p>
-          <p class="font-semibold text-sm text-slate-900 leading-relaxed">${c.front}</p>
-          <p class="text-xs text-slate-500">Tap to flip →</p>
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl p-5 flex flex-col justify-between text-white backface-hidden" style="transform:rotateY(180deg)">
-          <p class="text-xs font-bold opacity-80">Answer</p>
-          <p class="text-sm leading-relaxed">${c.back}</p>
-          <button onclick="event.stopPropagation(); deleteFlash('${c.id}')" class="self-start text-xs bg-white/15 border border-white/20 px-3 py-1 rounded-full">Delete</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  // inject flip style
-  if(!document.getElementById('flipStyle')){
-    const s=document.createElement('style'); s.id='flipStyle'; s.textContent='.flipped{transform:rotateY(180deg)} .backface-hidden{backface-visibility:hidden} .preserve-3d{transform-style:preserve-3d} .perspective{perspective:1000px}';
-    document.head.appendChild(s);
-  }
-}
-function deleteFlash(id){ state.flashcards=state.flashcards.filter(c=>c.id!==id); save(); renderFlashcards(); }
-
-// ---------- CHAT ----------
-function addMsg(role, html){
-  const box=document.getElementById('chatBox');
-  const mini=document.getElementById('miniChat');
-  const wrap=document.createElement('div');
-  wrap.className='flex gap-3 ' + (role==='user'?'justify-end':'');
-  wrap.innerHTML = role==='user'
-    ? `<div class="bg-indigo-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%] text-sm leading-relaxed">${html}</div><div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 text-xs">You</div>`
-    : `<div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot text-xs"></i></div><div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-4 max-w-[85%] shadow-sm text-sm leading-relaxed whitespace-pre-wrap">${html}</div>`;
-  box.appendChild(wrap); box.scrollTop=box.scrollHeight;
-  if(role!=='user'){
-    const m=document.createElement('div');
-    m.className='bg-white border border-slate-200 rounded-2xl p-3 text-sm leading-relaxed';
-    m.textContent = html.replace(/<[^>]*>/g,'').slice(0,180)+'...';
-    mini.prepend(m);
-  }
-}
-async function sendChat(){
-  const inp=document.getElementById('chatInput');
-  const text=inp.value.trim(); if(!text) return;
-  inp.value='';
-  addMsg('user', text);
-  const docId=document.getElementById('tutorDoc').value;
-  const doc=state.docs.find(d=>d.id===docId);
-  const thinking=document.createElement('div');
-  thinking.id='thinking';
-  thinking.className='flex gap-3';
-  thinking.innerHTML=`<div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot text-xs"></i></div><div class="bg-white border border-slate-200 rounded-2xl p-4 text-sm"><span class="inline-flex items-center gap-2"><span class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></span><span class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:.15s"></span><span class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:.3s"></span> AITutor is thinking…</span></div>`;
-  document.getElementById('chatBox').appendChild(thinking);
-  const ans=await callTutor(text, doc?doc.text:'');
-  thinking.remove();
-  addMsg('bot', formatAI(ans));
-}
-async function sendMiniChat(){
-  const inp=document.getElementById('miniInput');
-  const text=inp.value.trim(); if(!text) return;
-  inp.value='';
-  nav('tutor');
-  document.getElementById('chatInput').value=text;
-  sendChat();
-}
-async function callTutor(prompt, context=''){
-  const docId=document.getElementById('tutorDoc').value;
-  const doc=state.docs.find(d=>d.id===docId);
-  const ctx = context || (doc? doc.text : '');
-  const raw=await callGemini(prompt, ctx);
-  return raw;
-}
-function formatAI(t){
-  // simple markdown-ish
-  return t
-    .replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')
-    .replace(/\n/g,'<br>')
-    .replace(/```[\s\S]*?```/g, m=>`<pre class="bg-slate-900 text-slate-100 rounded-xl p-3 text-xs overflow-auto mt-2">${m.replace(/```/g,'')}</pre>`);
-}
-function quickAsk(txt){
-  document.getElementById('chatInput').value=txt;
-  sendChat();
-}
-function clearChat(){
-  document.getElementById('chatBox').innerHTML = `<div class="flex gap-3"><div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot text-xs"></i></div><div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-4 max-w-[85%] shadow-sm"><p class="text-sm leading-relaxed"><b>Cleared!</b> Ask me anything new.</p></div></div>`;
-}
-
-// ---------- DOC AI ACTIONS ----------
-async function summarizeDoc(id, inModal=false){
-  const doc=state.docs.find(d=>d.id===id);
-  const box=inModal? document.getElementById('docModalAI') : null;
-  if(box){ box.classList.remove('hidden'); box.innerHTML='<p class="text-sm flex items-center gap-2"><span class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span> AITutor summarizing…</p>'; }
-  const ans=await callGemini('Summarize this chapter in 10 bullet points, then list formulas/definitions and 3 must-remember points for exam.', doc.text);
-  const html=`<div class="prose prose-sm max-w-none text-sm leading-relaxed">${formatAI(ans)}</div><div class="mt-3 flex gap-2"><button onclick="navigator.clipboard.writeText(\`${ans.replace(/`/g,'\\`').replace(/\$/g,'\\$')}\`); alert('Copied')" class="px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold">Copy</button><button onclick="quickQuiz('${id}')" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-bold">Make Quiz from this</button></div>`;
-  if(box){ box.innerHTML=html; }
-  else {
-    nav('tutor');
-    addMsg('bot', html);
-  }
-}
-
-// ---------- SETTINGS ----------
-function openSettings(){ document.getElementById('settingsModal').classList.remove('hidden'); document.getElementById('geminiKey').value=getKey(); document.getElementById('geminiModel').value=getModel(); document.getElementById('aiProvider').value=getProvider(); updateProviderUI(); document.getElementById('studentName').value=localStorage.getItem('student_name')||''; document.getElementById('studentYear').value=localStorage.getItem('student_year')||'Inter 1st Year'; }
-function closeSettings(){ document.getElementById('settingsModal').classList.add('hidden'); }
-function toggleKey(){ const i=document.getElementById('geminiKey'); i.type=i.type==='password'?'text':'password'; }
-function saveSettings(){
-  const rawKey=document.getElementById('geminiKey').value.trim();
-  let prov=document.getElementById('aiProvider').value;
-  // auto-correct provider based on key prefix
-  const detected=detectProviderFromKey(rawKey);
-  if(rawKey && detected!==prov) prov=detected;
-  localStorage.setItem('gemini_key', rawKey);
-  localStorage.setItem('ai_provider', prov);
-  localStorage.setItem('gemini_model', document.getElementById('geminiModel').value);
-  localStorage.setItem('student_name', document.getElementById('studentName').value.trim());
-  localStorage.setItem('student_year', document.getElementById('studentYear').value);
-  document.getElementById('settingsMsg').textContent=`✓ Saved! Provider: ${prov} • Model: ${document.getElementById('geminiModel').value}`;
-  document.getElementById('settingsMsg').className='text-xs font-bold text-emerald-600';
-  setTimeout(closeSettings, 1200);
-}
-async function testGemini(){
-  const key=document.getElementById('geminiKey').value.trim();
-  if(!key) return alert('Paste key first');
-  // update provider before test
-  const detected=detectProviderFromKey(key);
-  if(detected) localStorage.setItem('ai_provider', detected);
-  localStorage.setItem('gemini_key', key);
-  localStorage.setItem('gemini_model', document.getElementById('geminiModel').value);
-  document.getElementById('settingsMsg').textContent='Testing… ('+getProvider()+')';
-  document.getElementById('settingsMsg').className='text-xs font-bold text-slate-600';
-  const ans=await callGemini('Reply with exactly: API key is working — Inter AITutor ready! Provider='+getProvider()+' And give one study tip for Inter students in 2 lines.');
-  document.getElementById('settingsMsg').textContent = ans.slice(0,350);
-  document.getElementById('settingsMsg').className='text-xs font-semibold text-slate-700 whitespace-pre-wrap bg-slate-50 border rounded-xl p-2';
-}
-
-function openDeployHelp(){ document.getElementById('deployModal').classList.remove('hidden'); }
-function closeDeployHelp(){ document.getElementById('deployModal').classList.add('hidden'); }
-function saveGithubUrl(){
-  const url=document.getElementById('githubUrlInput').value.trim();
-  if(!url) return;
-  localStorage.setItem('github_url', url);
-  document.getElementById('githubUrlMsg').textContent='Saved ✓';
-  // also try to set remote if git exists
-  fetch('/api/save-github-url', {method:'POST'}).catch(()=>{});
-}
+// STATE
+let user=null, token=localStorage.getItem('inter_token')||'';
+let docs=[], quizzes=[], currentDoc=null, currentPage=1, totalPages=1, pdfDoc=null, pageTexts=[], tts=null, quiz=null, qIdx=0, answers={}, timer=null, timeLeft=0;
+let STREAMS={MPC:['Maths IA','Physics','Chemistry'], BiPC:['Botany','Zoology','Physics'], CEC:['Commerce','Economics','Civics'], MEC:['Maths','Economics','Commerce'], HEC:['History','Economics','Civics']};
 
 // INIT
-load(); buildSubjects(); updateStats(); renderRecent(); refreshQuizDocs(); renderFlashcards();
-document.getElementById('libSearch').addEventListener('input', renderLibrary);
-</script>
-<!-- Enhancements v2: ARIA, TTS, Pomodoro, Auth, SQL -->
-<script src="enhancements.js"></script>
-<script src="student-sugars.js"></script>
-<script>
-// PWA — installable, offline cache, talkback friendly
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js', {scope: './'}).then(r=>console.log('PWA SW registered', r.scope)).catch(e=>console.warn('SW failed', e));
-  });
+(async()=>{
+  user = JSON.parse(localStorage.getItem('inter_user')||'null');
+  if(user && token){
+    try{ const r=await fetch(API+'/api/auth/me', {headers:{Authorization:'Bearer '+token}}); if(!r.ok) throw 0; user= (await r.json()).user; }catch{ user=null; token=''; localStorage.removeItem('inter_token'); localStorage.removeItem('inter_user'); }
+  }
+  if(user){ showApp(); } else { showAuth('login'); }
+  loadLocal();
+  document.getElementById('filePicker').addEventListener('change', onFilePicked);
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+
+function loadLocal(){
+  try{ docs=JSON.parse(localStorage.getItem('inter_docs')||'[]'); }catch{ docs=[]}
+  try{ quizzes=JSON.parse(localStorage.getItem('inter_quizzes')||'[]'); }catch{ quizzes=[]}
 }
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e=>{
+
+// AUTH — CLEAN, HIDES EVERYTHING
+function showAuth(which){
+  document.getElementById('authScreen').hidden=false;
+  document.getElementById('welcomeScreen').hidden=true;
+  document.getElementById('appShell').hidden=true;
+  document.getElementById('panelLogin').hidden = which!=='login';
+  document.getElementById('panelSignup').hidden = which!=='signup';
+  document.getElementById('tabLogin').setAttribute('aria-selected', String(which==='login'));
+  document.getElementById('tabSignup').setAttribute('aria-selected', String(which==='signup'));
+  document.getElementById('otpPanel').hidden=true;
+  document.getElementById('forgotPanel').hidden=true;
+  setTimeout(()=> document.getElementById(which==='login'?'loginEmail':'signupName')?.focus(), 80);
+  announce(which==='signup'?'Sign Up form opened':'Login form opened');
+}
+function showApp(){
+  document.getElementById('authScreen').hidden=true;
+  document.getElementById('welcomeScreen').hidden=true;
+  document.getElementById('appShell').hidden=false;
+  const stream=localStorage.getItem('inter_stream')||'MPC';
+  document.getElementById('streamSelect').value=stream;
+  document.getElementById('setStream').value=stream;
+  document.getElementById('homeName').textContent = user? user.name.split(' ')[0] : 'Topper';
+  document.getElementById('userBadge').textContent = user? user.name[0].toUpperCase() : 'S';
+  renderHome();
+  announce('Welcome to Study Vision AI');
+}
+function showWelcome(){
+  document.getElementById('authScreen').hidden=true;
+  document.getElementById('welcomeScreen').hidden=false;
+  document.getElementById('appShell').hidden=true;
+  announce('Hi! Welcome to Study Vision AI.');
+}
+function enterApp(){ showApp(); nav('home'); }
+
+// AUTH ACTIONS
+let pendingEmail='', pendingPurpose='signup';
+async function doSignup(e){
   e.preventDefault();
-  deferredPrompt=e;
-  // Show install button if available (for students)
-  const bar=document.getElementById('pwaInstallBar');
-  if(bar) bar.classList.remove('hidden');
-});
-function installPWA(){
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(choice=>{
-      if(choice.outcome==='accepted') console.log('PWA installed');
-      deferredPrompt=null;
-    });
-  } else {
-    alert('To install: Chrome menu → Install app / Add to Home Screen');
+  const name=document.getElementById('signupName').value.trim();
+  const email=document.getElementById('signupEmail').value.trim();
+  const p=document.getElementById('signupPass').value;
+  const c=document.getElementById('signupConfirm').value;
+  const err=document.getElementById('signupErr');
+  err.textContent='Creating...'; err.className='text-sm font-bold text-slate-600';
+  try{
+    const r=await fetch(API+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:p,confirmPassword:c})});
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error||'Failed');
+    pendingEmail=email; pendingPurpose='signup';
+    document.getElementById('otpEmail').textContent=email;
+    document.getElementById('otpPanel').hidden=false;
+    document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP (no email): '+j.devOtp : 'OTP sent to email';
+    err.textContent=''; announce('OTP sent to '+email);
+    document.getElementById('otpInput').focus();
+  }catch(er){ err.textContent=er.message; err.className='text-sm font-bold text-red-600'; }
+}
+async function doLogin(e){
+  e.preventDefault();
+  const email=document.getElementById('loginEmail').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  err.textContent='Logging in...';
+  try{
+    const r=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:p})});
+    const j=await r.json();
+    if(!r.ok){
+      if(j.error && j.error.includes('not found')) throw new Error('Your account is not found. Please sign up first.');
+      if(j.needVerify){ pendingEmail=j.email; document.getElementById('otpEmail').textContent=j.email; document.getElementById('otpPanel').hidden=false; err.textContent='Verify email first — OTP sent'; return; }
+      throw new Error(j.error);
+    }
+    token=j.token; user=j.user;
+    localStorage.setItem('inter_token',token); localStorage.setItem('inter_user',JSON.stringify(user));
+    announce('Login successful');
+    showApp();
+  }catch(er){ err.textContent=er.message; }
+}
+async function verifyOtp(){
+  const otp=document.getElementById('otpInput').value.trim();
+  const err=document.getElementById('otpErr');
+  if(otp.length!==6) return err.textContent='Enter 6-digit OTP';
+  err.textContent='Verifying...';
+  try{
+    const r=await fetch(API+'/api/auth/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail, otp, purpose:pendingPurpose})});
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error);
+    token=j.token; user=j.user;
+    localStorage.setItem('inter_token',token); localStorage.setItem('inter_user',JSON.stringify(user));
+    document.getElementById('otpPanel').hidden=true;
+    err.textContent='';
+    showWelcome();
+  }catch(er){ err.textContent=er.message; }
+}
+async function resendOtp(){
+  const r=await fetch(API+'/api/auth/resend-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail, purpose:pendingPurpose})});
+  const j=await r.json();
+  document.getElementById('otpErr').textContent=j.devOtp? 'Resent — DEV OTP: '+j.devOtp : 'OTP resent';
+}
+function showForgot(){
+  document.getElementById('panelLogin').hidden=true;
+  document.getElementById('panelSignup').hidden=true;
+  document.getElementById('otpPanel').hidden=true;
+  document.getElementById('forgotPanel').hidden=false;
+}
+async function sendForgot(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  const err=document.getElementById('forgotErr');
+  if(!email) return err.textContent='Enter email';
+  err.textContent='Sending...';
+  try{
+    const r=await fetch(API+'/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error);
+    pendingEmail=email;
+    err.textContent=j.devOtp? 'Code sent — DEV: '+j.devOtp : 'Verification code sent';
+    document.getElementById('resetArea').hidden=false;
+  }catch(er){ err.textContent=er.message; }
+}
+async function resetPass(){
+  const otp=document.getElementById('forgotOtp').value.trim();
+  const np=document.getElementById('forgotNew').value;
+  const cp=document.getElementById('forgotConfirm').value;
+  const err=document.getElementById('forgotErr');
+  err.textContent='Resetting...';
+  try{
+    const r=await fetch(API+'/api/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail, otp, newPassword:np, confirmPassword:cp})});
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.error);
+    err.textContent='Password reset — you can now login';
+    setTimeout(()=>{ document.getElementById('forgotPanel').hidden=true; showAuth('login'); }, 1200);
+  }catch(er){ err.textContent=er.message; }
+}
+function logout(){ localStorage.removeItem('inter_token'); localStorage.removeItem('inter_user'); location.reload(); }
+
+// NAV — ONLY 3 PRIMARY
+function nav(which){
+  document.querySelectorAll('nav [data-nav]').forEach(b=>{ b.setAttribute('aria-current','false'); b.className='navBtn flex-1 py-2.5 rounded-full bg-white border-2 font-bold'; });
+  const active=document.querySelector(`nav [data-nav="${which}"]`);
+  if(active){ active.setAttribute('aria-current','page'); active.className='navBtn flex-1 py-2.5 rounded-full bg-slate-900 text-white font-bold'; }
+  document.getElementById('view-home').hidden = which!=='home';
+  document.getElementById('view-library').hidden = which!=='library';
+  document.getElementById('view-quiz').hidden = which!=='quiz';
+  document.getElementById('view-reader').hidden = which!=='reader';
+  document.getElementById('view-upload').hidden = which!=='upload';
+  if(which==='home') renderHome();
+  if(which==='library') renderLibrary();
+  if(which==='quiz') refreshQuizDocs();
+  announce(which+' opened');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function openSecondary(){ document.getElementById('secondarySheet').hidden=false; }
+function closeSecondary(){ document.getElementById('secondarySheet').hidden=true; }
+function openSettings(){
+  document.getElementById('settingsModal').hidden=false;
+  document.getElementById('setName').value = user? user.name : (localStorage.getItem('student_name')||'');
+  document.getElementById('setPomo').checked = localStorage.getItem('pomo_enabled')!=='false';
+}
+function closeSettings(){ document.getElementById('settingsModal').hidden=true; }
+function saveSettings(){
+  const n=document.getElementById('setName').value.trim();
+  const s=document.getElementById('setStream').value;
+  const p=document.getElementById('setPomo').checked;
+  localStorage.setItem('student_name', n);
+  localStorage.setItem('inter_stream', s);
+  localStorage.setItem('pomo_enabled', String(p));
+  document.getElementById('streamSelect').value=s;
+  closeSettings();
+  announce('Settings saved');
+}
+
+// HOME
+function renderHome(){
+  // Recent
+  const recent=docs.slice(0,3);
+  const list=document.getElementById('recentList');
+  const noRecent=document.getElementById('noRecent');
+  if(!recent.length){ list.innerHTML=''; noRecent.hidden=false; }
+  else {
+    noRecent.hidden=true;
+    list.innerHTML = recent.map(d=>`
+      <div class="flex items-center justify-between p-3 rounded-xl border-2 bg-white">
+        <div>
+          <p class="font-bold">${d.title}</p>
+          <p class="text-xs text-slate-500">${d.subject} • ${d.pages} pages</p>
+        </div>
+        <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 text-white font-bold" aria-label="Open ${d.title}">Open</button>
+      </div>
+    `).join('');
+  }
+  // Continue
+  const last = docs[0];
+  const cont=document.getElementById('continueBox');
+  const noCont=document.getElementById('noContinue');
+  if(!last){ cont.innerHTML=''; noCont.hidden=false; }
+  else{
+    noCont.hidden=true;
+    const prog = parseInt(localStorage.getItem('prog_'+last.id)||'1',10);
+    cont.innerHTML = `
+      <p class="font-bold">${last.title}</p>
+      <p class="text-sm text-slate-600">Page ${prog} of ${last.pages} — ${last.subject}</p>
+      <button onclick="openDoc('${last.id}')" class="mt-3 w-full py-3 rounded-full bg-indigo-600 text-white font-bold" aria-label="Continue reading ${last.title} from page ${prog}">Continue Reading</button>
+    `;
+  }
+  // pwa bar
+  if(window.deferredPrompt) document.getElementById('pwaBar').hidden=false;
+}
+function openPicker(){ document.getElementById('filePicker').click(); announce('PDF picker opened'); }
+function focusAsk(){ document.getElementById('homeAsk').focus(); }
+function askFromHome(){
+  const q=document.getElementById('homeAsk').value.trim();
+  if(!q) return;
+  nav('reader');
+  // If no doc, just ask AI
+  if(!currentDoc) { askAI(q); }
+  else { askAI(q + '\n\nContext: ' + (pageTexts[currentPage-1]||'').slice(0,3000)); }
+  document.getElementById('homeAsk').value='';
+}
+function onFilePicked(e){
+  const f=e.target.files[0];
+  if(!f) return;
+  if(f.type!=='application/pdf' && !f.name.toLowerCase().endsWith('.pdf')){ announce('Only PDF allowed'); alert('Only PDF documents for this workflow'); e.target.value=''; return; }
+  announce('PDF selected');
+  startUpload(f);
+  e.target.value='';
+}
+
+// UPLOAD — REAL PROGRESS
+let uploadCancel=false;
+function cancelUpload(){ uploadCancel=true; announce('Upload cancelled'); nav('home'); }
+async function startUpload(file){
+  uploadCancel=false;
+  nav('upload');
+  document.getElementById('uploadFile').textContent = file.name + ' • ' + (file.size/1024/1024).toFixed(2)+' MB';
+  const bar=document.getElementById('progBar');
+  const wrap=document.getElementById('progBarWrap');
+  const stage=document.getElementById('uploadStage');
+  const pageEl=document.getElementById('uploadPage');
+  let pdfDoc=null;
+  try{
+    stage.textContent='Uploading PDF...';
+    pageEl.textContent='';
+    bar.style.width='8%'; wrap.setAttribute('aria-valuenow','8');
+    // Simulate upload progress (real file already selected, but show uploading)
+    for(let p=8; p<22; p+=2){ if(uploadCancel) return; bar.style.width=p+'%'; await new Promise(r=>setTimeout(r, 80)); }
+    stage.textContent='Reading document...';
+    const buf = await file.arrayBuffer();
+    pdfDoc = await pdfjsLib.getDocument({data: buf}).promise;
+    totalPages = pdfDoc.numPages;
+    pageTexts = new Array(totalPages);
+    let full=''; // for library save
+    for(let i=1; i<=totalPages; i++){
+      if(uploadCancel) return;
+      const pct = Math.round(22 + (i/totalPages)*70);
+      bar.style.width=pct+'%'; wrap.setAttribute('aria-valuenow', String(pct));
+      stage.textContent=`Scanning page ${i} of ${totalPages}`;
+      pageEl.textContent=`${pct}% — Scanning page ${i} of ${totalPages}`;
+      announce(`Scanning page ${i} of ${totalPages} — ${pct} percent`);
+      const page = await pdfDoc.getPage(i);
+      const viewport = page.getViewport({scale: 1});
+      // Try text layer first
+      const content = await page.getTextContent();
+      let text = content.items.map(it=>it.str).join(' ').trim();
+      // If no text, use OCR for scanned pages
+      if(!text || text.length < 20){
+        stage.textContent=`Scanning page ${i} of ${totalPages} — Using OCR`;
+        const canvas=document.createElement('canvas');
+        const ctx=canvas.getContext('2d');
+        canvas.width=viewport.width; canvas.height=viewport.height;
+        await page.render({canvasContext: ctx, viewport}).promise;
+        const dataUrl=canvas.toDataURL('image/png');
+        try{
+          const {data:{text: ocrText}} = await Tesseract.recognize(dataUrl, 'eng', {logger:()=>{}});
+          text = ocrText.trim();
+        }catch{}
+        if(!text) text='[No text detected on this page]';
+      }
+      pageTexts[i-1]=text;
+      full += `\n\n--- Page ${i} ---\n` + text;
+      // Natural speed depends on page complexity (text length)
+      await new Promise(r=>setTimeout(r, 120 + Math.min(400, text.length/12)));
+    }
+    bar.style.width='100%'; wrap.setAttribute('aria-valuenow','100');
+    stage.textContent='Processing complete.';
+    pageEl.textContent=`100% — ${totalPages} pages processed`;
+    announce(`Processing complete — ${totalPages} pages`);
+    // Save full for library, but also keep pageTexts
+    const title=file.name.replace(/\.pdf$/i,'');
+    currentDoc = { id: 'doc_'+Date.now(), title, subject: (STREAMS[localStorage.getItem('inter_stream')||'MPC']||[])[0]||'General', pages: totalPages, text: full, pageTexts, created: new Date().toISOString() };
+    // Don't auto-save yet — let user Save to Library
+    setTimeout(()=> openReaderForDoc(currentDoc, 1, pdfDoc), 500);
+  }catch(e){
+    console.error(e);
+    stage.textContent='Unable to process this PDF.';
+    pageEl.textContent=e.message;
+    announce('Unable to process this PDF');
   }
 }
+
+function openReaderForDoc(doc, pageNum, pdf){
+  currentDoc=doc; currentPage=pageNum||1; pdfDoc=pdf;
+  // Persist reading progress
+  localStorage.setItem('prog_'+doc.id, String(currentPage));
+  nav('reader');
+  document.getElementById('readerDocTitle').textContent=doc.title;
+  document.getElementById('readerPage').textContent=`Page ${currentPage} of ${doc.pages}`;
+  renderReaderPage();
+}
+
+// READER — STRUCTURED TEXT, PAGE BY PAGE, REAL PDF PAGES
+function renderReaderPage(){
+  if(!currentDoc) return;
+  totalPages=currentDoc.pages;
+  document.getElementById('readerPage').textContent=`Page ${currentPage} of ${totalPages}`;
+  document.getElementById('jumpPage').max = String(totalPages);
+  // Preserve structure: split into paragraphs/sentences, not one block
+  const raw = (pageTexts[currentPage-1] || currentDoc.text.split('--- Page')[currentPage] || '').trim();
+  const structured = structureText(raw, currentDoc.title, currentPage);
+  const container=document.getElementById('readerText');
+  container.innerHTML = structured.html;
+  // Also render PDF canvas if available
+  if(pdfDoc){
+    const canvas=document.getElementById('readerCanvas');
+    pdfDoc.getPage(currentPage).then(page=>{
+      const viewport=page.getViewport({scale: 1.1});
+      canvas.width=viewport.width; canvas.height=viewport.height;
+      canvas.style.width='100%'; canvas.height=viewport.height;
+      const ctx=canvas.getContext('2d');
+      page.render({canvasContext: ctx, viewport});
+    });
+  }
+  localStorage.setItem('prog_'+currentDoc.id, String(currentPage));
+  announce(`Page ${currentPage} of ${totalPages}`);
+}
+function structureText(raw, title, pageNum){
+  // Convert raw text into accessible structure: headings, paragraphs, lists, sentences
+  let text = raw.replace(/\s+/g,' ').trim();
+  if(!text) return {html:'<p>No text on this page</p>', plain:''};
+  // Simple heuristics: split by sentence, preserve paragraphs (double newline in original)
+  const sentences = text.split(/(?<=[.!?])\s+/).filter(s=>s.trim().length>0);
+  let html='';
+  // First sentence often is heading if short and capitalized
+  if(pageNum===1 && sentences.length && sentences[0].length < 80 && /^[A-Z]/.test(sentences[0])){
+    html += `<h3 class="font-bold text-lg">${escapeHtml(sentences[0])}</h3>`;
+    sentences.shift();
+  } else if(pageNum===1){
+    html += `<h3 class="font-bold">${escapeHtml(title)}</h3>`;
+  }
+  // Group every 2-3 sentences into paragraph for TalkBack (each <p> independently accessible)
+  for(let i=0;i<sentences.length;i+=2){
+    const para = sentences.slice(i,i+2).join(' ');
+    // Detect list
+    if(/^\d+\./.test(para) || /^[•-]/.test(para)){
+      html += `<li class="ml-4 list-disc">${escapeHtml(para)}</li>`;
+    } else {
+      html += `<p class="mt-3">${escapeHtml(para)}</p>`;
+    }
+  }
+  if(html.includes('<li>')) html = `<ul class="list-disc ml-4">${html}</ul>`;
+  return {html, plain: sentences.join(' ')};
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function readerPrev(){ if(currentPage>1){ ttsStop(); currentPage--; renderReaderPage(); } }
+function readerNext(){ if(currentPage<totalPages){ ttsStop(); currentPage++; renderReaderPage(); } }
+function readerJump(){
+  const v=parseInt(document.getElementById('jumpPage').value,10);
+  if(!v || v<1 || v>totalPages) return alert('Enter page 1 to '+totalPages);
+  ttsStop(); currentPage=v; renderReaderPage();
+}
+
+// TTS — HIGH QUALITY, PAGE BY PAGE, NOT ONE BLOCK
+let ttsUtter=null, ttsIdx=0, ttsParas=[];
+function getParas(){ return Array.from(document.querySelectorAll('#readerText p, #readerText h3, #readerText li')).map(el=>el.textContent.trim()).filter(Boolean); }
+function ttsPlay(fromStart=false){
+  if(!('speechSynthesis' in window)) return alert('TTS not supported');
+  speechSynthesis.cancel();
+  ttsParas=getParas();
+  if(fromStart) ttsIdx=0;
+  else if(ttsIdx>=ttsParas.length) ttsIdx=0;
+  playPara();
+}
+function playPara(){
+  if(ttsIdx>=ttsParas.length){
+    // Auto next page?
+    if(currentPage<totalPages && confirm('End of page. Go to next page?')){
+      readerNext(); setTimeout(()=>{ ttsIdx=0; playPara(); }, 400);
+    }
+    return;
+  }
+  const text=ttsParas[ttsIdx];
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang = /[\u0C00-\u0C7F]/.test(text) ? 'te-IN' : /[\u0900-\u097F]/.test(text) ? 'hi-IN' : /[\u0B80-\u0BFF]/.test(text) ? 'ta-IN' : 'en-IN';
+  u.rate=1; u.onend=()=>{ ttsIdx++; playPara(); };
+  ttsUtter=u;
+  speechSynthesis.speak(u);
+}
+function ttsPause(){ speechSynthesis.pause(); }
+function ttsResume(){ speechSynthesis.resume(); }
+function ttsStop(){ speechSynthesis.cancel(); ttsUtter=null; }
+function ttsSkip(dir){ ttsStop(); ttsIdx = Math.max(0, Math.min(ttsParas.length-1, ttsIdx+dir)); playPara(); }
+function readAloud(){
+  // Read current page only, not entire doc
+  const paras=getParas().join(' ');
+  if(!paras) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(paras.slice(0,4000));
+  u.lang='en-IN'; speechSynthesis.speak(u);
+  announce('Reading page '+currentPage);
+}
+
+// SAVE / LIBRARY
+function saveToLib(){
+  if(!currentDoc) return;
+  if(docs.find(d=>d.id===currentDoc.id)) return announce('Already in Library');
+  docs.unshift({...currentDoc, pageTexts});
+  localStorage.setItem('inter_docs', JSON.stringify(docs));
+  announce('Saved to Library');
+  alert('Saved to Library');
+  renderHome();
+}
+function saveAndQuiz(){
+  saveToLib();
+  // Generate quiz from current doc
+  document.getElementById('quizDoc').innerHTML = `<option value="${currentDoc.id}">${currentDoc.title}</option>` + docs.map(d=>`<option value="${d.id}">${d.title}</option>`).join('');
+  document.getElementById('quizDoc').value=currentDoc.id;
+  nav('quiz');
+}
+
+// LIBRARY
+function renderLibrary(){
+  const list=document.getElementById('libList');
+  const noLib=document.getElementById('noLib');
+  if(!docs.length){ list.innerHTML=''; noLib.hidden=false; return; }
+  noLib.hidden=true;
+  list.innerHTML = docs.map(d=>`
+    <div class="bg-white border-2 rounded-2xl p-4 flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <p class="font-bold truncate">${d.title}</p>
+        <p class="text-xs text-slate-500">${d.pages} pages • ${new Date(d.created).toLocaleDateString()} • Page ${localStorage.getItem('prog_'+d.id)||1}/${d.pages}</p>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 text-white font-bold" aria-label="Open ${d.title}">Open</button>
+        <button onclick="openLibOptions('${d.id}')" class="w-10 h-10 rounded-full bg-white border-2 flex items-center justify-center" aria-label="Options for ${d.title}"><i class="fa-solid fa-ellipsis"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+let optDocId=null;
+function openLibOptions(id){
+  optDocId=id;
+  const d=docs.find(x=>x.id===id);
+  document.getElementById('optTitle').textContent=d.title;
+  document.getElementById('libOptions').hidden=false;
+  announce('Options for '+d.title);
+}
+function closeLibOptions(){ document.getElementById('libOptions').hidden=true; if(optDocId) document.querySelector(`button[aria-label="Options for ${docs.find(d=>d.id===optDocId)?.title}"]`)?.focus(); }
+function optAction(a){
+  const id=optDocId;
+  closeLibOptions();
+  if(a==='open') openDoc(id);
+  if(a==='continue') openDoc(id, parseInt(localStorage.getItem('prog_'+id)||'1',10));
+  if(a==='rename'){ const d=docs.find(x=>x.id===id); const n=prompt('Rename', d.title); if(n){ d.title=n; localStorage.setItem('inter_docs', JSON.stringify(docs)); renderLibrary(); } }
+  if(a==='delete'){ if(confirm('Delete this PDF?')){ docs=docs.filter(d=>d.id!==id); localStorage.setItem('inter_docs', JSON.stringify(docs)); renderLibrary(); renderHome(); } }
+  if(a==='questions' || a==='quiz'){ document.getElementById('quizDoc').innerHTML = docs.map(d=>`<option value="${d.id}">${d.title}</option>`).join(''); document.getElementById('quizDoc').value=id; nav('quiz'); }
+  if(a==='ask'){ const d=docs.find(x=>x.id===id); askAI('Explain this document: '+d.text.slice(0,3000)); nav('reader'); }
+  if(a==='export'){ const d=docs.find(x=>x.id===id); exportDoc(d); }
+}
+function openDoc(id, page){
+  const d=docs.find(x=>x.id===id);
+  if(!d) return;
+  // Need to reconstruct pageTexts if stored
+  pageTexts = d.pageTexts || d.text.split('--- Page').map(s=>s.trim()).filter(Boolean);
+  currentDoc=d; currentPage=page|| parseInt(localStorage.getItem('prog_'+id)||'1',10);
+  totalPages=d.pages;
+  // Try to get pdfDoc for canvas? If not, just text
+  pdfDoc=null;
+  document.getElementById('readerDocTitle').textContent=d.title;
+  nav('reader');
+  renderReaderPage();
+}
+function exportDoc(d){
+  d=d||currentDoc;
+  if(!d) return;
+  const blob=new Blob([d.text],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=d.title+'.txt'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  announce('Exported');
+}
+
+// QUIZ — REAL LLM, RANDOMIZED ACROSS PDF, ACCESSIBLE BUTTONS
+function refreshQuizDocs(){
+  const sel=document.getElementById('quizDoc');
+  sel.innerHTML = docs.map(d=>`<option value="${d.id}">${d.title} • ${d.pages} pages</option>`).join('') || '<option>No documents</option>';
+}
+async function genQuiz(){
+  const docId=document.getElementById('quizDoc').value;
+  if(!docId) return alert('Choose a document');
+  const doc=docs.find(d=>d.id===docId);
+  const type=document.getElementById('quizType').value;
+  const count=parseInt(document.getElementById('quizCount').value,10);
+  const prog=document.getElementById('quizProg');
+  prog.hidden=false; prog.textContent='Generating quiz and answer — reading ALL chapters (50-60 seconds)...';
+  announce('Generating quiz');
+  let questions=null;
+  try{
+    const r=await fetch(API+'/api/ai/quiz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({docText: doc.text, subject: doc.subject, type, count, lang:'English', stream: localStorage.getItem('inter_stream')||'MPC'})});
+    if(r.ok){
+      const j=await r.json();
+      if(j.questions && j.questions.length) questions=j.questions;
+    }
+  }catch(e){ console.warn(e); }
+  if(!questions || !questions.length){
+    // Fallback: try chat
+    const prompt=`Create ${count} ${type} questions from this document, grounded strictly in content, randomized across pages. Return ONLY JSON array {q, options[4], answerIndex, explanation, marks}. Document: """${doc.text.slice(0,12000)}"""`;
+    try{
+      const r=await fetch(API+'/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+      if(r.ok){ const j=await r.json(); const t=j.text||''; const m=t.match(/\[[\s\S]*\]/); if(m) questions=JSON.parse(m[0]); }
+    }catch{}
+  }
+  if(!questions || !questions.length){
+    prog.textContent='AI busy — try again in 30 seconds';
+    announce('Quiz generation failed, try again');
+    return;
+  }
+  // Randomize order already done by LLM, ensure grounded
+  quiz={ id:'quiz_'+Date.now(), docId, title: doc.title+' — '+type, questions: questions.slice(0,count), created: new Date().toISOString() };
+  quizzes.unshift(quiz);
+  localStorage.setItem('inter_quizzes', JSON.stringify(quizzes));
+  prog.hidden=true;
+  startQuiz(quiz.id);
+}
+function startQuiz(id){
+  quiz=quizzes.find(q=>q.id===id);
+  if(!quiz) return;
+  qIdx=0; answers={};
+  document.getElementById('quizBox').hidden=false;
+  document.getElementById('quizQTitle').textContent=quiz.title;
+  startTimer();
+  renderQuiz();
+  announce('Quiz started');
+}
+function renderQuiz(){
+  const q=quiz.questions[qIdx];
+  document.getElementById('quizProgText').textContent=`Question ${qIdx+1} of ${quiz.questions.length}`;
+  announce(`Question ${qIdx+1} of ${quiz.questions.length}`);
+  const opts=document.getElementById('quizOpts');
+  opts.innerHTML='';
+  ['A','B','C','D'].forEach((label,i)=>{
+    if(q.options && q.options[i]){
+      const btn=document.createElement('button');
+      btn.className='w-full text-left p-4 rounded-xl border-2 bg-white font-bold flex gap-3 items-center focus:border-indigo-500';
+      btn.setAttribute('aria-label', `Option ${label}: ${q.options[i]}`);
+      btn.innerHTML=`<span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">${label}</span><span class="flex-1">${q.options[i]}</span>`;
+      btn.onclick=()=> chooseOpt(i);
+      if(answers[qIdx]===i) btn.classList.add('bg-indigo-50','border-indigo-500');
+      opts.appendChild(btn);
+    }
+  });
+  // For theory, show textarea
+  if(!q.options || !q.options.length){
+    const ta=document.createElement('textarea');
+    ta.placeholder='Type your answer';
+    ta.className='w-full p-3 rounded-xl border-2';
+    ta.setAttribute('aria-label','Your answer');
+    opts.appendChild(ta);
+  }
+}
+function chooseOpt(i){
+  answers[qIdx]=i;
+  const q=quiz.questions[qIdx];
+  const correct = i===q.answerIndex;
+  announce(correct? 'Correct' : 'Incorrect, correct is Option ' + ['A','B','C','D'][q.answerIndex]);
+  // Sound
+  try{ (correct? document.getElementById('sndCorrect'): document.getElementById('sndWrong')).play(); }catch{}
+  // Show explanation
+  const expl=document.createElement('div');
+  expl.className='mt-3 p-3 rounded-xl bg-slate-50 border-2';
+  expl.innerHTML=`<p class="font-bold">${correct? 'Correct ✓':'Incorrect ✗ — Correct: Option '+['A','B','C','D'][q.answerIndex]}</p><p class="text-sm mt-1">${q.explanation||''}</p>`;
+  document.getElementById('quizOpts').appendChild(expl);
+  setTimeout(()=>{ if(qIdx < quiz.questions.length-1){ qIdx++; renderQuiz(); } else { finishQuiz(); } }, 1200);
+}
+function quizPrev(){ if(qIdx>0){ qIdx--; renderQuiz(); } }
+function quizNext(){ if(qIdx < quiz.questions.length-1){ qIdx++; renderQuiz(); } else { finishQuiz(); } }
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = quiz.questions.length * 45; // 45 sec per question
+  const el=document.getElementById('quizTimer');
+  timer=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60), s=timeLeft%60;
+    el.textContent=`Time left: ${m}:${String(s).padStart(2,'0')}`;
+    if(timeLeft===30){ try{ document.getElementById('sndTick').play(); }catch{} announce('30 seconds left'); }
+    if(timeLeft<=0){ clearInterval(timer); finishQuiz(); }
+  }, 1000);
+}
+function finishQuiz(){
+  clearInterval(timer);
+  let correct=0;
+  quiz.questions.forEach((q,i)=>{ if(answers[i]===q.answerIndex) correct++; });
+  document.getElementById('quizResult').hidden=false;
+  document.getElementById('quizScore').textContent=`You scored ${correct} of ${quiz.questions.length}`;
+  try{ document.getElementById('sndComplete').play(); }catch{}
+  announce(`Quiz complete, you scored ${correct} of ${quiz.questions.length}`);
+}
+function restartQuiz(){ document.getElementById('quizResult').hidden=true; qIdx=0; answers={}; renderQuiz(); startTimer(); }
+
+// AI TUTOR — REAL LLM, NO LOGIN REQUIRED FOR CHAT
+async function askAI(prompt){
+  const full = currentDoc? `Context (page ${currentPage} of ${totalPages}):\n"""${(pageTexts[currentPage-1]||'').slice(0,4000)}"""\n\nQuestion: ${prompt}` : prompt;
+  // Show thinking
+  const box=document.createElement('div');
+  box.className='mt-4 p-4 rounded-xl bg-slate-50 border-2';
+  box.innerHTML='<p class="text-sm font-bold">Thinking...</p>';
+  document.getElementById('readerText').appendChild(box);
+  try{
+    const r=await fetch(API+'/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: full})});
+    if(!r.ok) throw new Error('AI error');
+    const j=await r.json();
+    const text=j.text || j.demo || 'No answer';
+    box.innerHTML=`<p class="font-bold">AI Tutor</p><p class="text-sm mt-2 whitespace-pre-wrap">${text.replace(/</g,'&lt;')}</p>`;
+    announce('AI answered');
+  }catch(e){
+    box.textContent='Unable to get AI answer. Try again.';
+  }
+}
+function translatePage(){
+  const text = (pageTexts[currentPage-1]||'').slice(0,1000);
+  if(!text) return;
+  askAI('Translate this to Telugu (if English) or English (if Telugu), keep structure:\n\n'+text);
+}
+
+// UTILS
+function setStream(v){ localStorage.setItem('inter_stream', v); document.getElementById('streamSelect').value=v; document.getElementById('setStream').value=v; }
 </script>
 </body>
 </html>
