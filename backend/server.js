@@ -230,30 +230,36 @@ app.post('/api/ai/chat', async (req,res)=>{
   }catch(e){ console.error('AI chat',e); res.status(500).json({ error:'AI error', detail:e.message}); }
 });
 
-// AI Quiz generator via server (real, not mock) — hides key
+// AI Quiz generator via server (real, not mock) — hides key, generates like real IPE exam
 app.post('/api/ai/quiz', async (req,res)=>{
   try{
-    const { docText, subject, type, count, diff, lang } = req.body;
+    const { docText, subject, type, count, diff, lang, stream, year } = req.body;
     if(!docText) return res.status(400).json({ error:'docText required' });
-    const prompt = `Create ${count||10} quiz questions of type "${type||'mcq'}" for ${subject||'General'} in ${lang||'English'}. Difficulty: ${diff||'Medium'}. Use ONLY this document content. Return JSON array with objects {q, options[4], answerIndex (0-3), explanation, marks}. If not MCQ, options can be []. Ensure blueprint style (2M/4M/8M). Document text: """${String(docText).slice(0,10000)}""" . Return ONLY JSON, no markdown.`;
-    // Reuse chat logic but force JSON
-    req.body.prompt = prompt;
-    req.body.context = '';
-    // Call internal logic — we can just proxy to chat and parse
-    // Instead call OpenRouter directly with JSON instruction
-    if(!OPENROUTER_KEY) return res.status(503).json({ error:'AI not configured', demo:true });
+    // Real exam-style prompt — from MIDDLE of PDF, not Page 1, blueprint 2M/4M/8M, 4 options shuffled
+    const prompt = `You are expert TS/AP Inter ${stream||'MPC'} ${year||'Inter'} ${subject||'General'} teacher. Create ${count||10} REAL IPE exam-style questions of type "${type||'mcq'}" in ${lang||'English'} (difficulty ${diff||'Medium — Understand+Apply'}). CRITICAL: Use ONLY the document content below, focus on MIDDLE chapters and important concepts (not just introduction or "Page 1" header). Generate like real apps: MCQ must have 4 plausible shuffled options (one correct), 2M = very short (one line), 4M = short (4-5 lines with example), 8M = long with steps/derivation. Return ONLY JSON array with objects {q: "question text in ${lang||'English'}", options: ["A","B","C","D"] (exactly 4 for MCQ, [] for theory), answerIndex: 0-3, explanation: "concise why correct, in ${lang}", marks: 1 for MCQ else 2/4/8}. Do NOT return "What is main idea of Page 1" — create real conceptual questions. Document: """${String(docText).slice(0,12000)}"""`;
+    if(!OPENROUTER_KEY) return res.status(503).json({ error:'AI not configured on server — add OPENROUTER_API_KEY in Render Env', demo:true });
     const r=await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${OPENROUTER_KEY}`, 'HTTP-Referer': process.env.DOMAIN || 'https://mahicouragw.github.io', 'X-Title':'Inter AI Study Buddy'},
-      body: JSON.stringify({ model:'openai/gpt-4o-mini', messages:[{role:'user', content: prompt}], temperature:0.7, max_tokens: 3000 })
+      body: JSON.stringify({ model:'openai/gpt-4o-mini', messages:[{role:'user', content: prompt}], temperature:0.75, max_tokens: 3500 })
     });
-    if(!r.ok){ const t=await r.text(); return res.status(502).json({error:'Quiz AI error', detail:t.slice(0,400)}); }
+    if(!r.ok){ const t=await r.text(); console.error('Quiz AI error', t.slice(0,600)); return res.status(502).json({error:'Quiz AI error', detail:t.slice(0,500)}); }
     const j=await r.json();
     let text=j.choices?.[0]?.message?.content || '[]';
-    // Try extract JSON array
-    const cleaned=text.replace(/```json|```/g,'').trim();
+    // Extract JSON array even if model adds extra text
+    const cleaned=text.replace(/```json|```/g,'').replace(/```/g,'').trim();
+    const jsonMatch = cleaned.match(/\[[\s\S]*\]/);
+    const toParse = jsonMatch ? jsonMatch[0] : cleaned;
     let parsed;
-    try{ parsed=JSON.parse(cleaned); if(!Array.isArray(parsed) && parsed.questions) parsed=parsed.questions; } catch(e){ return res.json({ text, raw:true }); }
-    res.json({ questions: parsed });
+    try{ parsed=JSON.parse(toParse); if(!Array.isArray(parsed) && parsed.questions) parsed=parsed.questions; } catch(e){ console.warn('Quiz JSON parse failed', e, text.slice(0,500)); return res.json({ text, raw:true, error:'JSON parse failed' }); }
+    // Validate and shuffle options for MCQ
+    parsed = parsed.slice(0, count||10).map(q=>{
+      if(q.options && q.options.length===4){
+        // Ensure answerIndex is valid
+        if(typeof q.answerIndex!=='number' || q.answerIndex<0 || q.answerIndex>3) q.answerIndex=0;
+      }
+      return q;
+    });
+    res.json({ questions: parsed, provider:'openrouter', model:'openai/gpt-4o-mini' });
   }catch(e){ console.error('AI quiz',e); res.status(500).json({error:e.message}); }
 });
 
