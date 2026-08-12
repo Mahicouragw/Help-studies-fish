@@ -15,16 +15,17 @@ function cleanCredentials() {
   return { user, pass, isConfigured: !isPlaceholder };
 }
 
-function createTransporter() {
+function createTransporter(port = 587, secure = false) {
   const { user, pass, isConfigured } = cleanCredentials();
 
   if (!isConfigured) {
     return null;
   }
 
-  // Use service 'gmail' with TLS settings and timeouts
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port,
+    secure, // false for 587 (STARTTLS), true for 465
     auth: { user, pass },
     tls: {
       rejectUnauthorized: false
@@ -76,11 +77,6 @@ async function sendOTPEmail(to, otp, purpose = 'signup') {
     return { dev: true, otp, success: true };
   }
 
-  const transporter = createTransporter();
-  if (!transporter) {
-    return { dev: true, otp, success: true };
-  }
-
   const mailOptions = {
     from: `"Study Vision AI" <${user}>`,
     to,
@@ -89,25 +85,29 @@ async function sendOTPEmail(to, otp, purpose = 'signup') {
     text
   };
 
-  // 12s application timeout
-  const timeoutMs = 12000;
-  const timeoutPromise = new Promise((_, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error('SMTP timeout: Email sending took longer than 12 seconds'));
-    }, timeoutMs);
-    if (typeof timer.unref === 'function') timer.unref();
-  });
-
+  // Try port 587 (STARTTLS) first — Render allows 587
   try {
+    const transporter587 = createTransporter(587, false);
     const info = await Promise.race([
-      transporter.sendMail(mailOptions),
-      timeoutPromise
+      transporter587.sendMail(mailOptions),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP timeout on port 587 after 12s')), 12000))
     ]);
-    console.log(`✅ OTP email sent successfully to ${to} (Message ID: ${info.messageId || 'ok'})`);
+    console.log(`✅ OTP email sent successfully via port 587 to ${to} (Message ID: ${info.messageId || 'ok'})`);
     return { success: true, messageId: info.messageId };
-  } catch (err) {
-    console.error(`❌ Failed to send OTP email to ${to}:`, err.message);
-    throw err;
+  } catch (err587) {
+    console.warn(`⚠️  Port 587 send failed (${err587.message}), trying port 465 (SSL)...`);
+    try {
+      const transporter465 = createTransporter(465, true);
+      const info = await Promise.race([
+        transporter465.sendMail(mailOptions),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP timeout on port 465 after 10s')), 10000))
+      ]);
+      console.log(`✅ OTP email sent successfully via port 465 to ${to} (Message ID: ${info.messageId || 'ok'})`);
+      return { success: true, messageId: info.messageId };
+    } catch (err465) {
+      console.error(`❌ Failed to send OTP email to ${to}:`, err587.message, err465.message);
+      throw err587;
+    }
   }
 }
 
