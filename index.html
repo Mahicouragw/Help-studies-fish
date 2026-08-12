@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="Ts0tjKFlNmAjB6cr2feAjxOG7j6r7KsKq6p_tO5tqKw">
-<meta name="description" content="Study Vision AI — Accessible AI Study Companion for Blind & TS Intermediate Students. Detective PDF Scanner, Auto Scan, Audio Narration, Exam Blueprint Quizzes.">
+<meta name="description" content="Study Vision AI — Accessible AI Study Companion for Blind & TS Intermediate Students. High-Precision Indic/Telugu PDF Extraction, Auto Scan, Audio Narration, Exam Blueprint Quizzes.">
 <meta name="theme-color" content="#4f46e5">
 <link rel="manifest" href="manifest.json">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -14,7 +14,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; tailwind.config={theme:{extend:{fontFamily:{display:['Outfit'],body:['Plus Jakarta Sans']}}}};</script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { display: ['Outfit'], body: ['Plus Jakarta Sans'] }
+      }
+    }
+  };
+</script>
 <style>
   *{scrollbar-width:thin; scrollbar-color:#c7d2fe #f8fafc}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -25,6 +34,7 @@
   .animate-fadeIn { animation: fadeIn 0.25s ease-out forwards; }
   @keyframes pulseSubtle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
   .animate-pulseSubtle { animation: pulseSubtle 1.8s infinite ease-in-out; }
+  .telugu-text { font-family: 'Plus Jakarta Sans', 'Segoe UI', 'Noto Sans Telugu', 'Gautami', sans-serif; line-height: 1.8; }
 </style>
 </head>
 <body class="bg-[#f8fafc] font-body text-slate-900 antialiased min-h-screen">
@@ -113,7 +123,7 @@
     </div>
     <h2 class="font-display font-bold text-2xl sm:text-3xl text-slate-900 mt-5">Welcome to Study Vision AI!</h2>
     <p id="welcomeUserName" class="text-indigo-600 font-bold text-lg mt-1"></p>
-    <p class="text-slate-600 text-sm mt-2 leading-relaxed">Your accessible AI study companion is ready. Upload PDFs, auto-scan notes, practice quizzes, and listen to textbook chapters.</p>
+    <p class="text-slate-600 text-sm mt-2 leading-relaxed">Your accessible AI study companion is ready. Upload Telugu & English PDFs, auto-scan notes, practice quizzes, and listen to audio narration.</p>
     
     <div class="mt-6 space-y-3">
       <button id="btnWelcomeContinue" onclick="enterApp()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition shadow-lg shadow-indigo-200 text-white font-bold text-lg flex items-center justify-center gap-2 cursor-pointer">
@@ -138,7 +148,7 @@
         </div>
         <div>
           <p class="font-display font-bold text-lg leading-tight text-slate-900">Study Vision AI</p>
-          <p class="text-xs text-slate-500">TS Inter • Accessible TalkBack</p>
+          <p class="text-xs text-slate-500">TS Inter • Telugu & English • TalkBack</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -178,7 +188,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 class="font-display font-bold text-2xl sm:text-3xl">Namaste, <span id="homeName">Topper</span> 👋</h2>
-            <p class="text-indigo-100 text-sm mt-1 max-w-xl">Ready to study? Upload a PDF chapter, scan your notes, or generate an exam-style quiz.</p>
+            <p class="text-indigo-100 text-sm mt-1 max-w-xl">Ready to study? Upload a PDF chapter, scan Telugu/English notes, or practice exam questions.</p>
           </div>
           <div class="flex gap-2">
             <button onclick="nav('upload')" class="px-5 py-3 rounded-full bg-white text-indigo-700 hover:bg-indigo-50 font-bold text-sm shadow-md transition cursor-pointer flex items-center gap-2">
@@ -216,10 +226,10 @@
 
       <!-- Quick AI Ask Bar -->
       <div class="mt-6 bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm">
-        <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-600"></i> Ask AITutor (Telugu & English)</h3>
-        <p class="text-xs text-slate-500 mt-0.5">Ask questions from TS Inter syllabus (Maths, Physics, Chemistry, Economics, Civics, Commerce, History).</p>
+        <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-600"></i> Ask AITutor (తెలుగు & English)</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Ask questions from TS Inter syllabus (తెలుగు, Economics, Civics, Commerce, History, Physics, Chemistry, Maths).</p>
         <div class="mt-3 flex gap-2">
-          <input id="homeAsk" placeholder="e.g. Explain Law of Demand with 10-mark points or Telugu lo explain cheyyi..." class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 border-slate-200 focus:bg-white focus:border-indigo-500 outline-none text-sm">
+          <input id="homeAsk" placeholder="e.g. శ్రీకృష్ణుడు రాయబారానికి ఎందుకు వెళ్లాడు? or Explain Law of Demand..." class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 border-slate-200 focus:bg-white focus:border-indigo-500 outline-none text-sm">
           <button onclick="askFromHome()" class="px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition cursor-pointer">Ask AI</button>
         </div>
         <div id="homeAiResponseBox" class="hidden mt-4 p-5 rounded-2xl border-2 border-indigo-100 bg-slate-50 text-left">
@@ -249,14 +259,14 @@
 
     <!-- UPLOAD PDF SECTION (DETECTIVE SCANNING EXPERIENCE) -->
     <section id="view-upload" class="hidden" aria-labelledby="uploadSecTitle">
-      <h2 id="uploadSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Intelligent PDF Scanner</h2>
+      <h2 id="uploadSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Intelligent Document Scanner</h2>
       <div class="bg-white border-2 border-slate-200 rounded-3xl p-8 text-center shadow-sm">
         <div class="max-w-md mx-auto">
           <div class="w-16 h-16 rounded-3xl bg-indigo-50 border-2 border-indigo-200 text-indigo-600 flex items-center justify-center mx-auto text-3xl mb-4">
             <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
           </div>
-          <h3 class="font-bold text-xl text-slate-800">Scan Educational Document</h3>
-          <p class="text-sm text-slate-500 mt-1">Supports Telugu Academy, NCERT, IPE Question Banks & Class Notes (Any size).</p>
+          <h3 class="font-bold text-xl text-slate-800">Scan Educational PDF</h3>
+          <p class="text-sm text-slate-500 mt-1">High-precision extraction for Telugu (తెలుగు), English, Hindi, and TS Inter Academy Question Banks.</p>
           
           <div class="mt-6">
             <button onclick="openPicker()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-lg shadow-indigo-200 transition cursor-pointer flex items-center justify-center gap-2">
@@ -289,7 +299,7 @@
           </div>
           
           <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-indigo-300">
-            <span>Searching headings, questions & answers</span>
+            <span id="uploadDetailBadge">Examining Unicode text layer & Telugu conjuncts</span>
             <span class="text-emerald-400 font-bold">TalkBack Synced</span>
           </div>
         </div>
@@ -305,7 +315,7 @@
             <i class="fa-solid fa-camera"></i>
           </div>
           <h3 class="font-bold text-xl text-slate-800">Scan Printed Notes or Book Pages</h3>
-          <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Point camera or select a photo. Tesseract OCR will extract the text for instant audio reading and quiz practice.</p>
+          <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Point camera or select a photo. Multi-language OCR extracts Telugu and English text for instant audio reading and quiz practice.</p>
           
           <div class="mt-6 flex flex-wrap justify-center gap-3">
             <label class="px-6 py-3.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm cursor-pointer shadow-md transition flex items-center gap-2">
@@ -336,7 +346,7 @@
               <button onclick="saveScannedToLib()" class="px-4 py-2 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"><i class="fa-solid fa-bookmark"></i> Save to Library</button>
             </div>
           </div>
-          <textarea id="scannedText" rows="9" class="w-full p-4 rounded-2xl border-2 border-slate-200 text-sm leading-relaxed focus:border-indigo-500 outline-none font-mono" placeholder="Scanned text will appear here..."></textarea>
+          <textarea id="scannedText" rows="9" class="w-full p-4 rounded-2xl border-2 border-slate-200 text-sm leading-relaxed focus:border-indigo-500 outline-none telugu-text font-medium" placeholder="Scanned text will appear here..."></textarea>
         </div>
       </div>
     </section>
@@ -427,10 +437,12 @@
       </div>
     </section>
 
-    <!-- SETTINGS SECTION -->
+    <!-- SETTINGS SECTION (WITH COMPREHENSIVE LANGUAGE & EXTRACTION CONTROLS) -->
     <section id="view-settings" class="hidden" aria-labelledby="settingsTitle">
-      <h2 id="settingsTitle" class="font-bold text-2xl text-slate-900 mb-4">App Settings</h2>
-      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm max-w-2xl">
+      <h2 id="settingsTitle" class="font-bold text-2xl text-slate-900 mb-4">App Settings & Preferences</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm max-w-2xl">
+        
+        <!-- Profile info -->
         <div>
           <label class="block text-sm font-bold text-slate-800">Your Full Name</label>
           <input id="setStudentName" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white">
@@ -447,9 +459,59 @@
           </select>
         </div>
 
-        <div class="pt-2 border-t space-y-3">
-          <h3 class="font-bold text-sm text-slate-800">Study & Accessibility Preferences</h3>
-          <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 cursor-pointer">
+        <!-- Language & PDF Extraction Pipeline Settings -->
+        <div class="pt-4 border-t space-y-4">
+          <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-language text-indigo-600"></i> Language & PDF Extraction Pipeline
+          </h3>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">PDF Extraction Language</label>
+            <select id="setPdfLanguage" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-sm bg-white cursor-pointer font-medium">
+              <option value="auto">Auto Detect (Default — Preserves original script)</option>
+              <option value="te">Telugu (తెలుగు) — శ్రీకృష్ణ రాయబారం & Inter Syllabus</option>
+              <option value="en">English (Original Language)</option>
+              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="ta">Tamil (தமிழ்)</option>
+              <option value="kn">Kannada (ಕನ್ನಡ)</option>
+              <option value="ml">Malayalam (മലയാളം)</option>
+              <option value="mr">Marathi (मराठी)</option>
+              <option value="bn">Bengali (বাংলা)</option>
+            </select>
+            <p class="text-[11px] text-slate-500 mt-1">In Auto Detect mode, Telugu and Indian scripts are extracted with 100% native Unicode fidelity.</p>
+          </div>
+
+          <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input id="setTranslateEnglish" type="checkbox" class="mt-1 w-5 h-5 accent-indigo-600 rounded">
+            <div>
+              <span class="font-bold text-sm text-slate-800 block">Translate Extracted Text to English</span>
+              <span class="text-xs text-slate-500">When enabled, the original Telugu/Hindi text is extracted first, then translated into English for bilingual study.</span>
+            </div>
+          </label>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">OCR Processing Mode</label>
+            <select id="setOcrMode" class="mt-1.5 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-sm bg-white cursor-pointer font-medium">
+              <option value="auto">Text Layer First, OCR Only When Needed (Recommended)</option>
+              <option value="text">Digital Text Layer Only (Fastest, High Precision)</option>
+              <option value="ocr">Force OCR on All Pages (For scanned book photos)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Audio & Accessibility Settings -->
+        <div class="pt-4 border-t space-y-3">
+          <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-volume-high text-emerald-600"></i> Audio & Accessibility Preferences
+          </h3>
+          <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input id="setPageTurnSound" type="checkbox" checked class="w-5 h-5 accent-indigo-600 rounded">
+            <div>
+              <span class="font-bold text-sm text-slate-800 block">Page Navigation Sound Effect</span>
+              <span class="text-xs text-slate-500">Plays a gentle royalty-free paper page-turn sound on Next and Previous page.</span>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 cursor-pointer">
             <input id="setPomodoroToggle" type="checkbox" class="w-5 h-5 accent-indigo-600 rounded">
             <div>
               <span class="font-bold text-sm text-slate-800 block">25/5 Pomodoro Study Reminder</span>
@@ -466,7 +528,7 @@
       </div>
     </section>
 
-    <!-- READER SECTION (ACCESSIBLE PDF VIEWER + SOUND FX + TEACHER AI) -->
+    <!-- READER SECTION (ACCESSIBLE PDF VIEWER + SOUND FX + SEARCH + TEACHER AI) -->
     <section id="view-reader" class="hidden" aria-labelledby="readerTitle">
       <h2 id="readerTitle" class="sr-only">Document Reader</h2>
       <div class="bg-white border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm">
@@ -476,8 +538,9 @@
             <h3 id="readerDocTitle" class="font-bold truncate text-base"></h3>
           </div>
           <div class="flex items-center gap-2">
+            <span id="readerLangBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30 uppercase tracking-wider">TE</span>
             <span id="readerPage" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-white/15 tracking-wide" aria-live="polite">Page 1 of 1</span>
-            <button onclick="nav('library')" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold">Back to Library</button>
+            <button onclick="nav('library')" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold">Library</button>
           </div>
         </div>
         
@@ -496,18 +559,32 @@
             </button>
           </div>
 
-          <div class="flex gap-2">
-            <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="Jump to Page #" class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 outline-none text-sm bg-white">
-            <button onclick="readerJump()" class="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm cursor-pointer">Go</button>
+          <!-- Quick Jump & Search in PDF -->
+          <div class="grid sm:grid-cols-2 gap-2">
+            <div class="flex gap-2">
+              <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="Jump to Page #" class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 outline-none text-sm bg-white">
+              <button onclick="readerJump()" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm cursor-pointer">Go</button>
+            </div>
+            <div class="flex gap-2">
+              <input id="readerSearchInput" placeholder="Search in PDF (e.g. శ్రీకృష్ణుడు, రాయబారం)..." class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 outline-none text-sm bg-white">
+              <button onclick="searchInPdf()" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm cursor-pointer flex items-center gap-1"><i class="fa-solid fa-search"></i> Search</button>
+            </div>
+          </div>
+
+          <div id="searchResultBanner" class="hidden p-3 rounded-xl bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-900 flex items-center justify-between">
+            <span id="searchResultText"></span>
+            <button onclick="closeSearchBanner()" class="text-slate-500 hover:text-slate-800"><i class="fa-solid fa-xmark"></i></button>
           </div>
 
           <!-- Page Text Display -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Page Content (TalkBack Ready)</span>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-file-lines text-indigo-600"></i> Page Content (Preserved Unicode)
+              </span>
               <span id="pageTextLength" class="text-xs text-slate-400"></span>
             </div>
-            <div id="readerText" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 max-h-[280px] overflow-auto leading-relaxed text-sm text-slate-800 font-medium" aria-live="polite"></div>
+            <div id="readerText" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 max-h-[280px] overflow-auto leading-relaxed text-base text-slate-900 font-medium telugu-text" aria-live="polite"></div>
           </div>
 
           <!-- Audio Controls -->
@@ -535,14 +612,14 @@
             </div>
 
             <div class="flex flex-wrap gap-1.5 mb-3">
+              <button onclick="quickAskTeacher('శ్రీకృష్ణుడు రాయబారానికి ఎందుకు వెళ్లాడు? ప్రధాన అంశాలు వివరించండి.')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">💡 శ్రీకృష్ణ రాయబారం</button>
               <button onclick="quickAskTeacher('Explain this page like a teacher with simple language and exam points')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">💡 Teacher Explanation</button>
               <button onclick="quickAskTeacher('Give me 2-mark and 4-mark important questions and answers from this page')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">📌 2M & 4M Questions</button>
               <button onclick="quickAskTeacher('Give me a complete 10-mark board exam answer from this content')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">🎯 10-Mark Answer</button>
-              <button onclick="quickAskTeacher('Summarize key definitions and formulas on this page')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">📝 Definitions & Key Points</button>
             </div>
 
             <div class="flex gap-2">
-              <input id="readerAiQuestion" placeholder="Ask AI Teacher any question about this lesson..." class="flex-1 px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-indigo-300 focus:bg-white/20 outline-none text-sm">
+              <input id="readerAiQuestion" placeholder="Ask AI Teacher any question about this lesson (Telugu or English)..." class="flex-1 px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-indigo-300 focus:bg-white/20 outline-none text-sm">
               <button onclick="submitReaderAiQuestion()" class="px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-sm transition cursor-pointer">Ask Teacher</button>
             </div>
 
@@ -599,9 +676,12 @@ const announce = (m) => {
   }
 };
 
-// ZERO-LATENCY REAL ROYALTY-FREE PAGE TURN AUDIO (Web Audio API synthesis + WAV fallback)
+// ZERO-LATENCY REAL ROYALTY-FREE PAGE TURN AUDIO
 let audioCtx = null;
 function playPageTurnAudio() {
+  const enabled = localStorage.getItem('sfx_pageturn') !== 'false';
+  if (!enabled) return;
+
   try {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) {
@@ -612,7 +692,7 @@ function playPageTurnAudio() {
     if (!audioCtx) audioCtx = new AudioContext();
     if (audioCtx.state === 'suspended') audioCtx.resume();
     
-    // Synthesize gentle paper flip rustle + woosh with natural acoustic envelope
+    // Synthesize gentle paper flip rustle with natural acoustic envelope
     const dur = 0.19;
     const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
     const data = buf.getChannelData(0);
@@ -640,9 +720,167 @@ function playPageTurnAudio() {
   }
 }
 
+// UNICODE & INDIC GRAPHEME GLUING ENGINE
+function cleanUnicodeIndicText(text) {
+  if (!text) return "";
+  let s = text;
+
+  // 1. Remove rogue legacy font Latin prefix bytes embedded with Telugu
+  s = s.replace(/[\u00FA\u020A\u0208\u00A0\u00AD\uFEFF]/g, "");
+
+  // 2. Remove spaces between Telugu consonants/base and combining vowel signs / virama / anusvara
+  // e.g. "రా య బారం" -> "రాయబారం", "వి వరించండి" -> "వివరించండి"
+  s = s.replace(/([\u0C00-\u0C7F])\s+([\u0C01-\u0C03\u0C3E-\u0C4D\u0C55\u0C56])/g, "$1$2");
+  
+  // 3. Remove space between Telugu Virama and following consonant (Ottu / Conjunct re-gluing)
+  // e.g. "ష్ ట్ రు" -> "ష్ట్రు", "ధృతరాషు ్ట్రుని" -> "ధృతరాష్ట్రుని", "సంగా ్రుమం" -> "సంగ్రామం"
+  s = s.replace(/([\u0C15-\u0C39]\u0C4D)\s+([\u0C15-\u0C39])/g, "$1$2");
+  s = s.replace(/([\u0C15-\u0C39])\s+(\u0C4D[\u0C15-\u0C39])/g, "$1$2");
+
+  // 4. Remove space before dependent vowel signs if preceded by any Telugu letter
+  s = s.replace(/([\u0C15-\u0C39])\s+([\u0C3E-\u0C4C])/g, "$1$2");
+
+  // 5. Devanagari (Hindi) combining marks re-gluing (U+0900-U+097F)
+  s = s.replace(/([\u0900-\u097F])\s+([\u0901-\u0903\u093E-\u094D\u0951-\u0954])/g, "$1$2");
+  s = s.replace(/([\u0915-\u0939]\u094D)\s+([\u0915-\u0939])/g, "$1$2");
+
+  // 6. Tamil combining marks re-gluing (U+0B80-U+0BFF)
+  s = s.replace(/([\u0B80-\u0BFF])\s+([\u0B82\u0BBE-\u0BCD\u0BD7])/g, "$1$2");
+
+  // 7. Kannada combining marks re-gluing (U+0C80-U+0CFF)
+  s = s.replace(/([\u0C80-\u0CFF])\s+([\u0C81-\u0C83\u0CBE-\u0CCD\u0CD5\u0CD6])/g, "$1$2");
+  s = s.replace(/([\u0C95-\u0CB9]\u0CCD)\s+([\u0C95-\u0CB9])/g, "$1$2");
+
+  // 8. Malayalam combining marks re-gluing (U+0D00-U+0D7F)
+  s = s.replace(/([\u0D00-\u0D7F])\s+([\u0D01-\u0D03\u0D3E-\u0D4D\u0D57])/g, "$1$2");
+  s = s.replace(/([\u0D15-\u0D39]\u0D4D)\s+([\u0D15-\u0D39])/g, "$1$2");
+
+  // 9. Clean multiple whitespace into single space, preserve intentional newlines
+  s = s.replace(/[ \t]+/g, " ");
+  s = s.replace(/ \n/g, "\n").replace(/\n /g, "\n");
+  s = s.replace(/\n{3,}/g, "\n\n");
+
+  return s.normalize("NFC").trim();
+}
+
+// SPATIAL PDF.JS LAYOUT & TEXT EXTRACTION
+async function extractPageSpatialText(page) {
+  const textContent = await page.getTextContent({
+    normalizeWhitespace: false,
+    disableCombineTextItems: false
+  });
+  
+  if (!textContent || !textContent.items || textContent.items.length === 0) {
+    return { rawText: '', normalizedText: '', hasTextLayer: false };
+  }
+
+  const items = textContent.items.filter(item => item.str && item.str.length > 0);
+  if (items.length === 0) {
+    return { rawText: '', normalizedText: '', hasTextLayer: false };
+  }
+
+  // Sort items vertically into lines (group by baseline y-coordinate within ~3.5pt threshold)
+  items.sort((a, b) => {
+    const yA = a.transform[5];
+    const yB = b.transform[5];
+    const dy = yB - yA;
+    if (Math.abs(dy) > 3.2) return dy;
+    return a.transform[4] - b.transform[4];
+  });
+
+  const lines = [];
+  let currentLine = [];
+  let currentY = null;
+
+  for (const item of items) {
+    const x = item.transform[4];
+    const y = item.transform[5];
+    const fontSize = Math.hypot(item.transform[0], item.transform[1]) || 12;
+    const width = item.width || (item.str.length * fontSize * 0.5);
+
+    if (currentY === null) {
+      currentY = y;
+      currentLine.push({ x, y, width, fontSize, str: item.str });
+    } else if (Math.abs(currentY - y) <= 3.5) {
+      currentLine.push({ x, y, width, fontSize, str: item.str });
+    } else {
+      lines.push(currentLine);
+      currentLine = [{ x, y, width, fontSize, str: item.str }];
+      currentY = y;
+    }
+  }
+  if (currentLine.length > 0) lines.push(currentLine);
+
+  const rawLines = [];
+  for (const line of lines) {
+    line.sort((a, b) => a.x - b.x);
+    let lineStr = '';
+    let lastX = null;
+    let lastWidth = 0;
+    let lastFontSize = 12;
+
+    for (const item of line) {
+      if (lastX === null) {
+        lineStr += item.str;
+      } else {
+        const gap = item.x - (lastX + lastWidth);
+        const avgFont = (lastFontSize + item.fontSize) / 2 || 12;
+        
+        // Intelligent intra-word vs inter-word spacing threshold
+        if (gap > 0.28 * avgFont && !lineStr.endsWith(' ') && !item.str.startsWith(' ')) {
+          lineStr += ' ' + item.str;
+        } else {
+          lineStr += item.str;
+        }
+      }
+      lastX = item.x;
+      lastWidth = item.width;
+      lastFontSize = item.fontSize;
+    }
+    rawLines.push(lineStr);
+  }
+
+  const rawText = rawLines.join('\n');
+  const normalizedText = cleanUnicodeIndicText(rawText);
+
+  return {
+    rawText,
+    normalizedText,
+    hasTextLayer: normalizedText.length >= 20
+  };
+}
+
+// LANGUAGE DETECTION
+function detectTextLanguage(text) {
+  if (!text || text.length < 5) return "en";
+  let counts = { te: 0, hi: 0, ta: 0, kn: 0, ml: 0, bn: 0, en: 0 };
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code >= 0x0C00 && code <= 0x0C7F) counts.te++;
+    else if (code >= 0x0900 && code <= 0x097F) counts.hi++;
+    else if (code >= 0x0B80 && code <= 0x0BFF) counts.ta++;
+    else if (code >= 0x0C80 && code <= 0x0CFF) counts.kn++;
+    else if (code >= 0x0D00 && code <= 0x0D7F) counts.ml++;
+    else if (code >= 0x0980 && code <= 0x09FF) counts.bn++;
+    else if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) counts.en++;
+  }
+  let maxLang = "en";
+  let maxCount = counts.en;
+  for (const [lang, count] of Object.entries(counts)) {
+    if (lang !== "en" && count > 5 && count > maxCount * 0.25) {
+      if (count > maxCount) {
+        maxCount = count;
+        maxLang = lang;
+      }
+    }
+  }
+  return maxLang;
+}
+
 // STATE
 let user = null, token = localStorage.getItem('inter_token') || '';
 let docs = [], quizzes = [], currentDoc = null, currentPage = 1, totalPages = 1, pdfDoc = null, pageTexts = [];
+let pageDataObjects = []; // Stores { pageNumber, originalText, normalizedText, detectedLanguage, ocrUsed }
 let quiz = null, qIdx = 0, answers = {}, timer = null, timeLeft = 0;
 let lastTeacherResponseRaw = '';
 
@@ -1177,8 +1415,22 @@ function renderAccountView() {
 function loadSettingsView() {
   const nameInput = document.getElementById('setStudentName');
   if (nameInput) nameInput.value = user ? user.name : (localStorage.getItem('student_name') || '');
+  
   const streamSel = document.getElementById('setStudentStream');
   if (streamSel) streamSel.value = localStorage.getItem('inter_stream') || 'MPC';
+  
+  const langSel = document.getElementById('setPdfLanguage');
+  if (langSel) langSel.value = localStorage.getItem('pdf_lang') || 'auto';
+  
+  const transCheck = document.getElementById('setTranslateEnglish');
+  if (transCheck) transCheck.checked = localStorage.getItem('pdf_translate_en') === 'true';
+
+  const ocrSel = document.getElementById('setOcrMode');
+  if (ocrSel) ocrSel.value = localStorage.getItem('ocr_mode') || 'auto';
+
+  const soundCheck = document.getElementById('setPageTurnSound');
+  if (soundCheck) soundCheck.checked = localStorage.getItem('sfx_pageturn') !== 'false';
+
   const pomo = document.getElementById('setPomodoroToggle');
   if (pomo) pomo.checked = localStorage.getItem('pomo_enabled') !== 'false';
 }
@@ -1186,6 +1438,10 @@ function loadSettingsView() {
 function saveDashboardSettings() {
   const name = document.getElementById('setStudentName').value.trim();
   const stream = document.getElementById('setStudentStream').value;
+  const pdfLang = document.getElementById('setPdfLanguage').value;
+  const transEn = document.getElementById('setTranslateEnglish').checked;
+  const ocrMode = document.getElementById('setOcrMode').value;
+  const soundTurn = document.getElementById('setPageTurnSound').checked;
   const pomo = document.getElementById('setPomodoroToggle').checked;
 
   if (name && user) {
@@ -1193,6 +1449,10 @@ function saveDashboardSettings() {
     localStorage.setItem('inter_user', JSON.stringify(user));
   }
   localStorage.setItem('inter_stream', stream);
+  localStorage.setItem('pdf_lang', pdfLang);
+  localStorage.setItem('pdf_translate_en', String(transEn));
+  localStorage.setItem('ocr_mode', ocrMode);
+  localStorage.setItem('sfx_pageturn', String(soundTurn));
   localStorage.setItem('pomo_enabled', String(pomo));
 
   const streamSel = document.getElementById('streamSelect');
@@ -1222,8 +1482,8 @@ function renderHome() {
     list.innerHTML = recent.map(d => `
       <div class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition shadow-sm">
         <div class="truncate mr-3">
-          <p class="font-bold text-slate-800 text-sm truncate">${d.title}</p>
-          <p class="text-xs text-slate-500 mt-0.5">${d.subject || 'General'} • ${d.pages || 1} pages</p>
+          <p class="font-bold text-slate-800 text-sm truncate telugu-text">${d.title}</p>
+          <p class="text-xs text-slate-500 mt-0.5">${d.subject || 'General'} • ${d.pages || 1} pages • ${d.detectedLang === 'te' ? 'తెలుగు' : (d.detectedLang ? d.detectedLang.toUpperCase() : 'EN')}</p>
         </div>
         <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shadow-sm shrink-0">Open</button>
       </div>
@@ -1242,7 +1502,7 @@ function renderHome() {
     cont.innerHTML = `
       <div class="p-4 rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 flex items-center justify-between gap-3">
         <div class="truncate">
-          <p class="font-bold text-slate-900 text-sm truncate">${last.title}</p>
+          <p class="font-bold text-slate-900 text-sm truncate telugu-text">${last.title}</p>
           <p class="text-xs text-indigo-700 font-bold mt-1">Page ${p} of ${last.pages || 1}</p>
         </div>
         <button onclick="openDoc('${last.id}', ${p})" class="px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer shadow-md shrink-0">Continue</button>
@@ -1262,8 +1522,8 @@ function renderLibrary() {
     list.innerHTML = docs.map(d => `
       <div class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition shadow-sm">
         <div class="truncate mr-3">
-          <h3 class="font-bold text-slate-900 text-base truncate">${d.title}</h3>
-          <p class="text-xs text-slate-500 mt-1">${d.subject || 'General'} • ${d.pages || 1} pages • Page ${localStorage.getItem('prog_' + d.id) || 1}/${d.pages || 1}</p>
+          <h3 class="font-bold text-slate-900 text-base truncate telugu-text">${d.title}</h3>
+          <p class="text-xs text-slate-500 mt-1">${d.subject || 'General'} • ${d.pages || 1} pages • Page ${localStorage.getItem('prog_' + d.id) || 1}/${d.pages || 1} • <span class="uppercase font-bold text-indigo-600">${d.detectedLang || 'te'}</span></p>
         </div>
         <div class="flex gap-2 shrink-0">
           <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer">Open</button>
@@ -1287,7 +1547,7 @@ function openPicker() {
   document.getElementById('filePicker').click();
 }
 
-// DETECTIVE-STYLE INTELLIGENT PDF SCANNING EXPERIENCE
+// DETECTIVE-STYLE HIGH-PRECISION PDF SCANNING PIPELINE
 async function onFilePicked(e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
@@ -1298,86 +1558,137 @@ async function onFilePicked(e) {
   const wrap = document.getElementById('uploadBarWrap');
   const stage = document.getElementById('uploadStageText');
   const count = document.getElementById('uploadPageCount');
+  const badge = document.getElementById('uploadDetailBadge');
   
   document.getElementById('uploadFileName').textContent = file.name;
   progArea.classList.remove('hidden');
 
   stage.textContent = 'Investigator mode activated. Initializing document analysis...';
-  bar.style.width = '10%';
-  if (wrap) wrap.setAttribute('aria-valuenow', '10');
+  bar.style.width = '5%';
+  if (wrap) wrap.setAttribute('aria-valuenow', '5');
   announce('Investigator mode activated. Initializing document analysis.');
 
-  await new Promise(r => setTimeout(r, 450));
+  await new Promise(r => setTimeout(r, 350));
 
   try {
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    
+    // Configure PDF.js with full Adobe CMap tables for Indic / Telugu / CJK Unicode decoding
+    const loadingTask = pdfjsLib.getDocument({
+      data: arrayBuffer,
+      cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked: true,
+      enableXfa: true,
+      standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/'
+    });
+
+    const pdf = await loadingTask.promise;
     totalPages = pdf.numPages;
     pageTexts = [];
+    pageDataObjects = [];
 
-    stage.textContent = `Examining document structure (${totalPages} total pages detected)...`;
-    bar.style.width = '20%';
-    if (wrap) wrap.setAttribute('aria-valuenow', '20');
+    stage.textContent = `Document structure verified: ${totalPages} total pages detected...`;
+    bar.style.width = '10%';
+    if (wrap) wrap.setAttribute('aria-valuenow', '10');
     announce(`Document structure identified. Total ${totalPages} pages found.`);
 
-    await new Promise(r => setTimeout(r, 400));
+    await new Promise(r => setTimeout(r, 300));
+
+    const userOcrSetting = localStorage.getItem('ocr_mode') || 'auto';
+    let docDetectedLanguage = 'en';
 
     for (let i = 1; i <= totalPages; i++) {
-      const pct = Math.round(20 + (i / totalPages) * 70);
+      // Deterministic progress calculation: 10% base + (i / totalPages) * 85%
+      const pct = Math.round(10 + (i / totalPages) * 85);
       bar.style.width = `${pct}%`;
       if (wrap) wrap.setAttribute('aria-valuenow', String(pct));
       count.textContent = `Page ${i} of ${totalPages}`;
 
       const detectivePhrases = [
-        `Analyzing page ${i} of ${totalPages}: Searching for key concepts & definitions...`,
-        `Examining page ${i} of ${totalPages}: Detecting chapter headings and questions...`,
-        `Analyzing page ${i} of ${totalPages}: Cross-referencing IPE syllabus points...`,
-        `Examining page ${i} of ${totalPages}: Checking tables, formulas, and diagrams...`
+        `Examining page ${i} of ${totalPages}: Extracting native Unicode text layer & Telugu conjuncts...`,
+        `Analyzing page ${i} of ${totalPages}: Searching for chapter headings, definitions & questions...`,
+        `Examining page ${i} of ${totalPages}: Cross-referencing IPE syllabus blueprint & key points...`,
+        `Analyzing page ${i} of ${totalPages}: Checking tables, formulas, and educational clues...`
       ];
-      const phrase = detectivePhrases[(i - 1) % detectivePhrases.length];
-      stage.textContent = phrase;
+      stage.textContent = detectivePhrases[(i - 1) % detectivePhrases.length];
 
+      // Major milestone screen-reader announcements
       if (i === 1 || i === Math.ceil(totalPages / 2) || i === totalPages) {
-        announce(`Scanning page ${i} of ${totalPages}. Document scanning ${pct} percent complete.`);
+        announce(`Scanning page ${i} of ${totalPages}. Progress ${pct} percent.`);
       }
 
       const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      let pageText = textContent.items.map(item => item.str).join(' ').trim();
+      
+      let pageRawText = '';
+      let pageNormalizedText = '';
+      let ocrUsed = false;
 
-      // OCR Fallback if page contains no digital text
-      if (pageText.length < 30 && typeof Tesseract !== 'undefined') {
-        stage.textContent = `Page ${i} requires OCR scan: Extracting text from image...`;
-        try {
-          const viewport = page.getViewport({ scale: 1.5 });
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const ctx = canvas.getContext('2d');
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          const worker = await Tesseract.createWorker('eng');
-          const ocrRet = await worker.recognize(canvas);
-          await worker.terminate();
-          if (ocrRet.data.text && ocrRet.data.text.trim().length > 10) {
-            pageText = ocrRet.data.text.trim();
+      // STEP 1: Spatial layout text extraction (Primary & High Precision)
+      if (userOcrSetting !== 'ocr') {
+        const extraction = await extractPageSpatialText(page);
+        pageRawText = extraction.rawText;
+        pageNormalizedText = extraction.normalizedText;
+      }
+
+      // STEP 2: Only fallback to OCR if digital text layer is genuinely missing / scanned photo
+      if (userOcrSetting === 'ocr' || (!pageNormalizedText || pageNormalizedText.length < 25)) {
+        if (typeof Tesseract !== 'undefined') {
+          stage.textContent = `Page ${i} of ${totalPages}: Digital text layer missing. Running Optical Character Recognition...`;
+          try {
+            const viewport = page.getViewport({ scale: 1.5 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            
+            // Auto detect or use Telugu / English OCR
+            const prefLang = localStorage.getItem('pdf_lang') || 'auto';
+            const ocrLangCode = (prefLang === 'te' || prefLang === 'auto') ? 'tel+eng' : 'eng';
+            
+            const worker = await Tesseract.createWorker(ocrLangCode);
+            const ocrRet = await worker.recognize(canvas);
+            await worker.terminate();
+            
+            if (ocrRet.data.text && ocrRet.data.text.trim().length > 10) {
+              pageRawText = ocrRet.data.text.trim();
+              pageNormalizedText = cleanUnicodeIndicText(pageRawText);
+              ocrUsed = true;
+            }
+          } catch (ocrErr) {
+            console.warn('OCR fallback on page ' + i, ocrErr);
           }
-        } catch (ocrErr) {
-          console.warn('OCR fallback on page ' + i, ocrErr);
         }
       }
 
-      pageTexts.push(pageText || `[Page ${i} content extracted]`);
-      
-      // Deterministic controlled pacing so scan feels intelligent without stalling
-      const delayMs = Math.min(240, Math.max(80, Math.floor(1200 / totalPages)));
+      const finalPageText = pageNormalizedText || pageRawText || `[Page ${i} Content]`;
+      const pageLang = detectTextLanguage(finalPageText);
+      if (pageLang !== 'en') docDetectedLanguage = pageLang;
+
+      pageTexts.push(finalPageText);
+      pageDataObjects.push({
+        pageNumber: i,
+        totalPages,
+        originalText: pageRawText || finalPageText,
+        normalizedText: finalPageText,
+        detectedLanguage: pageLang,
+        ocrUsed
+      });
+
+      // Smooth controlled pacing
+      const delayMs = Math.min(220, Math.max(60, Math.floor(1000 / totalPages)));
       await new Promise(r => setTimeout(r, delayMs));
     }
 
-    stage.textContent = 'Investigation complete! All educational concepts & clues indexed.';
+    const langNameMap = { te: 'Telugu (తెలుగు)', en: 'English', hi: 'Hindi (हिन्दी)', ta: 'Tamil', kn: 'Kannada' };
+    const detectedName = langNameMap[docDetectedLanguage] || docDetectedLanguage.toUpperCase();
+
+    stage.textContent = `Investigation complete! All ${totalPages} pages analyzed. Detected language: ${detectedName}.`;
     bar.style.width = '100%';
     if (wrap) wrap.setAttribute('aria-valuenow', '100');
     count.textContent = `${totalPages} / ${totalPages} Ready`;
-    announce(`Investigation complete. Document of ${totalPages} pages is ready.`);
+    if (badge) badge.textContent = `All ${totalPages} pages indexed • Language: ${detectedName}`;
+    announce(`Investigation complete. All ${totalPages} pages scanned successfully. Detected language: ${detectedName}. Document is ready.`);
 
     const fullText = pageTexts.join('\n\n--- Page Break ---\n\n');
     const newDoc = {
@@ -1387,6 +1698,8 @@ async function onFilePicked(e) {
       pages: totalPages,
       text: fullText,
       pageTexts,
+      pageDataObjects,
+      detectedLang: docDetectedLanguage,
       created: new Date().toISOString()
     };
 
@@ -1427,8 +1740,11 @@ async function handleScanPicked(e) {
 
   try {
     if (typeof Tesseract !== 'undefined') {
-      const worker = await Tesseract.createWorker('eng');
-      status.textContent = 'Extracting textbook paragraphs and handwritten notes...';
+      const prefLang = localStorage.getItem('pdf_lang') || 'auto';
+      const ocrLang = (prefLang === 'te' || prefLang === 'auto') ? 'tel+eng' : 'eng';
+
+      const worker = await Tesseract.createWorker(ocrLang);
+      status.textContent = 'Extracting textbook paragraphs and Telugu/English handwritten notes...';
       bar.style.width = '60%';
       pct.textContent = '60%';
 
@@ -1439,7 +1755,8 @@ async function handleScanPicked(e) {
       pct.textContent = '100%';
       status.textContent = 'Investigation complete! Text extracted.';
 
-      textarea.value = ret.data.text || 'No text detected in this scan.';
+      const cleaned = cleanUnicodeIndicText(ret.data.text || '');
+      textarea.value = cleaned || 'No text detected in this scan.';
       resultBox.classList.remove('hidden');
       announce('OCR Scan complete. Extracted text is ready.');
     }
@@ -1454,6 +1771,10 @@ function readScannedText() {
   if (window.speechSynthesis) {
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(txt);
+    const lang = detectTextLanguage(txt);
+    if (lang === 'te') utt.lang = 'te-IN';
+    else if (lang === 'hi') utt.lang = 'hi-IN';
+    else utt.lang = 'en-IN';
     utt.rate = 0.95;
     window.speechSynthesis.speak(utt);
     announce('Playing scanned text aloud');
@@ -1465,6 +1786,7 @@ function saveScannedToLib() {
   if (!txt) return alert('No text to save');
   const title = prompt('Enter document title:', 'Scanned Note ' + new Date().toLocaleDateString());
   if (!title) return;
+  const detectedLang = detectTextLanguage(txt);
   const newDoc = {
     id: 'doc_' + Date.now(),
     title,
@@ -1472,6 +1794,7 @@ function saveScannedToLib() {
     pages: 1,
     text: txt,
     pageTexts: [txt],
+    detectedLang,
     created: new Date().toISOString()
   };
   docs.unshift(newDoc);
@@ -1490,6 +1813,12 @@ function openDoc(id, page) {
   pageTexts = d.pageTexts || d.text.split('--- Page Break ---').map(s => s.trim()).filter(Boolean);
 
   document.getElementById('readerDocTitle').textContent = d.title;
+  
+  const langBadge = document.getElementById('readerLangBadge');
+  if (langBadge) {
+    langBadge.textContent = d.detectedLang ? d.detectedLang.toUpperCase() : 'TE';
+  }
+
   nav('reader');
   renderReaderPage();
 }
@@ -1579,12 +1908,58 @@ function readerJump() {
   }
 }
 
-// TTS AUDIO NARRATION
+// SEARCH INSIDE PDF (ACCESSIBLE UNICODE TELUGU SEARCH)
+function searchInPdf() {
+  const query = document.getElementById('readerSearchInput').value.trim();
+  if (!query) return;
+  if (!pageTexts.length) return alert('No pages to search.');
+
+  const qNorm = cleanUnicodeIndicText(query).toLowerCase();
+  const matchedPages = [];
+
+  pageTexts.forEach((pt, idx) => {
+    if (cleanUnicodeIndicText(pt).toLowerCase().includes(qNorm)) {
+      matchedPages.push(idx + 1);
+    }
+  });
+
+  const banner = document.getElementById('searchResultBanner');
+  const bannerText = document.getElementById('searchResultText');
+  banner.classList.remove('hidden');
+
+  if (matchedPages.length === 0) {
+    bannerText.innerHTML = `No matches found for "<span class="telugu-text font-bold">${query}</span>" in this document.`;
+    announce(`No matches found for ${query}`);
+  } else {
+    bannerText.innerHTML = `Found "<span class="telugu-text font-bold">${query}</span>" on <b>${matchedPages.length} page(s)</b>: ` +
+      matchedPages.map(p => `<button onclick="jumpToSearchResult(${p})" class="underline font-bold px-1.5 py-0.5 rounded hover:bg-indigo-100 cursor-pointer">Page ${p}</button>`).join(', ');
+    announce(`Found ${matchedPages.length} match(es) for ${query}. First match on Page ${matchedPages[0]}.`);
+    jumpToSearchResult(matchedPages[0]);
+  }
+}
+
+function jumpToSearchResult(pageNum) {
+  playPageTurnAudio();
+  currentPage = pageNum;
+  renderReaderPage();
+}
+
+function closeSearchBanner() {
+  document.getElementById('searchResultBanner').classList.add('hidden');
+}
+
+// TTS AUDIO NARRATION (WITH TELUGU VOICE SELECTION)
 function ttsPlay() {
   const txt = pageTexts[currentPage - 1] || '';
   if (!txt || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(txt);
+  
+  const lang = detectTextLanguage(txt);
+  if (lang === 'te') utt.lang = 'te-IN';
+  else if (lang === 'hi') utt.lang = 'hi-IN';
+  else utt.lang = 'en-IN';
+
   utt.rate = 0.95;
   window.speechSynthesis.speak(utt);
   announce('Playing audio narration of current page');
@@ -1616,9 +1991,14 @@ function formatTeacherResponse(text) {
     { key: 'academic definition', icon: 'fa-book-bookmark', color: 'indigo', label: 'Academic & Textbook Definition' },
     { key: 'core concept', icon: 'fa-graduation-cap', color: 'indigo', label: 'Core Concept' },
     { key: 'key points', icon: 'fa-list-check', color: 'blue', label: 'Key Concepts & Important Points' },
+    { key: 'ప్రధాన అంశాలు', icon: 'fa-list-check', color: 'blue', label: 'ప్రధాన అంశాలు (Key Points)' },
+    { key: 'సారాంశం', icon: 'fa-book-open', color: 'indigo', label: 'పాఠ్యాంశ సారాంశం (Summary)' },
+    { key: 'వివరణ', icon: 'fa-lightbulb', color: 'emerald', label: 'ఉపాధ్యాయుని వివరణ (Teacher Explanation)' },
     { key: 'real-world example', icon: 'fa-magnifying-glass', color: 'amber', label: 'Practical Real-World Example' },
     { key: 'example', icon: 'fa-magnifying-glass', color: 'amber', label: 'Example' },
+    { key: 'ఉదాహరణ', icon: 'fa-magnifying-glass', color: 'amber', label: 'ఉదాహరణ (Example)' },
     { key: 'exam answer', icon: 'fa-award', color: 'purple', label: 'Exam Blueprint Answer' },
+    { key: 'పరీక్ష ప్రశ్నలు', icon: 'fa-award', color: 'purple', label: 'ముఖ్యమైన పరీక్ష ప్రశ్నలు & సమాధానాలు' },
     { key: 'exam preparation', icon: 'fa-award', color: 'purple', label: 'Exam Preparation' },
     { key: 'summary', icon: 'fa-file-lines', color: 'slate', label: 'Summary' }
   ];
@@ -1642,13 +2022,13 @@ function formatTeacherResponse(text) {
 
     if (matchedSec) {
       if (inList) { html += listType === 'ol' ? '</ol>' : '</ul>'; inList = false; }
-      const content = trimmed.replace(/^(\*\*|###\s*)*[A-Za-z\s\(\)\:\-\/\d]+[:\-]\s*(\*\*)*\s*/i, '').trim();
+      const content = trimmed.replace(/^(\*\*|###\s*)*[A-Za-z\s\(\)\:\-\/\d\u0C00-\u0C7F]+[:\-]\s*(\*\*)*\s*/i, '').trim();
       html += `
-        <div class="mt-3.5 mb-2.5 p-3.5 rounded-2xl bg-${matchedSec.color}-50/80 border border-${matchedSec.color}-200">
-          <h4 class="font-bold text-xs uppercase tracking-wider text-${matchedSec.color}-900 flex items-center gap-1.5 mb-1.5">
+        <div class="mt-3.5 mb-2.5 p-3.5 rounded-2xl bg-${matchedSec.color}-50/90 border border-${matchedSec.color}-200">
+          <h4 class="font-bold text-xs uppercase tracking-wider text-${matchedSec.color}-900 flex items-center gap-1.5 mb-1.5 telugu-text">
             <i class="fa-solid ${matchedSec.icon} text-${matchedSec.color}-600"></i> ${matchedSec.label}
           </h4>
-          ${content ? `<p class="text-slate-800 text-sm leading-relaxed">${cleanInlineMarkdown(content)}</p>` : ''}
+          ${content ? `<p class="text-slate-800 text-sm leading-relaxed telugu-text font-medium">${cleanInlineMarkdown(content)}</p>` : ''}
         </div>
       `;
       continue;
@@ -1659,7 +2039,7 @@ function formatTeacherResponse(text) {
     if (numMatch) {
       if (!inList || listType !== 'ol') {
         if (inList) html += listType === 'ol' ? '</ol>' : '</ul>';
-        html += '<ol class="list-decimal pl-5 space-y-1.5 my-2.5 text-sm text-slate-800 font-medium">';
+        html += '<ol class="list-decimal pl-5 space-y-1.5 my-2.5 text-sm text-slate-800 font-medium telugu-text">';
         inList = true;
         listType = 'ol';
       }
@@ -1672,7 +2052,7 @@ function formatTeacherResponse(text) {
     if (bulletMatch) {
       if (!inList || listType !== 'ul') {
         if (inList) html += listType === 'ol' ? '</ol>' : '</ul>';
-        html += '<ul class="list-disc pl-5 space-y-1.5 my-2.5 text-sm text-slate-800">';
+        html += '<ul class="list-disc pl-5 space-y-1.5 my-2.5 text-sm text-slate-800 telugu-text font-medium">';
         inList = true;
         listType = 'ul';
       }
@@ -1685,7 +2065,7 @@ function formatTeacherResponse(text) {
       inList = false;
     }
 
-    html += `<p class="text-slate-800 text-sm leading-relaxed my-2">${cleanInlineMarkdown(trimmed)}</p>`;
+    html += `<p class="text-slate-800 text-sm leading-relaxed my-2 telugu-text font-medium">${cleanInlineMarkdown(trimmed)}</p>`;
   }
 
   if (inList) {
@@ -1723,8 +2103,8 @@ async function submitReaderAiQuestion() {
   content.innerHTML = `
     <div class="py-4 text-center text-indigo-700 animate-pulseSubtle">
       <i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i>
-      <p class="font-bold text-sm">AI Tutor is analyzing the PDF...</p>
-      <p class="text-xs text-slate-500 mt-1">Cross-referencing Page ${currentPage} with TS Inter Board blueprint</p>
+      <p class="font-bold text-sm">AI Tutor is analyzing the PDF lesson...</p>
+      <p class="text-xs text-slate-500 mt-1">Grounded in Page ${currentPage} & TS Inter Curriculum</p>
     </div>
   `;
   announce('AI Tutor is analyzing the PDF.');
@@ -1754,9 +2134,12 @@ async function submitReaderAiQuestion() {
 function listenReaderAiAnswer() {
   if (!lastTeacherResponseRaw || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  // Strip markdown symbols before speech
   const cleanSpeech = lastTeacherResponseRaw.replace(/[*#`]/g, '');
   const utt = new SpeechSynthesisUtterance(cleanSpeech);
+  const lang = detectTextLanguage(cleanSpeech);
+  if (lang === 'te') utt.lang = 'te-IN';
+  else if (lang === 'hi') utt.lang = 'hi-IN';
+  else utt.lang = 'en-IN';
   utt.rate = 0.95;
   window.speechSynthesis.speak(utt);
   announce('Playing AI Teacher explanation aloud');
@@ -1797,7 +2180,7 @@ function listenHomeAiResponse() {
 
 function exportDoc() {
   if (!currentDoc) return;
-  const blob = new Blob([currentDoc.text], { type: 'text/plain' });
+  const blob = new Blob([currentDoc.text], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -1836,7 +2219,7 @@ async function genQuiz() {
         subject: doc.subject,
         type,
         count,
-        lang: 'English',
+        lang: doc.detectedLang === 'te' ? 'Telugu' : 'English',
         stream: localStorage.getItem('inter_stream') || 'MPC'
       })
     });
@@ -1885,12 +2268,12 @@ function renderQuiz() {
   announce(`Question ${qIdx + 1} of ${quiz.questions.length}`);
 
   const opts = document.getElementById('quizOpts');
-  opts.innerHTML = `<p class="font-bold text-base text-slate-900 mb-3">${q.q}</p>`;
+  opts.innerHTML = `<p class="font-bold text-base text-slate-900 mb-3 telugu-text">${q.q}</p>`;
 
   ['A', 'B', 'C', 'D'].forEach((label, i) => {
     if (q.options && q.options[i]) {
       const btn = document.createElement('button');
-      btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white font-bold flex gap-3 items-center hover:border-indigo-400 transition cursor-pointer text-sm';
+      btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white font-bold flex gap-3 items-center hover:border-indigo-400 transition cursor-pointer text-sm telugu-text';
       btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 font-bold">${label}</span><span class="flex-1">${q.options[i]}</span>`;
       btn.onclick = () => chooseOpt(i);
       if (answers[qIdx] === i) btn.classList.add('bg-indigo-50', 'border-indigo-500');
@@ -1911,7 +2294,7 @@ function chooseOpt(i) {
   } catch {}
 
   const expl = document.createElement('div');
-  expl.className = 'mt-3 p-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs';
+  expl.className = 'mt-3 p-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs telugu-text';
   expl.innerHTML = `<p class="font-bold ${correct ? 'text-emerald-700' : 'text-red-600'}">${correct ? '✓ Correct Answer' : '✗ Incorrect'}</p><p class="text-slate-600 mt-1">${q.explanation || ''}</p>`;
   document.getElementById('quizOpts').appendChild(expl);
 
