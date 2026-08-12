@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="Ts0tjKFlNmAjB6cr2feAjxOG7j6r7KsKq6p_tO5tqKw">
-<meta name="description" content="Study Vision AI — Accessible AI Study App for Blind Students. Upload PDF, Listen, Quiz.">
+<meta name="description" content="Study Vision AI — Accessible AI Study App for Blind Students. Upload PDF, Auto Scan, Listen, Quiz.">
 <meta name="theme-color" content="#4f46e5">
 <link rel="manifest" href="manifest.json">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <title>Study Vision AI — Accessible Study Companion</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; tailwind.config={theme:{extend:{fontFamily:{display:['Outfit'],body:['Plus Jakarta Sans']}}}};</script>
@@ -20,1217 +20,1578 @@
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .sr-only:focus{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:normal;background:#0f172a;color:white;padding:8px 16px;border-radius:999px;z-index:999}
   *:focus-visible{outline:3px solid #4f46e5;outline-offset:2px}
-  .glass{backdrop-filter:blur(12px);background:rgba(255,255,255,.9)}
+  .glass{backdrop-filter:blur(12px);background:rgba(255,255,255,.95)}
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+  .animate-fadeIn { animation: fadeIn 0.25s ease-out forwards; }
 </style>
 </head>
-<body class="bg-[#f8fafc] font-body text-slate-900 antialiased">
+<body class="bg-[#f8fafc] font-body text-slate-900 antialiased min-h-screen">
 <a href="#main" class="sr-only">Skip to main content</a>
 <div id="live" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
-<!-- AUTH — FULL SCREEN, HIDES EVERYTHING -->
-<div id="authScreen" class="fixed inset-0 z-[100] bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-800 flex items-center justify-center p-4">
-  <div class="w-full max-w-[420px] bg-white rounded-[24px] shadow-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="authHeading">
-    <div class="px-6 py-5 text-center border-b">
-      <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto text-xl" aria-hidden="true"><i class="fa-solid fa-graduation-cap"></i></div>
-      <h1 id="authHeading" class="font-display font-bold text-xl mt-3">Study Vision AI</h1>
-      <p class="text-sm text-slate-500">Accessible study for every student — TalkBack ready</p>
+<!-- AUTH — FULL SCREEN -->
+<div id="authScreen" class="fixed inset-0 z-[100] bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-800 flex items-center justify-center p-4 overflow-y-auto">
+  <div class="w-full max-w-[440px] bg-white rounded-[28px] shadow-2xl overflow-hidden my-auto" role="dialog" aria-modal="true" aria-labelledby="authHeading">
+    <div class="px-6 py-6 text-center border-b bg-slate-50/50">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto text-2xl shadow-lg shadow-indigo-200" aria-hidden="true">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <h1 id="authHeading" class="font-display font-bold text-2xl mt-3 text-slate-900">Study Vision AI</h1>
+      <p class="text-xs text-slate-500 mt-0.5">Accessible AI Study App for TS Intermediate</p>
     </div>
     <div class="p-6">
       <div class="flex gap-1 bg-slate-100 p-1 rounded-full" role="tablist" aria-label="Authentication">
-        <button id="tabLogin" role="tab" aria-selected="true" aria-controls="panelLogin" onclick="showAuth('login')" class="flex-1 py-2 rounded-full bg-white shadow font-bold text-sm">Login</button>
-        <button id="tabSignup" role="tab" aria-selected="false" aria-controls="panelSignup" onclick="showAuth('signup')" class="flex-1 py-2 rounded-full font-bold text-sm text-slate-600">Sign Up</button>
+        <button id="tabLogin" role="tab" aria-selected="true" aria-controls="panelLogin" onclick="showAuth('login')" class="flex-1 py-2.5 rounded-full bg-white shadow font-bold text-sm text-slate-900 cursor-pointer">Login</button>
+        <button id="tabSignup" role="tab" aria-selected="false" aria-controls="panelSignup" onclick="showAuth('signup')" class="flex-1 py-2.5 rounded-full font-bold text-sm text-slate-600 hover:text-slate-900 cursor-pointer">Sign Up</button>
       </div>
 
-      <form id="panelLogin" role="tabpanel" aria-labelledby="tabLogin" class="mt-5 space-y-3" onsubmit="doLogin(event)">
-        <label class="block text-sm font-bold">Email <input id="loginEmail" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
-        <label class="block text-sm font-bold">Password <input id="loginPass" type="password" autocomplete="current-password" required aria-required="true" placeholder="••••••••" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+      <!-- LOGIN FORM -->
+      <form id="panelLogin" role="tabpanel" aria-labelledby="tabLogin" class="mt-5 space-y-3.5" onsubmit="doLogin(event)">
+        <label class="block text-sm font-bold text-slate-800">Email Address <input id="loginEmail" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com" class="mt-1 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
+        <label class="block text-sm font-bold text-slate-800">Password <input id="loginPass" type="password" autocomplete="current-password" required aria-required="true" placeholder="••••••••" class="mt-1 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
         <p id="loginErr" class="text-sm font-bold text-red-600 min-h-[18px]" aria-live="polite"></p>
-        <button id="btnLoginSubmit" type="submit" class="w-full py-3 rounded-full bg-slate-900 text-white font-bold text-base hover:bg-slate-800 transition cursor-pointer">Login</button>
-        <button type="button" onclick="showForgot()" class="w-full text-sm font-bold text-indigo-600 underline cursor-pointer">Forgot password? Get OTP</button>
+        <button id="btnLoginSubmit" type="submit" class="w-full py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 transition text-white font-bold text-base cursor-pointer shadow-md">Login</button>
+        <button type="button" onclick="showForgot()" class="w-full text-sm font-bold text-indigo-600 hover:underline cursor-pointer">Forgot password? Get Reset OTP</button>
       </form>
 
+      <!-- SIGNUP FORM -->
       <form id="panelSignup" role="tabpanel" aria-labelledby="tabSignup" hidden class="mt-5 space-y-3" onsubmit="doSignup(event)">
-        <label class="block text-sm font-bold">Full Name <input id="signupName" type="text" autocomplete="name" required placeholder="e.g. Sai Kumar" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
-        <label class="block text-sm font-bold">Email <input id="signupEmail" type="email" autocomplete="email" required placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
-        <label class="block text-sm font-bold">Password <input id="signupPass" type="password" autocomplete="new-password" required placeholder="At least 6 characters" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
-        <label class="block text-sm font-bold">Confirm Password <input id="signupConfirm" type="password" autocomplete="new-password" required placeholder="Repeat password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
+        <label class="block text-sm font-bold text-slate-800">Full Name <input id="signupName" type="text" autocomplete="name" required placeholder="e.g. Sai Kumar" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
+        <label class="block text-sm font-bold text-slate-800">Email Address <input id="signupEmail" type="email" autocomplete="email" required placeholder="you@example.com" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
+        <label class="block text-sm font-bold text-slate-800">Create Password <input id="signupPass" type="password" autocomplete="new-password" required placeholder="At least 6 characters" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
+        <label class="block text-sm font-bold text-slate-800">Confirm Password <input id="signupConfirm" type="password" autocomplete="new-password" required placeholder="Repeat password" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
         <p id="signupErr" class="text-sm font-bold min-h-[18px]" aria-live="polite"></p>
-        <button id="btnSignupSubmit" type="submit" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold text-base hover:bg-indigo-700 transition cursor-pointer">Create Account</button>
+        <button id="btnSignupSubmit" type="submit" class="w-full py-3.5 rounded-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-bold text-base cursor-pointer shadow-md">Create Account</button>
       </form>
 
-      <div id="otpPanel" hidden class="mt-5 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
-        <h2 class="font-bold text-amber-900 text-base">Check your email</h2>
-        <p class="text-sm text-amber-800 mt-1">Enter 6-digit OTP sent to <b id="otpEmail"></b> — valid 10 minutes</p>
-        <label class="block mt-3 text-sm font-bold">OTP <input id="otpInput" inputmode="numeric" maxlength="6" placeholder="123456" aria-label="6 digit OTP" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-amber-300 text-center tracking-[0.4em] font-mono text-xl focus:border-amber-500 outline-none bg-white"></label>
+      <!-- OTP PANEL -->
+      <div id="otpPanel" hidden class="mt-5 bg-amber-50 border-2 border-amber-200 rounded-2xl p-5">
+        <h2 class="font-bold text-amber-900 text-lg flex items-center gap-2"><i class="fa-solid fa-envelope-open-text"></i> Check your email</h2>
+        <p class="text-sm text-amber-800 mt-1">Enter the 6-digit OTP code sent to <b id="otpEmail"></b></p>
+        
+        <div id="devOtpBox" class="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900">
+          <p id="devOtp" class="font-mono font-bold text-sm text-indigo-700"></p>
+        </div>
+
+        <label class="block mt-3 text-sm font-bold text-slate-800">Enter OTP <input id="otpInput" inputmode="numeric" maxlength="6" placeholder="123456" aria-label="6 digit OTP" class="mt-1 w-full px-4 py-3 rounded-xl border-2 border-amber-300 text-center tracking-[0.4em] font-mono text-2xl focus:border-amber-500 outline-none bg-white font-bold"></label>
         <p id="otpErr" class="text-sm font-bold min-h-[16px] mt-2" aria-live="polite"></p>
-        <button id="btnVerifyOtp" onclick="verifyOtp()" class="w-full mt-2 py-3 rounded-full bg-amber-600 text-white font-bold hover:bg-amber-700 transition cursor-pointer">Verify</button>
-        <button id="btnResendOtp" onclick="resendOtp()" class="w-full mt-2 text-sm font-bold underline text-amber-900 cursor-pointer">Resend OTP</button>
-        <button onclick="showAuth('login')" class="w-full mt-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer">← Back to Login / Change Email</button>
-        <p id="devOtp" class="text-xs text-slate-500 mt-2"></p>
+        <button id="btnVerifyOtp" onclick="verifyOtp()" class="w-full mt-3 py-3.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-base transition cursor-pointer shadow-md">Verify OTP & Continue</button>
+        <div class="flex justify-between items-center mt-3 pt-2 border-t border-amber-200/60">
+          <button id="btnResendOtp" onclick="resendOtp()" class="text-xs font-bold underline text-amber-900 cursor-pointer">Resend OTP</button>
+          <button onclick="showAuth('login')" class="text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer">← Change Email / Login</button>
+        </div>
       </div>
 
-      <div id="forgotPanel" hidden class="mt-5 bg-slate-50 border-2 border-slate-200 rounded-2xl p-4">
-        <h2 class="font-bold text-slate-900 text-base">Reset Password</h2>
+      <!-- FORGOT PASSWORD PANEL -->
+      <div id="forgotPanel" hidden class="mt-5 bg-slate-50 border-2 border-slate-200 rounded-2xl p-5">
+        <h2 class="font-bold text-slate-900 text-lg">Reset Password</h2>
         <p class="text-xs text-slate-600 mt-1">We will send a 6-digit verification code to your email.</p>
-        <label class="block mt-3 text-sm font-bold">Email <input id="forgotEmail" type="email" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
-        <button id="btnSendForgot" onclick="sendForgot()" class="w-full mt-3 py-3 rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800 transition cursor-pointer">Send Code</button>
+        <label class="block mt-3 text-sm font-bold">Email <input id="forgotEmail" type="email" placeholder="you@example.com" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
+        <button id="btnSendForgot" onclick="sendForgot()" class="w-full mt-3 py-3 rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800 transition cursor-pointer">Send Reset Code</button>
         <div id="resetArea" hidden class="mt-4 space-y-3 pt-3 border-t">
-          <label class="block text-sm font-bold">Code <input id="forgotOtp" inputmode="numeric" maxlength="6" placeholder="123456" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none font-mono text-center tracking-[0.3em] bg-white"></label>
-          <label class="block text-sm font-bold">New Password <input id="forgotNew" type="password" placeholder="At least 6 characters" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none bg-white"></label>
-          <label class="block text-sm font-bold">Confirm Password <input id="forgotConfirm" type="password" placeholder="Repeat password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none bg-white"></label>
-          <button id="btnResetPass" onclick="resetPass()" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition cursor-pointer">Reset Password</button>
+          <label class="block text-sm font-bold">Code <input id="forgotOtp" inputmode="numeric" maxlength="6" placeholder="123456" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none font-mono text-center tracking-[0.3em] bg-white"></label>
+          <label class="block text-sm font-bold">New Password <input id="forgotNew" type="password" placeholder="At least 6 characters" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none bg-white"></label>
+          <label class="block text-sm font-bold">Confirm Password <input id="forgotConfirm" type="password" placeholder="Repeat password" class="mt-1 w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none bg-white"></label>
+          <button id="btnResetPass" onclick="resetPass()" class="w-full py-3.5 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition cursor-pointer">Reset Password</button>
         </div>
         <p id="forgotErr" class="text-sm font-bold min-h-[16px] mt-2" aria-live="polite"></p>
-        <button onclick="showAuth('login')" class="w-full mt-2 text-sm font-bold underline text-slate-600 hover:text-slate-900 cursor-pointer">Back to Login</button>
+        <button onclick="showAuth('login')" class="w-full mt-2 text-xs font-bold underline text-slate-600 hover:text-slate-900 cursor-pointer">Back to Login</button>
       </div>
 
-      <p class="text-[11px] text-slate-500 text-center mt-4">Your data is encrypted — SQLite on our server, not Supabase. OTP via Gmail.</p>
+      <p class="text-[11px] text-slate-400 text-center mt-5">Encrypted SQLite backend • Secunderabad • Accessible TalkBack</p>
     </div>
   </div>
 </div>
 
-<!-- WELCOME AFTER SIGNUP -->
-<div id="welcomeScreen" hidden class="fixed inset-0 z-[90] bg-white flex items-center justify-center p-6 text-center">
-  <div class="max-w-[420px]">
-    <div class="w-16 h-16 rounded-2xl bg-emerald-500 text-white flex items-center justify-center mx-auto text-2xl" aria-hidden="true"><i class="fa-solid fa-hand"></i></div>
-    <h2 class="font-display font-bold text-2xl mt-4">Hi! Welcome to Study Vision AI.</h2>
-    <p class="text-slate-600 mt-2">Your accessible study companion — ready for TalkBack.</p>
-    <button onclick="enterApp()" class="mt-6 w-full py-3 rounded-full bg-indigo-600 text-white font-bold text-base" autofocus>Continue</button>
-  </div>
-</div>
-
-<!-- APP SHELL — ONLY 3 PRIMARY NAV ITEMS -->
-<div id="appShell" hidden>
-<header class="sticky top-0 z-30 glass border-b" role="banner">
-  <div class="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-3">
-    <div class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center" aria-hidden="true"><i class="fa-solid fa-graduation-cap"></i></div>
-      <div>
-        <p class="font-display font-bold leading-none">Study Vision AI</p>
-        <p class="text-xs text-slate-500">Inter • Accessible</p>
-      </div>
+<!-- WELCOME DIALOG (PROMINENT CONTINUE BUTTON) -->
+<div id="welcomeScreen" style="display:none;" class="fixed inset-0 z-[120] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
+  <div class="w-full max-w-[460px] bg-white rounded-3xl p-8 shadow-2xl text-center border-2 border-indigo-100 animate-fadeIn">
+    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center mx-auto text-3xl shadow-lg shadow-emerald-200">
+      <i class="fa-solid fa-circle-check"></i>
     </div>
-    <div class="flex items-center gap-2">
-      <label class="hidden sm:flex items-center gap-2 text-sm font-bold">Stream
-        <select id="streamSelect" aria-label="Select stream" onchange="setStream(this.value)" class="px-3 py-2 rounded-full bg-white border-2 text-sm">
-          <option value="MPC">MPC</option><option value="BiPC">BiPC</option><option value="CEC">CEC</option><option value="MEC">MEC</option><option value="HEC">HEC</option>
-        </select>
-      </label>
-      <button onclick="openSecondary()" aria-label="More options" class="w-9 h-9 rounded-full bg-white border-2 flex items-center justify-center"><i class="fa-solid fa-ellipsis"></i></button>
-      <div id="userBadge" class="w-9 h-9 rounded-full bg-amber-400 text-white flex items-center justify-center font-bold" aria-label="User">S</div>
-    </div>
-  </div>
-</header>
-
-<nav class="sticky top-[60px] z-20 bg-white border-b" aria-label="Primary">
-  <div class="max-w-[1100px] mx-auto px-4 flex gap-1 py-2">
-    <button data-nav="home" onclick="nav('home')" aria-current="page" class="navBtn flex-1 py-2.5 rounded-full bg-slate-900 text-white font-bold">Home</button>
-    <button data-nav="library" onclick="nav('library')" class="navBtn flex-1 py-2.5 rounded-full bg-white border-2 font-bold">Library</button>
-    <button data-nav="quiz" onclick="nav('quiz')" class="navBtn flex-1 py-2.5 rounded-full bg-white border-2 font-bold">Quiz</button>
-  </div>
-</nav>
-
-<main id="main" class="max-w-[1100px] mx-auto px-4 py-6">
-  <!-- HOME — SIMPLE, NOT CROWDED -->
-  <section id="view-home" aria-labelledby="homeTitle">
-    <h1 id="homeTitle" class="sr-only">Home</h1>
-    <div class="bg-white rounded-[24px] border-2 p-6">
-      <h2 class="font-display font-bold text-2xl">Namaste, <span id="homeName">Topper</span> 👋</h2>
-      <p class="text-slate-600 mt-1">Upload a PDF, listen, and practice — TalkBack ready.</p>
-      <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <button onclick="openPicker()" class="py-4 rounded-2xl bg-indigo-600 text-white font-bold text-base" aria-label="Upload PDF, open file picker">Upload PDF</button>
-        <button onclick="nav('library')" class="py-4 rounded-2xl bg-white border-2 font-bold">Library</button>
-        <button onclick="focusAsk()" class="py-4 rounded-2xl bg-white border-2 font-bold">Ask AI</button>
-      </div>
-      <p class="text-xs text-slate-500 mt-3">Supports Android file picker — Phone, Downloads, Drive, SD card</p>
-    </div>
-
-    <div class="mt-6 grid sm:grid-cols-2 gap-4">
-      <div class="bg-white rounded-2xl border-2 p-5">
-        <h3 class="font-bold">Recent documents</h3>
-        <div id="recentList" class="mt-3 space-y-2" aria-live="polite"></div>
-        <p id="noRecent" class="text-sm text-slate-500 py-6 text-center">No documents yet — Upload your first PDF</p>
-      </div>
-      <div class="bg-white rounded-2xl border-2 p-5">
-        <h3 class="font-bold">Continue reading</h3>
-        <div id="continueBox" class="mt-3" aria-live="polite"></div>
-        <p id="noContinue" class="text-sm text-slate-500 py-6 text-center">Nothing to continue</p>
-      </div>
-    </div>
-
-    <div class="mt-6 bg-white rounded-2xl border-2 p-5">
-      <h3 class="font-bold">Quick Ask AI</h3>
-      <div class="mt-3 flex gap-2">
-        <input id="homeAsk" placeholder="Ask about your studies — Telugu or English" aria-label="Ask AI quick question" class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 focus:bg-white focus:border-indigo-500 outline-none text-base">
-        <button onclick="askFromHome()" class="px-5 py-3 rounded-full bg-slate-900 text-white font-bold" aria-label="Send question to AI">Ask</button>
-      </div>
-    </div>
-
-    <div id="pwaBar" hidden class="mt-6 bg-indigo-600 text-white rounded-2xl p-4 flex items-center justify-between">
-      <div><p class="font-bold">Install Study Vision AI</p><p class="text-xs opacity-90">Works offline, fast</p></div>
-      <button onclick="installPWA()" class="px-4 py-2 rounded-full bg-white text-indigo-700 font-bold">Install</button>
-    </div>
-  </section>
-
-  <!-- LIBRARY — FOCUSED ONLY ON DOCUMENTS -->
-  <section id="view-library" hidden aria-labelledby="libTitle">
-    <h2 id="libTitle" class="font-bold text-xl">Library</h2>
-    <div id="libList" class="mt-4 space-y-3" aria-live="polite"></div>
-    <p id="noLib" class="text-sm text-slate-500 py-10 text-center border-2 border-dashed rounded-2xl">Library empty — Upload a PDF from Home</p>
-  </section>
-
-  <!-- QUIZ -->
-  <section id="view-quiz" hidden aria-labelledby="quizTitle">
-    <h2 id="quizTitle" class="font-bold text-xl">Quiz</h2>
-    <div class="mt-4 bg-white border-2 rounded-2xl p-4">
-      <label class="block text-sm font-bold">Document <select id="quizDoc" aria-label="Choose document for quiz" class="mt-1 w-full px-3 py-3 rounded-xl border-2 text-base"></select></label>
-      <div class="mt-3 grid grid-cols-2 gap-3">
-        <label class="text-sm font-bold">Type <select id="quizType" class="mt-1 w-full px-3 py-3 rounded-xl border-2"><option value="mcq">MCQ</option><option value="mixed">Mixed 2M/4M/8M</option></select></label>
-        <label class="text-sm font-bold">Count <select id="quizCount" class="mt-1 w-full px-3 py-3 rounded-xl border-2"><option>5</option><option selected>10</option><option>15</option></select></label>
-      </div>
-      <button onclick="genQuiz()" id="genBtn" class="w-full mt-4 py-3 rounded-full bg-indigo-600 text-white font-bold">Generate Quiz</button>
-      <p id="quizProg" class="text-sm font-bold text-indigo-700 mt-3 hidden" aria-live="polite"></p>
-    </div>
-    <div id="quizBox" class="hidden mt-4 bg-white border-2 rounded-2xl p-5">
-      <h3 id="quizQTitle" class="font-bold"></h3>
-      <p id="quizProgText" class="text-sm text-slate-500"></p>
-      <div id="quizTimer" class="text-sm font-bold text-amber-700 mt-2" aria-live="polite"></div>
-      <div id="quizOpts" class="mt-4 space-y-2" role="group" aria-label="Quiz options"></div>
-      <div class="mt-4 flex gap-2">
-        <button onclick="quizPrev()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Previous</button>
-        <button onclick="quizNext()" class="flex-1 py-3 rounded-full bg-slate-900 text-white font-bold">Next</button>
-      </div>
-      <div id="quizResult" class="hidden mt-4 bg-indigo-600 text-white rounded-2xl p-4">
-        <h4 class="font-bold">Quiz Complete</h4>
-        <p id="quizScore" class="text-sm mt-1"></p>
-        <button onclick="restartQuiz()" class="mt-3 px-4 py-2 rounded-full bg-white text-indigo-700 font-bold">Retry</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- READER — PAGE BY PAGE, REAL PDF PAGES -->
-  <section id="view-reader" hidden aria-labelledby="readerTitle">
-    <h2 id="readerTitle" class="sr-only">Document Reader</h2>
-    <div class="bg-white border-2 rounded-2xl overflow-hidden">
-      <div class="px-4 py-3 bg-slate-900 text-white flex flex-wrap gap-2 items-center justify-between">
-        <h3 id="readerDocTitle" class="font-bold"></h3>
-        <span id="readerPage" class="text-xs font-bold px-3 py-1 rounded-full bg-white/15" aria-live="polite">Page 1 of 1</span>
-      </div>
-      <div class="p-4 bg-slate-100 flex justify-center overflow-auto">
-        <canvas id="readerCanvas" class="bg-white shadow rounded max-w-full" role="img" aria-label="PDF page"></canvas>
-      </div>
-      <div class="p-4 space-y-3">
-        <div class="flex flex-wrap gap-2">
-          <button onclick="readerPrev()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Previous page">Previous Page</button>
-          <button onclick="readerNext()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Next page">Next Page</button>
-        </div>
-        <div class="flex gap-2">
-          <label class="flex-1 text-sm font-bold">Jump to Page <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="e.g. 17" aria-label="Jump to page number" class="mt-1 w-full px-3 py-3 rounded-xl border-2"></label>
-          <button onclick="readerJump()" class="self-end px-5 py-3 rounded-full bg-slate-900 text-white font-bold">Go</button>
-        </div>
-        <div id="readerText" class="bg-white border-2 rounded-xl p-4 max-h-[320px] overflow-auto leading-relaxed" aria-live="polite"></div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="ttsPlay()" class="flex-1 py-3 rounded-full bg-indigo-600 text-white font-bold" aria-label="Play">Play</button>
-          <button onclick="ttsPause()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Pause">Pause</button>
-          <button onclick="ttsResume()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Resume">Resume</button>
-          <button onclick="ttsStop()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold" aria-label="Stop">Stop</button>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="ttsPlay(true)" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Play from Beginning</button>
-          <button onclick="ttsSkip(-1)" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Skip Back</button>
-          <button onclick="ttsSkip(1)" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Skip Forward</button>
-        </div>
-        <button onclick="readAloud()" class="w-full py-3 rounded-full bg-white border-2 font-bold" aria-label="Read aloud current page">Read Aloud</button>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="askAIReader()" class="flex-1 py-3 rounded-full bg-indigo-600 text-white font-bold">Ask AI</button>
-          <button onclick="translatePage()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Translate</button>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="saveToLib()" class="flex-1 py-3 rounded-full bg-emerald-600 text-white font-bold">Save to Library</button>
-          <button onclick="saveAndQuiz()" class="flex-1 py-3 rounded-full bg-slate-900 text-white font-bold">Save and Quiz</button>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="exportDoc()" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Export</button>
-          <button onclick="nav('home')" class="flex-1 py-3 rounded-full bg-white border-2 font-bold">Back</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- UPLOAD PROGRESS — REAL -->
-  <section id="view-upload" hidden aria-labelledby="uploadTitle">
-    <h2 id="uploadTitle" class="font-bold text-xl">Uploading PDF</h2>
-    <div class="mt-4 bg-white border-2 rounded-2xl p-5">
-      <p id="uploadFile" class="font-bold"></p>
-      <div class="mt-3 h-3 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progBarWrap"><div id="progBar" class="h-full bg-indigo-600" style="width:0%"></div></div>
-      <p id="uploadStage" class="text-sm font-bold text-indigo-700 mt-2" aria-live="polite">Starting...</p>
-      <p id="uploadPage" class="text-sm text-slate-600"></p>
-      <button onclick="cancelUpload()" class="w-full mt-4 py-3 rounded-full bg-white border-2 font-bold">Cancel</button>
-    </div>
-  </section>
-</main>
-
-<!-- SECONDARY SHEET (Settings etc, not primary) -->
-<div id="secondarySheet" hidden class="fixed inset-0 z-40 bg-black/40 backdrop-blur" onclick="closeSecondary()">
-  <div class="absolute right-0 top-0 h-full w-[320px] bg-white shadow-2xl p-4" role="dialog" aria-modal="true" aria-label="More options" onclick="event.stopPropagation()">
-    <div class="flex justify-between items-center">
-      <h2 class="font-bold">More</h2>
-      <button onclick="closeSecondary()" aria-label="Close" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="mt-4 space-y-3">
-      <button onclick="openSettings(); closeSecondary();" class="w-full py-3 rounded-full bg-white border-2 font-bold text-left px-4">Settings</button>
-      <button onclick="logout(); closeSecondary();" class="w-full py-3 rounded-full bg-white border-2 font-bold text-left px-4">Logout</button>
-      <p class="text-xs text-slate-500">Settings is secondary — not in primary navigation.</p>
+    <h2 class="font-display font-bold text-2xl sm:text-3xl text-slate-900 mt-5">Welcome to Study Vision AI!</h2>
+    <p id="welcomeUserName" class="text-indigo-600 font-bold text-lg mt-1"></p>
+    <p class="text-slate-600 text-sm mt-2 leading-relaxed">Your accessible AI study companion is ready. Upload PDFs, auto-scan notes, practice quizzes, and listen to textbook chapters.</p>
+    
+    <div class="mt-6 space-y-3">
+      <button id="btnWelcomeContinue" onclick="enterApp()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition shadow-lg shadow-indigo-200 text-white font-bold text-lg flex items-center justify-center gap-2 cursor-pointer">
+        <span>Continue to Dashboard</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <button onclick="nav('upload'); enterApp();" class="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition cursor-pointer">
+        <i class="fa-solid fa-file-pdf mr-1 text-indigo-600"></i> Upload Your First PDF
+      </button>
     </div>
   </div>
 </div>
 
-<!-- SETTINGS (secondary) -->
-<div id="settingsModal" hidden class="fixed inset-0 z-50 bg-black/40 backdrop-blur flex items-center justify-center p-4">
-  <div class="w-full max-w-[520px] bg-white rounded-2xl p-6" role="dialog" aria-modal="true" aria-label="Settings">
-    <div class="flex justify-between items-center">
-      <h2 class="font-bold text-lg">Settings</h2>
-      <button onclick="closeSettings()" aria-label="Close settings" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+<!-- APP SHELL -->
+<div id="appShell" class="hidden">
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-30 glass border-b" role="banner">
+    <div class="max-w-[1100px] mx-auto px-4 h-[64px] flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-200" aria-hidden="true">
+          <i class="fa-solid fa-graduation-cap text-lg"></i>
+        </div>
+        <div>
+          <p class="font-display font-bold text-lg leading-tight text-slate-900">Study Vision AI</p>
+          <p class="text-xs text-slate-500">TS Inter • Accessible TalkBack</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-600">Stream
+          <select id="streamSelect" aria-label="Select stream" onchange="setStream(this.value)" class="px-3 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-xs font-bold outline-none cursor-pointer">
+            <option value="MPC">MPC</option><option value="BiPC">BiPC</option><option value="CEC">CEC</option><option value="MEC">MEC</option><option value="HEC">HEC</option>
+          </select>
+        </label>
+        <button onclick="nav('account')" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 transition text-xs font-bold text-slate-800 cursor-pointer">
+          <div id="userBadge" class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">S</div>
+          <span id="topBarName" class="hidden md:inline">Account</span>
+        </button>
+      </div>
     </div>
-    <div class="mt-4 space-y-4">
-      <label class="block text-sm font-bold">Your Name <input id="setName" class="mt-1 w-full px-3 py-3 rounded-xl border-2"></label>
-      <label class="block text-sm font-bold">Stream <select id="setStream" class="mt-1 w-full px-3 py-3 rounded-xl border-2"><option value="MPC">MPC</option><option value="BiPC">BiPC</option><option value="CEC">CEC</option><option value="MEC">MEC</option><option value="HEC">HEC</option></select></label>
-      <label class="flex items-center gap-2 text-sm font-bold"><input id="setPomo" type="checkbox"> Enable 25/5 Study Reminder</label>
-      <button onclick="saveSettings()" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold">Save</button>
+  </header>
+
+  <!-- NAVIGATION BAR (ALL SECTIONS ACCESSIBLE) -->
+  <nav class="sticky top-[64px] z-20 bg-white border-b overflow-x-auto shadow-sm" aria-label="Main Navigation">
+    <div class="max-w-[1100px] mx-auto px-4 flex gap-2 py-2.5 min-w-max">
+      <button data-nav="home" onclick="nav('home')" aria-current="page" class="navBtn px-4 py-2 rounded-full bg-slate-900 text-white font-bold text-sm shadow-sm cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-house"></i> Home</button>
+      <button data-nav="library" onclick="nav('library')" class="navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-book-open"></i> Library</button>
+      <button data-nav="upload" onclick="nav('upload')" class="navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-up"></i> Upload PDF</button>
+      <button data-nav="scan" onclick="nav('scan')" class="navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-camera"></i> Auto Scan</button>
+      <button data-nav="quiz" onclick="nav('quiz')" class="navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-brain"></i> Quiz</button>
+      <button data-nav="account" onclick="nav('account')" class="navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-user"></i> Account</button>
+      <button data-nav="settings" onclick="nav('settings')" class="navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-gear"></i> Settings</button>
     </div>
-  </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main id="main" class="max-w-[1100px] mx-auto px-4 py-6">
+    
+    <!-- HOME SECTION -->
+    <section id="view-home" aria-labelledby="homeTitle">
+      <h1 id="homeTitle" class="sr-only">Home Dashboard</h1>
+      <div class="bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-700 rounded-[28px] p-6 sm:p-8 text-white shadow-xl shadow-indigo-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-display font-bold text-2xl sm:text-3xl">Namaste, <span id="homeName">Topper</span> 👋</h2>
+            <p class="text-indigo-100 text-sm mt-1 max-w-xl">Ready to study? Upload a PDF chapter, scan your notes, or generate an exam-style quiz.</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="nav('upload')" class="px-5 py-3 rounded-full bg-white text-indigo-700 hover:bg-indigo-50 font-bold text-sm shadow-md transition cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-upload"></i> Upload PDF
+            </button>
+            <button onclick="nav('scan')" class="px-5 py-3 rounded-full bg-indigo-500/40 hover:bg-indigo-500/60 border border-white/30 text-white font-bold text-sm transition cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-camera"></i> Auto Scan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid sm:grid-cols-2 gap-5">
+        <div class="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> Recent Documents</h3>
+            <button onclick="nav('library')" class="text-xs font-bold text-indigo-600 hover:underline">View All</button>
+          </div>
+          <div id="recentList" class="mt-4 space-y-2.5" aria-live="polite"></div>
+          <div id="noRecent" class="py-8 text-center text-slate-400 text-sm">
+            <i class="fa-solid fa-file-circle-plus text-3xl mb-2 text-slate-300 block"></i>
+            No documents yet — Upload your first PDF
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm">
+          <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-bookmark text-emerald-600"></i> Continue Reading</h3>
+          <div id="continueBox" class="mt-4" aria-live="polite"></div>
+          <div id="noContinue" class="py-8 text-center text-slate-400 text-sm">
+            <i class="fa-solid fa-book-open-reader text-3xl mb-2 text-slate-300 block"></i>
+            No active reading session
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick AI Ask Bar -->
+      <div class="mt-6 bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm">
+        <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-600"></i> Ask AITutor (Telugu & English)</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Ask questions from TS Inter syllabus (Maths, Physics, Chemistry, Economics, Civics, Commerce).</p>
+        <div class="mt-3 flex gap-2">
+          <input id="homeAsk" placeholder="e.g. Explain Gauss Law with steps or Telugu lo explain cheyyi..." class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 border-slate-200 focus:bg-white focus:border-indigo-500 outline-none text-sm">
+          <button onclick="askFromHome()" class="px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition cursor-pointer">Ask AI</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIBRARY SECTION -->
+    <section id="view-library" class="hidden" aria-labelledby="libTitle">
+      <div class="flex items-center justify-between mb-4">
+        <h2 id="libTitle" class="font-bold text-2xl text-slate-900">Your Document Library</h2>
+        <button onclick="nav('upload')" class="px-4 py-2 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm"><i class="fa-solid fa-plus"></i> Add PDF</button>
+      </div>
+      <div id="libList" class="space-y-3" aria-live="polite"></div>
+      <div id="noLib" class="py-16 text-center border-2 border-dashed border-slate-300 rounded-3xl bg-white p-6">
+        <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3 block"></i>
+        <h3 class="font-bold text-slate-700 text-lg">Your Library is Empty</h3>
+        <p class="text-slate-500 text-sm mt-1 max-w-sm mx-auto">Upload a TS Inter textbook PDF or scan class notes to read with audio narration.</p>
+        <button onclick="nav('upload')" class="mt-4 px-6 py-3 rounded-full bg-indigo-600 text-white font-bold text-sm cursor-pointer shadow-md">Upload PDF Now</button>
+      </div>
+    </section>
+
+    <!-- UPLOAD PDF SECTION -->
+    <section id="view-upload" class="hidden" aria-labelledby="uploadSecTitle">
+      <h2 id="uploadSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Upload PDF Document</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-8 text-center shadow-sm">
+        <div class="max-w-md mx-auto">
+          <div class="w-16 h-16 rounded-3xl bg-indigo-50 border-2 border-indigo-200 text-indigo-600 flex items-center justify-center mx-auto text-3xl mb-4">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <h3 class="font-bold text-xl text-slate-800">Select PDF from Device</h3>
+          <p class="text-sm text-slate-500 mt-1">Supports Telugu Academy, NCERT, IPE Question Banks & Class Notes (Any size).</p>
+          
+          <div class="mt-6">
+            <button onclick="openPicker()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-lg shadow-indigo-200 transition cursor-pointer flex items-center justify-center gap-2">
+              <i class="fa-solid fa-folder-open"></i> Choose PDF File
+            </button>
+          </div>
+        </div>
+
+        <div id="uploadProgressArea" class="hidden mt-8 max-w-md mx-auto text-left bg-slate-50 border-2 border-slate-200 rounded-2xl p-5">
+          <p id="uploadFileName" class="font-bold text-slate-800 truncate"></p>
+          <div class="mt-3 h-3 bg-slate-200 rounded-full overflow-hidden">
+            <div id="uploadBar" class="h-full bg-indigo-600 transition-all duration-300" style="width:0%"></div>
+          </div>
+          <div class="flex justify-between items-center mt-2 text-xs font-bold text-slate-600">
+            <span id="uploadStageText">Processing pages...</span>
+            <span id="uploadPageCount">0 / 0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTO SCAN SECTION -->
+    <section id="view-scan" class="hidden" aria-labelledby="scanSecTitle">
+      <h2 id="scanSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Auto Scan Notes & Textbooks</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div class="border-2 border-dashed border-indigo-200 rounded-2xl bg-indigo-50/40 p-6 sm:p-8 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto text-2xl mb-4 shadow-md shadow-indigo-200">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <h3 class="font-bold text-xl text-slate-800">Scan Printed Notes or Book Pages</h3>
+          <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Point camera or select a photo. Tesseract OCR will extract the text for instant audio reading and quiz practice.</p>
+          
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <label class="px-6 py-3.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm cursor-pointer shadow-md transition flex items-center gap-2">
+              <i class="fa-solid fa-camera"></i> Capture / Pick Photo
+              <input id="scanPicker" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleScanPicked(event)">
+            </label>
+            <button onclick="openPicker()" class="px-6 py-3.5 rounded-full bg-white border-2 border-slate-300 hover:bg-slate-50 font-bold text-sm text-slate-700 transition flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-file-pdf text-red-500"></i> Pick PDF
+            </button>
+          </div>
+        </div>
+
+        <div id="scanProgressBox" class="hidden mt-6 bg-slate-50 border-2 rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span id="scanStatusText" class="font-bold text-sm text-indigo-700">Extracting text with OCR...</span>
+            <span id="scanPercent" class="text-xs font-bold font-mono">0%</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-200 rounded-full mt-2 overflow-hidden">
+            <div id="scanProgressBar" class="h-full bg-indigo-600 transition-all duration-300" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div id="scanResultBox" class="hidden mt-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-800">Extracted Text</h4>
+            <div class="flex gap-2">
+              <button onclick="readScannedText()" class="px-4 py-2 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"><i class="fa-solid fa-volume-high"></i> Listen Aloud</button>
+              <button onclick="saveScannedToLib()" class="px-4 py-2 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"><i class="fa-solid fa-bookmark"></i> Save to Library</button>
+            </div>
+          </div>
+          <textarea id="scannedText" rows="9" class="w-full p-4 rounded-2xl border-2 border-slate-200 text-sm leading-relaxed focus:border-indigo-500 outline-none font-mono" placeholder="Scanned text will appear here..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ SECTION -->
+    <section id="view-quiz" class="hidden" aria-labelledby="quizSecTitle">
+      <h2 id="quizSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Exam-Style Quiz Practice</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
+        <label class="block text-sm font-bold text-slate-800">Select Document from Library
+          <select id="quizDoc" aria-label="Choose document for quiz" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-base bg-white outline-none"></select>
+        </label>
+        <div class="mt-4 grid grid-cols-2 gap-4">
+          <label class="text-sm font-bold text-slate-800">Question Format
+            <select id="quizType" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-base bg-white outline-none">
+              <option value="mcq">Multiple Choice (4 Options)</option>
+              <option value="mixed">Mixed Blueprint (2M/4M/8M)</option>
+            </select>
+          </label>
+          <label class="text-sm font-bold text-slate-800">Questions Count
+            <select id="quizCount" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-base bg-white outline-none">
+              <option value="5">5 Questions</option>
+              <option value="10" selected>10 Questions</option>
+              <option value="15">15 Questions</option>
+            </select>
+          </label>
+        </div>
+        <button onclick="genQuiz()" id="genBtn" class="w-full mt-5 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-lg shadow-indigo-200 transition cursor-pointer">
+          Generate Exam Quiz
+        </button>
+        <p id="quizProg" class="text-sm font-bold text-indigo-700 mt-3 hidden text-center" aria-live="polite"></p>
+      </div>
+
+      <div id="quizBox" class="hidden mt-6 bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
+        <div class="flex items-center justify-between border-b pb-4">
+          <h3 id="quizQTitle" class="font-bold text-lg text-slate-900"></h3>
+          <span id="quizTimer" class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-bold text-xs"></span>
+        </div>
+        <p id="quizProgText" class="text-xs font-bold text-slate-500 mt-3"></p>
+        <div id="quizOpts" class="mt-4 space-y-2.5" role="group" aria-label="Quiz options"></div>
+        <div class="mt-6 flex gap-3">
+          <button onclick="quizPrev()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">Previous</button>
+          <button onclick="quizNext()" class="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer">Next</button>
+        </div>
+        <div id="quizResult" class="hidden mt-6 bg-indigo-600 text-white rounded-2xl p-6 text-center">
+          <h4 class="font-bold text-xl">Quiz Complete! 🎉</h4>
+          <p id="quizScore" class="text-lg font-bold mt-2"></p>
+          <button onclick="restartQuiz()" class="mt-4 px-6 py-2.5 rounded-full bg-white text-indigo-700 font-bold text-sm shadow-md cursor-pointer">Retry Quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNT SECTION -->
+    <section id="view-account" class="hidden" aria-labelledby="accountTitle">
+      <h2 id="accountTitle" class="font-bold text-2xl text-slate-900 mb-4">Your Profile & Account</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div class="flex items-center gap-4 border-b pb-6">
+          <div id="accAvatar" class="w-16 h-16 rounded-2xl bg-indigo-600 text-white text-2xl font-bold flex items-center justify-center shadow-lg shadow-indigo-200">
+            S
+          </div>
+          <div>
+            <h3 id="accName" class="font-bold text-xl text-slate-900">Student Name</h3>
+            <p id="accEmail" class="text-slate-500 text-sm">email@example.com</p>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full mt-2 border border-emerald-200">
+              <i class="fa-solid fa-circle-check"></i> Verified Account
+            </span>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 my-6">
+          <div class="p-4 rounded-2xl border-2 border-slate-200 bg-slate-50">
+            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Current Stream</p>
+            <p id="accStream" class="font-bold text-base text-slate-800 mt-1">MPC (Maths, Physics, Chemistry)</p>
+          </div>
+          <div class="p-4 rounded-2xl border-2 border-slate-200 bg-slate-50">
+            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Database Security</p>
+            <p class="font-bold text-base text-slate-800 mt-1">SQLite Server Encrypted</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button onclick="switchAccount()" class="flex-1 py-3.5 px-5 rounded-2xl bg-slate-100 hover:bg-slate-200 font-bold text-slate-800 transition flex items-center justify-center gap-2 cursor-pointer">
+            <i class="fa-solid fa-repeat text-indigo-600"></i> Switch Account
+          </button>
+          <button onclick="logout()" class="flex-1 py-3.5 px-5 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 font-bold transition flex items-center justify-center gap-2 cursor-pointer border border-red-200">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS SECTION -->
+    <section id="view-settings" class="hidden" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle" class="font-bold text-2xl text-slate-900 mb-4">App Settings</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm max-w-2xl">
+        <div>
+          <label class="block text-sm font-bold text-slate-800">Your Full Name</label>
+          <input id="setStudentName" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white">
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-800">TS Intermediate Stream</label>
+          <select id="setStudentStream" class="mt-1.5 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white cursor-pointer">
+            <option value="MPC">MPC (Maths IA/IB, Physics, Chemistry)</option>
+            <option value="BiPC">BiPC (Botany, Zoology, Physics, Chemistry)</option>
+            <option value="CEC">CEC (Commerce, Economics, Civics)</option>
+            <option value="MEC">MEC (Maths, Economics, Commerce)</option>
+            <option value="HEC">HEC (History, Economics, Civics)</option>
+          </select>
+        </div>
+
+        <div class="pt-2 border-t space-y-3">
+          <h3 class="font-bold text-sm text-slate-800">Study & Accessibility Preferences</h3>
+          <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 cursor-pointer">
+            <input id="setPomodoroToggle" type="checkbox" class="w-5 h-5 accent-indigo-600 rounded">
+            <div>
+              <span class="font-bold text-sm text-slate-800 block">25/5 Pomodoro Study Reminder</span>
+              <span class="text-xs text-slate-500">Regular alerts to take water and eye breaks every 25 minutes.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="pt-3">
+          <button onclick="saveDashboardSettings()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base transition shadow-md cursor-pointer">
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- READER SECTION (ACCESSIBLE PDF VIEWER + TTS + AI TUTOR) -->
+    <section id="view-reader" class="hidden" aria-labelledby="readerTitle">
+      <h2 id="readerTitle" class="sr-only">Document Reader</h2>
+      <div class="bg-white border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+        <div class="px-5 py-4 bg-slate-900 text-white flex flex-wrap gap-2 items-center justify-between">
+          <h3 id="readerDocTitle" class="font-bold truncate max-w-md"></h3>
+          <div class="flex items-center gap-2">
+            <span id="readerPage" class="text-xs font-bold px-3 py-1 rounded-full bg-white/15" aria-live="polite">Page 1 of 1</span>
+            <button onclick="nav('library')" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold">Back</button>
+          </div>
+        </div>
+        
+        <div class="p-4 bg-slate-100 flex justify-center overflow-auto max-h-[380px]">
+          <canvas id="readerCanvas" class="bg-white shadow rounded-xl max-w-full" role="img" aria-label="PDF page visual"></canvas>
+        </div>
+
+        <div class="p-5 space-y-4">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="readerPrev()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold hover:bg-slate-50 cursor-pointer" aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i> Previous Page</button>
+            <button onclick="readerNext()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold hover:bg-slate-50 cursor-pointer" aria-label="Next page">Next Page <i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+
+          <div class="flex gap-2">
+            <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="Jump to Page #" class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 outline-none text-sm">
+            <button onclick="readerJump()" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm cursor-pointer">Go</button>
+          </div>
+
+          <div id="readerText" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 max-h-[320px] overflow-auto leading-relaxed text-sm text-slate-800" aria-live="polite"></div>
+
+          <!-- Audio Controls -->
+          <div class="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl">
+            <p class="text-xs font-bold text-indigo-900 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-headphones"></i> Audio Narration (TTS)</p>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="ttsPlay()" class="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-play"></i> Play</button>
+              <button onclick="ttsPause()" class="flex-1 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-pause"></i> Pause</button>
+              <button onclick="ttsResume()" class="flex-1 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-forward"></i> Resume</button>
+              <button onclick="ttsStop()" class="flex-1 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-stop"></i> Stop</button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-2">
+            <button onclick="askAIReader()" class="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"><i class="fa-solid fa-wand-magic-sparkles"></i> Ask AI about Page</button>
+            <button onclick="translatePage()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center justify-center gap-1.5"><i class="fa-solid fa-language"></i> Translate to Telugu</button>
+            <button onclick="exportDoc()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center justify-center gap-1.5"><i class="fa-solid fa-file-export"></i> Export Text</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
 </div>
 
-<!-- LIBRARY OPTIONS DIALOG -->
-<div id="libOptions" hidden class="fixed inset-0 z-50 bg-black/40 backdrop-blur flex items-center justify-center p-4">
-  <div class="w-full max-w-[360px] bg-white rounded-2xl p-5" role="dialog" aria-modal="true" aria-label="Document options">
-    <h3 id="optTitle" class="font-bold"></h3>
-    <div class="mt-4 grid grid-cols-2 gap-2">
-      <button onclick="optAction('open')" class="py-3 rounded-full bg-slate-900 text-white font-bold">Open</button>
-      <button onclick="optAction('continue')" class="py-3 rounded-full bg-white border-2 font-bold">Continue</button>
-      <button onclick="optAction('rename')" class="py-3 rounded-full bg-white border-2 font-bold">Rename</button>
-      <button onclick="optAction('delete')" class="py-3 rounded-full bg-white border-2 font-bold text-red-600">Delete</button>
-      <button onclick="optAction('questions')" class="py-3 rounded-full bg-white border-2 font-bold">Generate Questions</button>
-      <button onclick="optAction('quiz')" class="py-3 rounded-full bg-indigo-600 text-white font-bold">Generate Quiz</button>
-      <button onclick="optAction('ask')" class="py-3 rounded-full bg-white border-2 font-bold">Ask AI</button>
-      <button onclick="optAction('export')" class="py-3 rounded-full bg-white border-2 font-bold">Export</button>
-    </div>
-    <button onclick="closeLibOptions()" class="w-full mt-3 py-3 rounded-full bg-white border-2 font-bold">Close</button>
-  </div>
-</div>
-
-<!-- Hidden file picker (REAL Android picker) -->
+<!-- Hidden native file picker -->
 <input id="filePicker" type="file" accept="application/pdf,.pdf" hidden aria-hidden="true">
 
-<!-- Audio for quiz/timer -->
+<!-- Audio elements for quiz & timer -->
 <audio id="sndCorrect" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/correct.mp3"></audio>
 <audio id="sndWrong" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/wrong.mp3"></audio>
 <audio id="sndComplete" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/complete.mp3"></audio>
 <audio id="sndTick" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/tick.mp3"></audio>
 
-</div>
-
 <script>
 // CONFIG
-const API = (()=>{ const h=location.hostname; if(h.includes('github.io')) return 'https://help-studies-fish.onrender.com'; if(location.port==='8000') return location.protocol+'//'+h+':3001'; if(location.port==='3001') return ''; if(location.href.includes('e2b.app')) return location.origin.replace(/:\/\/\d+-/, '://3001-'); return 'https://help-studies-fish.onrender.com'; })();
-const announce = (m)=>{ const el=document.getElementById('live'); el.textContent=''; setTimeout(()=>el.textContent=m,80); };
-
-// STATE
-let user=null, token=localStorage.getItem('inter_token')||'';
-let docs=[], quizzes=[], currentDoc=null, currentPage=1, totalPages=1, pdfDoc=null, pageTexts=[], tts=null, quiz=null, qIdx=0, answers={}, timer=null, timeLeft=0;
-let STREAMS={MPC:['Maths IA','Physics','Chemistry'], BiPC:['Botany','Zoology','Physics'], CEC:['Commerce','Economics','Civics'], MEC:['Maths','Economics','Commerce'], HEC:['History','Economics','Civics']};
-
-// INIT
-(async()=>{
-  user = JSON.parse(localStorage.getItem('inter_user')||'null');
-  if(user && token){
-    try{ const r=await fetch(API+'/api/auth/me', {headers:{Authorization:'Bearer '+token}}); if(!r.ok) throw 0; user= (await r.json()).user; }catch{ user=null; token=''; localStorage.removeItem('inter_token'); localStorage.removeItem('inter_user'); }
-  }
-  if(user){ showApp(); } else { showAuth('login'); }
-  loadLocal();
-  document.getElementById('filePicker').addEventListener('change', onFilePicked);
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+const API = (() => {
+  const h = location.hostname;
+  if (h.includes('github.io')) return 'https://help-studies-fish.onrender.com';
+  if (location.port === '8000') return location.protocol + '//' + h + ':3001';
+  if (location.port === '3001') return '';
+  if (location.href.includes('e2b.app')) return location.origin.replace(/:\/\/\d+-/, '://3001-');
+  return 'https://help-studies-fish.onrender.com';
 })();
 
-function loadLocal(){
-  try{ docs=JSON.parse(localStorage.getItem('inter_docs')||'[]'); }catch{ docs=[]}
-  try{ quizzes=JSON.parse(localStorage.getItem('inter_quizzes')||'[]'); }catch{ quizzes=[]}
+const announce = (m) => {
+  const el = document.getElementById('live');
+  if (el) {
+    el.textContent = '';
+    setTimeout(() => el.textContent = m, 80);
+  }
+};
+
+// STATE
+let user = null, token = localStorage.getItem('inter_token') || '';
+let docs = [], quizzes = [], currentDoc = null, currentPage = 1, totalPages = 1, pdfDoc = null, pageTexts = [];
+let quiz = null, qIdx = 0, answers = {}, timer = null, timeLeft = 0;
+
+// INIT
+(async () => {
+  try {
+    user = JSON.parse(localStorage.getItem('inter_user') || 'null');
+  } catch (e) {
+    user = null;
+  }
+
+  if (user && token) {
+    try {
+      const r = await fetch(API + '/api/auth/me', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!r.ok) throw new Error('Invalid token');
+      user = (await r.json()).user;
+    } catch {
+      user = null;
+      token = '';
+      localStorage.removeItem('inter_token');
+      localStorage.removeItem('inter_user');
+    }
+  }
+
+  if (user) {
+    showApp();
+  } else {
+    showAuth('login');
+  }
+
+  loadLocal();
+
+  const picker = document.getElementById('filePicker');
+  if (picker) picker.addEventListener('change', onFilePicked);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+})();
+
+function loadLocal() {
+  try { docs = JSON.parse(localStorage.getItem('inter_docs') || '[]'); } catch { docs = []; }
+  try { quizzes = JSON.parse(localStorage.getItem('inter_quizzes') || '[]'); } catch { quizzes = []; }
 }
 
-// AUTH — CLEAN, HIDES EVERYTHING
-function showAuth(which){
-  document.getElementById('authScreen').hidden=false;
-  document.getElementById('welcomeScreen').hidden=true;
-  document.getElementById('appShell').hidden=true;
-  document.getElementById('panelLogin').hidden = which!=='login';
-  document.getElementById('panelSignup').hidden = which!=='signup';
-  document.getElementById('tabLogin').setAttribute('aria-selected', String(which==='login'));
-  document.getElementById('tabSignup').setAttribute('aria-selected', String(which==='signup'));
+// AUTH SCREENS
+function showAuth(which) {
+  const authScreen = document.getElementById('authScreen');
+  const welcomeScreen = document.getElementById('welcomeScreen');
+  const appShell = document.getElementById('appShell');
+
+  authScreen.classList.remove('hidden');
+  authScreen.hidden = false;
+
+  welcomeScreen.classList.add('hidden');
+  welcomeScreen.hidden = true;
+  welcomeScreen.style.display = 'none';
+
+  appShell.classList.add('hidden');
+  appShell.hidden = true;
+
+  document.getElementById('panelLogin').hidden = (which !== 'login');
+  document.getElementById('panelSignup').hidden = (which !== 'signup');
+  document.getElementById('tabLogin').setAttribute('aria-selected', String(which === 'login'));
+  document.getElementById('tabSignup').setAttribute('aria-selected', String(which === 'signup'));
+
   if (which === 'login') {
-    document.getElementById('tabLogin').className = 'flex-1 py-2 rounded-full bg-white shadow font-bold text-sm text-slate-900';
-    document.getElementById('tabSignup').className = 'flex-1 py-2 rounded-full font-bold text-sm text-slate-600';
+    document.getElementById('tabLogin').className = 'flex-1 py-2.5 rounded-full bg-white shadow font-bold text-sm text-slate-900 cursor-pointer';
+    document.getElementById('tabSignup').className = 'flex-1 py-2.5 rounded-full font-bold text-sm text-slate-600 hover:text-slate-900 cursor-pointer';
   } else {
-    document.getElementById('tabSignup').className = 'flex-1 py-2 rounded-full bg-white shadow font-bold text-sm text-slate-900';
-    document.getElementById('tabLogin').className = 'flex-1 py-2 rounded-full font-bold text-sm text-slate-600';
+    document.getElementById('tabSignup').className = 'flex-1 py-2.5 rounded-full bg-white shadow font-bold text-sm text-slate-900 cursor-pointer';
+    document.getElementById('tabLogin').className = 'flex-1 py-2.5 rounded-full font-bold text-sm text-slate-600 hover:text-slate-900 cursor-pointer';
   }
-  document.getElementById('otpPanel').hidden=true;
-  document.getElementById('forgotPanel').hidden=true;
+
+  document.getElementById('otpPanel').hidden = true;
+  document.getElementById('forgotPanel').hidden = true;
   document.getElementById('loginErr').textContent = '';
   document.getElementById('signupErr').textContent = '';
-  document.getElementById('otpErr').textContent = '';
-  document.getElementById('forgotErr').textContent = '';
-  setTimeout(()=> document.getElementById(which==='login'?'loginEmail':'signupName')?.focus(), 80);
-  announce(which==='signup'?'Sign Up form opened':'Login form opened');
+
+  setTimeout(() => document.getElementById(which === 'login' ? 'loginEmail' : 'signupName')?.focus(), 80);
+  announce(which === 'signup' ? 'Sign Up form opened' : 'Login form opened');
 }
-function showApp(){
-  document.getElementById('authScreen').hidden=true;
-  document.getElementById('welcomeScreen').hidden=true;
-  document.getElementById('appShell').hidden=false;
-  const stream=localStorage.getItem('inter_stream')||'MPC';
-  document.getElementById('streamSelect').value=stream;
-  document.getElementById('setStream').value=stream;
-  document.getElementById('homeName').textContent = user? user.name.split(' ')[0] : 'Topper';
-  document.getElementById('userBadge').textContent = user? user.name[0].toUpperCase() : 'S';
+
+function showWelcome() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('authScreen').hidden = true;
+
+  const wel = document.getElementById('welcomeScreen');
+  wel.classList.remove('hidden');
+  wel.hidden = false;
+  wel.style.display = 'flex';
+
+  document.getElementById('appShell').classList.add('hidden');
+  document.getElementById('appShell').hidden = true;
+
+  const nameEl = document.getElementById('welcomeUserName');
+  if (nameEl && user) {
+    nameEl.textContent = `Namaste, ${user.name} 👋`;
+  }
+
+  announce('Welcome to Study Vision AI! Click Continue to enter your dashboard.');
+  setTimeout(() => document.getElementById('btnWelcomeContinue')?.focus(), 100);
+}
+
+function enterApp() {
+  const wel = document.getElementById('welcomeScreen');
+  wel.classList.add('hidden');
+  wel.hidden = true;
+  wel.style.display = 'none';
+
+  showApp();
+  nav('home');
+}
+
+function showApp() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('authScreen').hidden = true;
+
+  const wel = document.getElementById('welcomeScreen');
+  wel.classList.add('hidden');
+  wel.hidden = true;
+  wel.style.display = 'none';
+
+  document.getElementById('appShell').classList.remove('hidden');
+  document.getElementById('appShell').hidden = false;
+
+  const stream = localStorage.getItem('inter_stream') || 'MPC';
+  const streamSel = document.getElementById('streamSelect');
+  if (streamSel) streamSel.value = stream;
+
+  const name = user ? user.name : 'Topper';
+  const first = name.split(' ')[0];
+  const initial = name[0] ? name[0].toUpperCase() : 'S';
+
+  const homeName = document.getElementById('homeName');
+  if (homeName) homeName.textContent = first;
+
+  const userBadge = document.getElementById('userBadge');
+  if (userBadge) userBadge.textContent = initial;
+
   renderHome();
+  renderAccountView();
   announce('Welcome to Study Vision AI');
 }
-function showWelcome(){
-  document.getElementById('authScreen').hidden=true;
-  document.getElementById('welcomeScreen').hidden=false;
-  document.getElementById('appShell').hidden=true;
-  announce('Hi! Welcome to Study Vision AI.');
+
+// NAVIGATION
+function nav(which) {
+  const views = ['home', 'library', 'upload', 'scan', 'quiz', 'account', 'settings', 'reader'];
+  
+  views.forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (el) {
+      if (v === which) {
+        el.classList.remove('hidden');
+        el.hidden = false;
+      } else {
+        el.classList.add('hidden');
+        el.hidden = true;
+      }
+    }
+  });
+
+  document.querySelectorAll('nav [data-nav]').forEach(b => {
+    const isTarget = b.getAttribute('data-nav') === which;
+    b.setAttribute('aria-current', String(isTarget));
+    if (isTarget) {
+      b.className = 'navBtn px-4 py-2 rounded-full bg-slate-900 text-white font-bold text-sm shadow-sm cursor-pointer flex items-center gap-1.5';
+    } else {
+      b.className = 'navBtn px-4 py-2 rounded-full bg-white border-2 border-slate-200 font-bold text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1.5';
+    }
+  });
+
+  if (which === 'home') renderHome();
+  if (which === 'library') renderLibrary();
+  if (which === 'quiz') refreshQuizDocs();
+  if (which === 'account') renderAccountView();
+  if (which === 'settings') loadSettingsView();
+
+  announce(which + ' opened');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function enterApp(){ showApp(); nav('home'); }
 
 // AUTH ACTIONS
-let pendingEmail='', pendingPurpose='signup';
+let pendingEmail = '', pendingPurpose = 'signup';
 
-async function doSignup(e){
+async function doSignup(e) {
   e.preventDefault();
-  const name=document.getElementById('signupName').value.trim();
-  const email=document.getElementById('signupEmail').value.trim();
-  const p=document.getElementById('signupPass').value;
-  const c=document.getElementById('signupConfirm').value;
-  const err=document.getElementById('signupErr');
-  const btn=document.getElementById('btnSignupSubmit');
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const p = document.getElementById('signupPass').value;
+  const c = document.getElementById('signupConfirm').value;
+  const err = document.getElementById('signupErr');
+  const btn = document.getElementById('btnSignupSubmit');
 
-  if(!name || !email || !p){
-    err.textContent='Please fill in all fields.';
-    err.className='text-sm font-bold text-red-600';
+  if (!name || !email || !p) {
+    err.textContent = 'Please fill in all fields.';
+    err.className = 'text-sm font-bold text-red-600';
     return;
   }
-  if(p !== c){
-    err.textContent='Passwords do not match.';
-    err.className='text-sm font-bold text-red-600';
+  if (p !== c) {
+    err.textContent = 'Passwords do not match.';
+    err.className = 'text-sm font-bold text-red-600';
     return;
   }
-  if(p.length < 6){
-    err.textContent='Password must be at least 6 characters.';
-    err.className='text-sm font-bold text-red-600';
+  if (p.length < 6) {
+    err.textContent = 'Password must be at least 6 characters.';
+    err.className = 'text-sm font-bold text-red-600';
     return;
   }
 
   const origBtnText = btn ? btn.textContent : 'Create Account';
-  if(btn){ btn.disabled = true; btn.textContent = 'Creating...'; }
-  err.textContent='Creating...';
-  err.className='text-sm font-bold text-slate-600';
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
+  err.textContent = 'Creating account...';
+  err.className = 'text-sm font-bold text-slate-600';
 
-  try{
-    const r=await fetch(API+'/api/auth/signup',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name,email,password:p,confirmPassword:c})
+  try {
+    const r = await fetch(API + '/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password: p, confirmPassword: c })
     });
-    const j=await r.json();
-    if(!r.ok || j.success === false){
+    const j = await r.json();
+
+    if (!r.ok || j.success === false) {
       throw new Error(j.error || j.message || 'Failed to create account');
     }
-    pendingEmail=email.toLowerCase();
-    pendingPurpose='signup';
-    document.getElementById('otpEmail').textContent=pendingEmail;
-    document.getElementById('panelSignup').hidden=true;
-    document.getElementById('otpPanel').hidden=false;
-    document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP (no email config): '+j.devOtp : (j.message || 'OTP sent to email');
-    document.getElementById('otpErr').textContent='';
-    err.textContent='';
-    announce('Account created. OTP sent to '+pendingEmail);
+
+    pendingEmail = email.toLowerCase();
+    pendingPurpose = 'signup';
+    document.getElementById('otpEmail').textContent = pendingEmail;
+    document.getElementById('panelSignup').hidden = true;
+    document.getElementById('otpPanel').hidden = false;
+
+    const devOtpEl = document.getElementById('devOtp');
+    if (j.devOtp) {
+      devOtpEl.textContent = '⚡ Verification Code: ' + j.devOtp;
+      document.getElementById('devOtpBox').classList.remove('hidden');
+    } else {
+      devOtpEl.textContent = 'OTP code sent to your email inbox.';
+    }
+
+    document.getElementById('otpErr').textContent = '';
+    err.textContent = '';
+    announce('Account created. OTP sent to ' + pendingEmail);
+
     const otpInput = document.getElementById('otpInput');
-    otpInput.value = '';
-    setTimeout(()=> otpInput.focus(), 80);
-  }catch(er){
-    err.textContent=er.message;
-    err.className='text-sm font-bold text-red-600';
+    otpInput.value = j.devOtp || '';
+    setTimeout(() => otpInput.focus(), 80);
+  } catch (er) {
+    err.textContent = er.message;
+    err.className = 'text-sm font-bold text-red-600';
     announce(er.message);
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origBtnText; }
   }
 }
 
-async function doLogin(e){
+async function doLogin(e) {
   e.preventDefault();
-  const email=document.getElementById('loginEmail').value.trim();
-  const p=document.getElementById('loginPass').value;
-  const err=document.getElementById('loginErr');
-  const btn=document.getElementById('btnLoginSubmit');
+  const email = document.getElementById('loginEmail').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  const btn = document.getElementById('btnLoginSubmit');
 
-  if(!email || !p){
-    err.textContent='Please enter email and password.';
-    err.className='text-sm font-bold text-red-600';
+  if (!email || !p) {
+    err.textContent = 'Please enter email and password.';
+    err.className = 'text-sm font-bold text-red-600';
     return;
   }
 
   const origBtnText = btn ? btn.textContent : 'Login';
-  if(btn){ btn.disabled = true; btn.textContent = 'Logging in...'; }
-  err.textContent='Logging in...';
-  err.className='text-sm font-bold text-slate-600';
+  if (btn) { btn.disabled = true; btn.textContent = 'Logging in...'; }
+  err.textContent = 'Logging in...';
+  err.className = 'text-sm font-bold text-slate-600';
 
-  try{
-    const r=await fetch(API+'/api/auth/login',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email,password:p})
+  try {
+    const r = await fetch(API + '/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: p })
     });
-    const j=await r.json();
+    const j = await r.json();
 
-    if(!r.ok || j.success === false){
-      if(j.needVerify || j.requiresOtp){
-        pendingEmail=(j.email || email).toLowerCase();
-        pendingPurpose='signup';
-        document.getElementById('otpEmail').textContent=pendingEmail;
-        document.getElementById('panelLogin').hidden=true;
-        document.getElementById('otpPanel').hidden=false;
-        document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP: '+j.devOtp : (j.message || 'OTP sent to email');
-        document.getElementById('otpErr').textContent='';
-        err.textContent='';
-        announce('Email not verified. OTP sent to '+pendingEmail);
+    if (!r.ok || j.success === false) {
+      if (j.needVerify || j.requiresOtp) {
+        pendingEmail = (j.email || email).toLowerCase();
+        pendingPurpose = 'signup';
+        document.getElementById('otpEmail').textContent = pendingEmail;
+        document.getElementById('panelLogin').hidden = true;
+        document.getElementById('otpPanel').hidden = false;
+
+        const devOtpEl = document.getElementById('devOtp');
+        if (j.devOtp) {
+          devOtpEl.textContent = '⚡ Verification Code: ' + j.devOtp;
+        } else {
+          devOtpEl.textContent = 'OTP sent to your email.';
+        }
+
+        document.getElementById('otpErr').textContent = '';
+        err.textContent = '';
+        announce('Email not verified. OTP sent to ' + pendingEmail);
+
         const otpInput = document.getElementById('otpInput');
-        otpInput.value = '';
-        setTimeout(()=> otpInput.focus(), 80);
+        otpInput.value = j.devOtp || '';
+        setTimeout(() => otpInput.focus(), 80);
         return;
-      }
-      if(j.error && j.error.includes('not found')){
-        throw new Error('Your account is not found. Please sign up first.');
       }
       throw new Error(j.error || j.message || 'Login failed');
     }
 
-    if(j.needVerify || j.requiresOtp){
-      pendingEmail=(j.email || email).toLowerCase();
-      pendingPurpose='signup';
-      document.getElementById('otpEmail').textContent=pendingEmail;
-      document.getElementById('panelLogin').hidden=true;
-      document.getElementById('otpPanel').hidden=false;
-      document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP: '+j.devOtp : (j.message || 'OTP sent to email');
-      document.getElementById('otpErr').textContent='';
-      err.textContent='';
-      announce('Email not verified. OTP sent to '+pendingEmail);
-      const otpInput = document.getElementById('otpInput');
-      otpInput.value = '';
-      setTimeout(()=> otpInput.focus(), 80);
-      return;
-    }
-
-    token=j.token;
-    user=j.user;
-    localStorage.setItem('inter_token',token);
-    localStorage.setItem('inter_user',JSON.stringify(user));
-    err.textContent='';
+    token = j.token;
+    user = j.user;
+    localStorage.setItem('inter_token', token);
+    localStorage.setItem('inter_user', JSON.stringify(user));
+    err.textContent = '';
     announce('Login successful');
     showApp();
-  }catch(er){
-    err.textContent=er.message;
-    err.className='text-sm font-bold text-red-600';
+  } catch (er) {
+    err.textContent = er.message;
+    err.className = 'text-sm font-bold text-red-600';
     announce(er.message);
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origBtnText; }
   }
 }
 
-async function verifyOtp(){
-  const otp=document.getElementById('otpInput').value.trim();
-  const err=document.getElementById('otpErr');
-  const btn=document.getElementById('btnVerifyOtp');
+async function verifyOtp() {
+  const otp = document.getElementById('otpInput').value.trim();
+  const err = document.getElementById('otpErr');
+  const btn = document.getElementById('btnVerifyOtp');
 
-  if(!otp || otp.length!==6){
-    err.textContent='Enter 6-digit OTP';
-    err.className='text-sm font-bold text-red-600';
+  if (!otp || otp.length !== 6) {
+    err.textContent = 'Please enter the 6-digit OTP';
+    err.className = 'text-sm font-bold text-red-600';
     return;
   }
 
   const origBtnText = btn ? btn.textContent : 'Verify';
-  if(btn){ btn.disabled = true; btn.textContent = 'Verifying...'; }
-  err.textContent='Verifying...';
-  err.className='text-sm font-bold text-slate-600';
+  if (btn) { btn.disabled = true; btn.textContent = 'Verifying...'; }
+  err.textContent = 'Verifying code...';
+  err.className = 'text-sm font-bold text-slate-600';
 
-  try{
-    const r=await fetch(API+'/api/auth/verify-otp',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:pendingEmail, otp, purpose:pendingPurpose})
+  try {
+    const r = await fetch(API + '/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingEmail, otp, purpose: pendingPurpose })
     });
-    const j=await r.json();
-    if(!r.ok || j.success === false){
-      throw new Error(j.error || j.message || 'Invalid OTP');
+    const j = await r.json();
+    if (!r.ok || j.success === false) {
+      throw new Error(j.error || j.message || 'Invalid OTP code');
     }
-    token=j.token;
-    user=j.user;
-    localStorage.setItem('inter_token',token);
-    localStorage.setItem('inter_user',JSON.stringify(user));
-    document.getElementById('otpPanel').hidden=true;
-    err.textContent='';
+    token = j.token;
+    user = j.user;
+    localStorage.setItem('inter_token', token);
+    localStorage.setItem('inter_user', JSON.stringify(user));
+    document.getElementById('otpPanel').hidden = true;
+    err.textContent = '';
+    
+    // Open Welcome Screen with prominent Continue Button
     showWelcome();
-  }catch(er){
-    err.textContent=er.message;
-    err.className='text-sm font-bold text-red-600';
+  } catch (er) {
+    err.textContent = er.message;
+    err.className = 'text-sm font-bold text-red-600';
     announce(er.message);
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origBtnText; }
   }
 }
 
-async function resendOtp(){
-  const err=document.getElementById('otpErr');
-  const btn=document.getElementById('btnResendOtp');
-  if(!pendingEmail){
-    err.textContent='No email specified. Please sign up or login again.';
-    err.className='text-sm font-bold text-red-600';
+async function resendOtp() {
+  const err = document.getElementById('otpErr');
+  const btn = document.getElementById('btnResendOtp');
+  if (!pendingEmail) {
+    err.textContent = 'No email specified.';
     return;
   }
 
   const origBtnText = btn ? btn.textContent : 'Resend OTP';
-  if(btn){ btn.disabled = true; btn.textContent = 'Sending...'; }
-  err.textContent='Resending OTP...';
-  err.className='text-sm font-bold text-slate-600';
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  err.textContent = 'Resending code...';
+  err.className = 'text-sm font-bold text-slate-600';
 
-  try{
-    const r=await fetch(API+'/api/auth/resend-otp',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:pendingEmail, purpose:pendingPurpose})
+  try {
+    const r = await fetch(API + '/api/auth/resend-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingEmail, purpose: pendingPurpose })
     });
-    const j=await r.json();
-    if(!r.ok || j.success === false){
-      throw new Error(j.error || j.message || 'Failed to resend OTP');
+    const j = await r.json();
+    if (!r.ok || j.success === false) throw new Error(j.error || 'Failed');
+    err.textContent = 'New OTP code sent!';
+    err.className = 'text-sm font-bold text-emerald-700';
+    if (j.devOtp) {
+      document.getElementById('devOtp').textContent = '⚡ Verification Code: ' + j.devOtp;
+      document.getElementById('otpInput').value = j.devOtp;
     }
-    err.textContent=j.devOtp? 'Resent — DEV OTP: '+j.devOtp : 'New OTP sent to '+pendingEmail;
-    err.className='text-sm font-bold text-emerald-700';
-    if(j.devOtp) document.getElementById('devOtp').textContent='DEV OTP: '+j.devOtp;
-    announce('New OTP sent');
-  }catch(er){
-    err.textContent=er.message;
-    err.className='text-sm font-bold text-red-600';
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  } catch (er) {
+    err.textContent = er.message;
+    err.className = 'text-sm font-bold text-red-600';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origBtnText; }
   }
 }
 
-function showForgot(){
-  document.getElementById('panelLogin').hidden=true;
-  document.getElementById('panelSignup').hidden=true;
-  document.getElementById('otpPanel').hidden=true;
-  document.getElementById('forgotPanel').hidden=false;
-  document.getElementById('forgotErr').textContent='';
-  setTimeout(()=> document.getElementById('forgotEmail')?.focus(), 80);
+function showForgot() {
+  document.getElementById('panelLogin').hidden = true;
+  document.getElementById('panelSignup').hidden = true;
+  document.getElementById('otpPanel').hidden = true;
+  document.getElementById('forgotPanel').hidden = false;
 }
 
-async function sendForgot(){
-  const email=document.getElementById('forgotEmail').value.trim();
-  const err=document.getElementById('forgotErr');
-  const btn=document.getElementById('btnSendForgot');
-
-  if(!email){
-    err.textContent='Please enter your email.';
-    err.className='text-sm font-bold text-red-600';
+async function sendForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const err = document.getElementById('forgotErr');
+  const btn = document.getElementById('btnSendForgot');
+  if (!email) {
+    err.textContent = 'Enter your email address.';
     return;
   }
-
-  const origBtnText = btn ? btn.textContent : 'Send Code';
-  if(btn){ btn.disabled = true; btn.textContent = 'Sending...'; }
-  err.textContent='Sending code...';
-  err.className='text-sm font-bold text-slate-600';
-
-  try{
-    const r=await fetch(API+'/api/auth/forgot-password',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email})
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  err.textContent = 'Sending reset code...';
+  try {
+    const r = await fetch(API + '/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
     });
-    const j=await r.json();
-    if(!r.ok || j.success === false){
-      throw new Error(j.error || j.message || 'Failed to send reset code');
-    }
-    pendingEmail=email.toLowerCase();
-    pendingPurpose='forgot';
-    err.textContent=j.devOtp? 'Code sent — DEV: '+j.devOtp : 'Verification code sent to '+email;
-    err.className='text-sm font-bold text-emerald-700';
-    document.getElementById('resetArea').hidden=false;
-    announce('Verification code sent');
-    setTimeout(()=> document.getElementById('forgotOtp')?.focus(), 80);
-  }catch(er){
-    err.textContent=er.message;
-    err.className='text-sm font-bold text-red-600';
-    announce(er.message);
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+    const j = await r.json();
+    if (!r.ok || j.success === false) throw new Error(j.error || 'Failed');
+    pendingEmail = email.toLowerCase();
+    pendingPurpose = 'forgot';
+    err.textContent = 'Reset code sent to ' + email;
+    err.className = 'text-sm font-bold text-emerald-700';
+    document.getElementById('resetArea').hidden = false;
+    if (j.devOtp) document.getElementById('forgotOtp').value = j.devOtp;
+  } catch (er) {
+    err.textContent = er.message;
+    err.className = 'text-sm font-bold text-red-600';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Reset Code'; }
   }
 }
 
-async function resetPass(){
-  const otp=document.getElementById('forgotOtp').value.trim();
-  const np=document.getElementById('forgotNew').value;
-  const cp=document.getElementById('forgotConfirm').value;
-  const err=document.getElementById('forgotErr');
-  const btn=document.getElementById('btnResetPass');
+async function resetPass() {
+  const otp = document.getElementById('forgotOtp').value.trim();
+  const np = document.getElementById('forgotNew').value;
+  const cp = document.getElementById('forgotConfirm').value;
+  const err = document.getElementById('forgotErr');
+  const btn = document.getElementById('btnResetPass');
 
-  if(!otp || !np || !cp){
-    err.textContent='Please fill in all fields.';
-    err.className='text-sm font-bold text-red-600';
+  if (!otp || !np || !cp) {
+    err.textContent = 'Fill in all fields.';
     return;
   }
-  if(np !== cp){
-    err.textContent='Passwords do not match.';
-    err.className='text-sm font-bold text-red-600';
+  if (np !== cp) {
+    err.textContent = 'Passwords do not match.';
     return;
   }
-  if(np.length < 6){
-    err.textContent='Password must be at least 6 characters.';
-    err.className='text-sm font-bold text-red-600';
+  if (np.length < 6) {
+    err.textContent = 'Password must be at least 6 characters.';
     return;
   }
 
-  const origBtnText = btn ? btn.textContent : 'Reset Password';
-  if(btn){ btn.disabled = true; btn.textContent = 'Resetting...'; }
-  err.textContent='Resetting password...';
-  err.className='text-sm font-bold text-slate-600';
-
-  try{
-    const r=await fetch(API+'/api/auth/reset-password',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:pendingEmail, otp, newPassword:np, confirmPassword:cp})
+  if (btn) { btn.disabled = true; btn.textContent = 'Resetting...'; }
+  try {
+    const r = await fetch(API + '/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingEmail, otp, newPassword: np, confirmPassword: cp })
     });
-    const j=await r.json();
-    if(!r.ok || j.success === false){
-      throw new Error(j.error || j.message || 'Failed to reset password');
-    }
-    err.textContent='Password reset successful! Redirecting to login...';
-    err.className='text-sm font-bold text-emerald-700';
-    announce('Password reset successful. You can now login.');
-    setTimeout(()=>{
-      document.getElementById('forgotPanel').hidden=true;
-      document.getElementById('resetArea').hidden=true;
+    const j = await r.json();
+    if (!r.ok || j.success === false) throw new Error(j.error || 'Failed');
+    err.textContent = 'Password reset! Redirecting to login...';
+    err.className = 'text-sm font-bold text-emerald-700';
+    setTimeout(() => {
+      document.getElementById('forgotPanel').hidden = true;
+      document.getElementById('resetArea').hidden = true;
       showAuth('login');
     }, 1200);
-  }catch(er){
-    err.textContent=er.message;
-    err.className='text-sm font-bold text-red-600';
-    announce(er.message);
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  } catch (er) {
+    err.textContent = er.message;
+    err.className = 'text-sm font-bold text-red-600';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Reset Password'; }
   }
 }
-function logout(){ localStorage.removeItem('inter_token'); localStorage.removeItem('inter_user'); location.reload(); }
 
-// NAV — ONLY 3 PRIMARY
-function nav(which){
-  document.querySelectorAll('nav [data-nav]').forEach(b=>{ b.setAttribute('aria-current','false'); b.className='navBtn flex-1 py-2.5 rounded-full bg-white border-2 font-bold'; });
-  const active=document.querySelector(`nav [data-nav="${which}"]`);
-  if(active){ active.setAttribute('aria-current','page'); active.className='navBtn flex-1 py-2.5 rounded-full bg-slate-900 text-white font-bold'; }
-  document.getElementById('view-home').hidden = which!=='home';
-  document.getElementById('view-library').hidden = which!=='library';
-  document.getElementById('view-quiz').hidden = which!=='quiz';
-  document.getElementById('view-reader').hidden = which!=='reader';
-  document.getElementById('view-upload').hidden = which!=='upload';
-  if(which==='home') renderHome();
-  if(which==='library') renderLibrary();
-  if(which==='quiz') refreshQuizDocs();
-  announce(which+' opened');
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-function openSecondary(){ document.getElementById('secondarySheet').hidden=false; }
-function closeSecondary(){ document.getElementById('secondarySheet').hidden=true; }
-function openSettings(){
-  document.getElementById('settingsModal').hidden=false;
-  document.getElementById('setName').value = user? user.name : (localStorage.getItem('student_name')||'');
-  document.getElementById('setPomo').checked = localStorage.getItem('pomo_enabled')!=='false';
-}
-function closeSettings(){ document.getElementById('settingsModal').hidden=true; }
-function saveSettings(){
-  const n=document.getElementById('setName').value.trim();
-  const s=document.getElementById('setStream').value;
-  const p=document.getElementById('setPomo').checked;
-  localStorage.setItem('student_name', n);
-  localStorage.setItem('inter_stream', s);
-  localStorage.setItem('pomo_enabled', String(p));
-  document.getElementById('streamSelect').value=s;
-  closeSettings();
-  announce('Settings saved');
+function switchAccount() {
+  localStorage.removeItem('inter_token');
+  localStorage.removeItem('inter_user');
+  user = null;
+  token = '';
+  showAuth('login');
+  announce('Switched account. Please login.');
 }
 
-// HOME
-function renderHome(){
-  // Recent
-  const recent=docs.slice(0,3);
-  const list=document.getElementById('recentList');
-  const noRecent=document.getElementById('noRecent');
-  if(!recent.length){ list.innerHTML=''; noRecent.hidden=false; }
-  else {
-    noRecent.hidden=true;
-    list.innerHTML = recent.map(d=>`
-      <div class="flex items-center justify-between p-3 rounded-xl border-2 bg-white">
-        <div>
-          <p class="font-bold">${d.title}</p>
-          <p class="text-xs text-slate-500">${d.subject} • ${d.pages} pages</p>
+function logout() {
+  localStorage.removeItem('inter_token');
+  localStorage.removeItem('inter_user');
+  user = null;
+  token = '';
+  location.reload();
+}
+
+// PROFILE & SETTINGS
+function renderAccountView() {
+  if (!user) return;
+  const nameEl = document.getElementById('accName');
+  if (nameEl) nameEl.textContent = user.name || 'Student';
+  const emailEl = document.getElementById('accEmail');
+  if (emailEl) emailEl.textContent = user.email || '';
+  const avEl = document.getElementById('accAvatar');
+  if (avEl && user.name) avEl.textContent = user.name[0].toUpperCase();
+  const stEl = document.getElementById('accStream');
+  const stream = localStorage.getItem('inter_stream') || 'MPC';
+  const streamMap = {
+    MPC: 'MPC (Maths IA/IB, Physics, Chemistry)',
+    BiPC: 'BiPC (Botany, Zoology, Physics, Chemistry)',
+    CEC: 'CEC (Commerce, Economics, Civics)',
+    MEC: 'MEC (Maths, Economics, Commerce)',
+    HEC: 'HEC (History, Economics, Civics)'
+  };
+  if (stEl) stEl.textContent = streamMap[stream] || stream;
+}
+
+function loadSettingsView() {
+  const nameInput = document.getElementById('setStudentName');
+  if (nameInput) nameInput.value = user ? user.name : (localStorage.getItem('student_name') || '');
+  const streamSel = document.getElementById('setStudentStream');
+  if (streamSel) streamSel.value = localStorage.getItem('inter_stream') || 'MPC';
+  const pomo = document.getElementById('setPomodoroToggle');
+  if (pomo) pomo.checked = localStorage.getItem('pomo_enabled') !== 'false';
+}
+
+function saveDashboardSettings() {
+  const name = document.getElementById('setStudentName').value.trim();
+  const stream = document.getElementById('setStudentStream').value;
+  const pomo = document.getElementById('setPomodoroToggle').checked;
+
+  if (name && user) {
+    user.name = name;
+    localStorage.setItem('inter_user', JSON.stringify(user));
+  }
+  localStorage.setItem('inter_stream', stream);
+  localStorage.setItem('pomo_enabled', String(pomo));
+
+  const streamSel = document.getElementById('streamSelect');
+  if (streamSel) streamSel.value = stream;
+
+  showApp();
+  alert('Settings saved successfully!');
+}
+
+function setStream(v) {
+  localStorage.setItem('inter_stream', v);
+  const streamSel = document.getElementById('streamSelect');
+  if (streamSel) streamSel.value = v;
+  renderAccountView();
+}
+
+// HOME & LIBRARY RENDERING
+function renderHome() {
+  const recent = docs.slice(0, 3);
+  const list = document.getElementById('recentList');
+  const noRecent = document.getElementById('noRecent');
+  if (!recent.length) {
+    list.innerHTML = '';
+    noRecent.classList.remove('hidden');
+  } else {
+    noRecent.classList.add('hidden');
+    list.innerHTML = recent.map(d => `
+      <div class="flex items-center justify-between p-3.5 rounded-2xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition shadow-sm">
+        <div class="truncate mr-3">
+          <p class="font-bold text-slate-800 text-sm truncate">${d.title}</p>
+          <p class="text-xs text-slate-500 mt-0.5">${d.subject || 'General'} • ${d.pages || 1} pages</p>
         </div>
-        <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 text-white font-bold" aria-label="Open ${d.title}">Open</button>
+        <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shadow-sm shrink-0">Open</button>
       </div>
     `).join('');
   }
-  // Continue
+
   const last = docs[0];
-  const cont=document.getElementById('continueBox');
-  const noCont=document.getElementById('noContinue');
-  if(!last){ cont.innerHTML=''; noCont.hidden=false; }
-  else{
-    noCont.hidden=true;
-    const prog = parseInt(localStorage.getItem('prog_'+last.id)||'1',10);
+  const cont = document.getElementById('continueBox');
+  const noCont = document.getElementById('noContinue');
+  if (!last) {
+    cont.innerHTML = '';
+    noCont.classList.remove('hidden');
+  } else {
+    noCont.classList.add('hidden');
+    const p = localStorage.getItem('prog_' + last.id) || 1;
     cont.innerHTML = `
-      <p class="font-bold">${last.title}</p>
-      <p class="text-sm text-slate-600">Page ${prog} of ${last.pages} — ${last.subject}</p>
-      <button onclick="openDoc('${last.id}')" class="mt-3 w-full py-3 rounded-full bg-indigo-600 text-white font-bold" aria-label="Continue reading ${last.title} from page ${prog}">Continue Reading</button>
+      <div class="p-4 rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 flex items-center justify-between gap-3">
+        <div class="truncate">
+          <p class="font-bold text-slate-900 text-sm truncate">${last.title}</p>
+          <p class="text-xs text-indigo-700 font-bold mt-1">Page ${p} of ${last.pages || 1}</p>
+        </div>
+        <button onclick="openDoc('${last.id}', ${p})" class="px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer shadow-md shrink-0">Continue</button>
+      </div>
     `;
   }
-  // pwa bar
-  if(window.deferredPrompt) document.getElementById('pwaBar').hidden=false;
-}
-function openPicker(){ document.getElementById('filePicker').click(); announce('PDF picker opened'); }
-function focusAsk(){ document.getElementById('homeAsk').focus(); }
-function askFromHome(){
-  const q=document.getElementById('homeAsk').value.trim();
-  if(!q) return;
-  nav('reader');
-  // If no doc, just ask AI
-  if(!currentDoc) { askAI(q); }
-  else { askAI(q + '\n\nContext: ' + (pageTexts[currentPage-1]||'').slice(0,3000)); }
-  document.getElementById('homeAsk').value='';
-}
-function onFilePicked(e){
-  const f=e.target.files[0];
-  if(!f) return;
-  if(f.type!=='application/pdf' && !f.name.toLowerCase().endsWith('.pdf')){ announce('Only PDF allowed'); alert('Only PDF documents for this workflow'); e.target.value=''; return; }
-  announce('PDF selected');
-  startUpload(f);
-  e.target.value='';
 }
 
-// UPLOAD — REAL PROGRESS
-let uploadCancel=false;
-function cancelUpload(){ uploadCancel=true; announce('Upload cancelled'); nav('home'); }
-async function startUpload(file){
-  uploadCancel=false;
-  nav('upload');
-  document.getElementById('uploadFile').textContent = file.name + ' • ' + (file.size/1024/1024).toFixed(2)+' MB';
-  const bar=document.getElementById('progBar');
-  const wrap=document.getElementById('progBarWrap');
-  const stage=document.getElementById('uploadStage');
-  const pageEl=document.getElementById('uploadPage');
-  let pdfDoc=null;
-  try{
-    stage.textContent='Uploading PDF...';
-    pageEl.textContent='';
-    bar.style.width='8%'; wrap.setAttribute('aria-valuenow','8');
-    // Simulate upload progress (real file already selected, but show uploading)
-    for(let p=8; p<22; p+=2){ if(uploadCancel) return; bar.style.width=p+'%'; await new Promise(r=>setTimeout(r, 80)); }
-    stage.textContent='Reading document...';
-    const buf = await file.arrayBuffer();
-    pdfDoc = await pdfjsLib.getDocument({data: buf}).promise;
-    totalPages = pdfDoc.numPages;
-    pageTexts = new Array(totalPages);
-    let full=''; // for library save
-    for(let i=1; i<=totalPages; i++){
-      if(uploadCancel) return;
-      const pct = Math.round(22 + (i/totalPages)*70);
-      bar.style.width=pct+'%'; wrap.setAttribute('aria-valuenow', String(pct));
-      stage.textContent=`Scanning page ${i} of ${totalPages}`;
-      pageEl.textContent=`${pct}% — Scanning page ${i} of ${totalPages}`;
-      announce(`Scanning page ${i} of ${totalPages} — ${pct} percent`);
-      const page = await pdfDoc.getPage(i);
-      const viewport = page.getViewport({scale: 1});
-      // Try text layer first
-      const content = await page.getTextContent();
-      let text = content.items.map(it=>it.str).join(' ').trim();
-      // If no text, use OCR for scanned pages
-      if(!text || text.length < 20){
-        stage.textContent=`Scanning page ${i} of ${totalPages} — Using OCR`;
-        const canvas=document.createElement('canvas');
-        const ctx=canvas.getContext('2d');
-        canvas.width=viewport.width; canvas.height=viewport.height;
-        await page.render({canvasContext: ctx, viewport}).promise;
-        const dataUrl=canvas.toDataURL('image/png');
-        try{
-          const {data:{text: ocrText}} = await Tesseract.recognize(dataUrl, 'eng', {logger:()=>{}});
-          text = ocrText.trim();
-        }catch{}
-        if(!text) text='[No text detected on this page]';
-      }
-      pageTexts[i-1]=text;
-      full += `\n\n--- Page ${i} ---\n` + text;
-      // Natural speed depends on page complexity (text length)
-      await new Promise(r=>setTimeout(r, 120 + Math.min(400, text.length/12)));
-    }
-    bar.style.width='100%'; wrap.setAttribute('aria-valuenow','100');
-    stage.textContent='Processing complete.';
-    pageEl.textContent=`100% — ${totalPages} pages processed`;
-    announce(`Processing complete — ${totalPages} pages`);
-    // Save full for library, but also keep pageTexts
-    const title=file.name.replace(/\.pdf$/i,'');
-    currentDoc = { id: 'doc_'+Date.now(), title, subject: (STREAMS[localStorage.getItem('inter_stream')||'MPC']||[])[0]||'General', pages: totalPages, text: full, pageTexts, created: new Date().toISOString() };
-    // Don't auto-save yet — let user Save to Library
-    setTimeout(()=> openReaderForDoc(currentDoc, 1, pdfDoc), 500);
-  }catch(e){
-    console.error(e);
-    stage.textContent='Unable to process this PDF.';
-    pageEl.textContent=e.message;
-    announce('Unable to process this PDF');
+function renderLibrary() {
+  const list = document.getElementById('libList');
+  const noLib = document.getElementById('noLib');
+  if (!docs.length) {
+    list.innerHTML = '';
+    noLib.classList.remove('hidden');
+  } else {
+    noLib.classList.add('hidden');
+    list.innerHTML = docs.map(d => `
+      <div class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-indigo-300 transition shadow-sm">
+        <div class="truncate mr-3">
+          <h3 class="font-bold text-slate-900 text-base truncate">${d.title}</h3>
+          <p class="text-xs text-slate-500 mt-1">${d.subject || 'General'} • ${d.pages || 1} pages • Page ${localStorage.getItem('prog_' + d.id) || 1}/${d.pages || 1}</p>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer">Open</button>
+          <button onclick="deleteDoc('${d.id}')" class="px-3 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-xs cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    `).join('');
   }
 }
 
-function openReaderForDoc(doc, pageNum, pdf){
-  currentDoc=doc; currentPage=pageNum||1; pdfDoc=pdf;
-  // Persist reading progress
-  localStorage.setItem('prog_'+doc.id, String(currentPage));
+function deleteDoc(id) {
+  if (confirm('Delete this document from your library?')) {
+    docs = docs.filter(d => d.id !== id);
+    localStorage.setItem('inter_docs', JSON.stringify(docs));
+    renderLibrary();
+    renderHome();
+  }
+}
+
+function openPicker() {
+  document.getElementById('filePicker').click();
+}
+
+async function onFilePicked(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  nav('upload');
+  const progArea = document.getElementById('uploadProgressArea');
+  const bar = document.getElementById('uploadBar');
+  const stage = document.getElementById('uploadStageText');
+  const count = document.getElementById('uploadPageCount');
+  document.getElementById('uploadFileName').textContent = file.name;
+  progArea.classList.remove('hidden');
+
+  stage.textContent = 'Reading PDF buffer...';
+  bar.style.width = '15%';
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    totalPages = pdf.numPages;
+    pageTexts = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      stage.textContent = `Extracting page ${i} of ${totalPages}...`;
+      bar.style.width = `${Math.round((i / totalPages) * 100)}%`;
+      count.textContent = `${i} / ${totalPages}`;
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ');
+      pageTexts.push(pageText);
+    }
+
+    const fullText = pageTexts.join('\n\n--- Page Break ---\n\n');
+    const newDoc = {
+      id: 'doc_' + Date.now(),
+      title: file.name.replace(/\.[^/.]+$/, ''),
+      subject: localStorage.getItem('inter_stream') || 'General',
+      pages: totalPages,
+      text: fullText,
+      pageTexts,
+      created: new Date().toISOString()
+    };
+
+    docs.unshift(newDoc);
+    localStorage.setItem('inter_docs', JSON.stringify(docs));
+
+    currentDoc = newDoc;
+    currentPage = 1;
+    pdfDoc = pdf;
+
+    setTimeout(() => {
+      progArea.classList.add('hidden');
+      openDoc(newDoc.id);
+    }, 600);
+  } catch (err) {
+    stage.textContent = 'Error parsing PDF: ' + err.message;
+  }
+}
+
+// AUTO SCAN OCR
+async function handleScanPicked(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const box = document.getElementById('scanProgressBox');
+  const status = document.getElementById('scanStatusText');
+  const bar = document.getElementById('scanProgressBar');
+  const pct = document.getElementById('scanPercent');
+  const resultBox = document.getElementById('scanResultBox');
+  const textarea = document.getElementById('scannedText');
+
+  box.classList.remove('hidden');
+  resultBox.classList.add('hidden');
+  status.textContent = 'Analyzing image...';
+  bar.style.width = '15%';
+  pct.textContent = '15%';
+
+  try {
+    if (typeof Tesseract !== 'undefined') {
+      const worker = await Tesseract.createWorker('eng');
+      status.textContent = 'Running Optical Character Recognition (OCR)...';
+      bar.style.width = '55%';
+      pct.textContent = '55%';
+
+      const ret = await worker.recognize(file);
+      await worker.terminate();
+
+      bar.style.width = '100%';
+      pct.textContent = '100%';
+      status.textContent = 'Scan completed!';
+
+      textarea.value = ret.data.text || 'No text detected.';
+      resultBox.classList.remove('hidden');
+      announce('OCR Scan complete');
+    }
+  } catch (err) {
+    status.textContent = 'Scan error: ' + err.message;
+  }
+}
+
+function readScannedText() {
+  const txt = document.getElementById('scannedText').value;
+  if (!txt) return;
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(txt);
+    utt.rate = 0.95;
+    window.speechSynthesis.speak(utt);
+    announce('Playing scanned text aloud');
+  }
+}
+
+function saveScannedToLib() {
+  const txt = document.getElementById('scannedText').value.trim();
+  if (!txt) return alert('No text to save');
+  const title = prompt('Enter document title:', 'Scanned Note ' + new Date().toLocaleDateString());
+  if (!title) return;
+  const newDoc = {
+    id: 'doc_' + Date.now(),
+    title,
+    subject: localStorage.getItem('inter_stream') || 'General',
+    pages: 1,
+    text: txt,
+    pageTexts: [txt],
+    created: new Date().toISOString()
+  };
+  docs.unshift(newDoc);
+  localStorage.setItem('inter_docs', JSON.stringify(docs));
+  alert('Saved to library!');
+  nav('library');
+}
+
+// READER
+function openDoc(id, page) {
+  const d = docs.find(x => x.id === id);
+  if (!d) return;
+  currentDoc = d;
+  currentPage = page || parseInt(localStorage.getItem('prog_' + id) || '1', 10);
+  totalPages = d.pages || 1;
+  pageTexts = d.pageTexts || d.text.split('--- Page Break ---').map(s => s.trim()).filter(Boolean);
+
+  document.getElementById('readerDocTitle').textContent = d.title;
   nav('reader');
-  document.getElementById('readerDocTitle').textContent=doc.title;
-  document.getElementById('readerPage').textContent=`Page ${currentPage} of ${doc.pages}`;
   renderReaderPage();
 }
 
-// READER — STRUCTURED TEXT, PAGE BY PAGE, REAL PDF PAGES
-function renderReaderPage(){
-  if(!currentDoc) return;
-  totalPages=currentDoc.pages;
-  document.getElementById('readerPage').textContent=`Page ${currentPage} of ${totalPages}`;
-  document.getElementById('jumpPage').max = String(totalPages);
-  // Preserve structure: split into paragraphs/sentences, not one block
-  const raw = (pageTexts[currentPage-1] || currentDoc.text.split('--- Page')[currentPage] || '').trim();
-  const structured = structureText(raw, currentDoc.title, currentPage);
-  const container=document.getElementById('readerText');
-  container.innerHTML = structured.html;
-  // Also render PDF canvas if available
-  if(pdfDoc){
-    const canvas=document.getElementById('readerCanvas');
-    pdfDoc.getPage(currentPage).then(page=>{
-      const viewport=page.getViewport({scale: 1.1});
-      canvas.width=viewport.width; canvas.height=viewport.height;
-      canvas.style.width='100%'; canvas.height=viewport.height;
-      const ctx=canvas.getContext('2d');
-      page.render({canvasContext: ctx, viewport});
+function renderReaderPage() {
+  if (!currentDoc) return;
+  document.getElementById('readerPage').textContent = `Page ${currentPage} of ${totalPages}`;
+  localStorage.setItem('prog_' + currentDoc.id, String(currentPage));
+
+  const pageText = pageTexts[currentPage - 1] || 'No text available for this page.';
+  document.getElementById('readerText').textContent = pageText;
+
+  if (pdfDoc) {
+    pdfDoc.getPage(currentPage).then(page => {
+      const canvas = document.getElementById('readerCanvas');
+      const ctx = canvas.getContext('2d');
+      const viewport = page.getViewport({ scale: 1.2 });
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      page.render({ canvasContext: ctx, viewport });
     });
   }
-  localStorage.setItem('prog_'+currentDoc.id, String(currentPage));
-  announce(`Page ${currentPage} of ${totalPages}`);
 }
-function structureText(raw, title, pageNum){
-  // Convert raw text into accessible structure: headings, paragraphs, lists, sentences
-  let text = raw.replace(/\s+/g,' ').trim();
-  if(!text) return {html:'<p>No text on this page</p>', plain:''};
-  // Simple heuristics: split by sentence, preserve paragraphs (double newline in original)
-  const sentences = text.split(/(?<=[.!?])\s+/).filter(s=>s.trim().length>0);
-  let html='';
-  // First sentence often is heading if short and capitalized
-  if(pageNum===1 && sentences.length && sentences[0].length < 80 && /^[A-Z]/.test(sentences[0])){
-    html += `<h3 class="font-bold text-lg">${escapeHtml(sentences[0])}</h3>`;
-    sentences.shift();
-  } else if(pageNum===1){
-    html += `<h3 class="font-bold">${escapeHtml(title)}</h3>`;
+
+function readerPrev() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderReaderPage();
   }
-  // Group every 2-3 sentences into paragraph for TalkBack (each <p> independently accessible)
-  for(let i=0;i<sentences.length;i+=2){
-    const para = sentences.slice(i,i+2).join(' ');
-    // Detect list
-    if(/^\d+\./.test(para) || /^[•-]/.test(para)){
-      html += `<li class="ml-4 list-disc">${escapeHtml(para)}</li>`;
-    } else {
-      html += `<p class="mt-3">${escapeHtml(para)}</p>`;
-    }
+}
+
+function readerNext() {
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderReaderPage();
   }
-  if(html.includes('<li>')) html = `<ul class="list-disc ml-4">${html}</ul>`;
-  return {html, plain: sentences.join(' ')};
-}
-function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function readerPrev(){ if(currentPage>1){ ttsStop(); currentPage--; renderReaderPage(); } }
-function readerNext(){ if(currentPage<totalPages){ ttsStop(); currentPage++; renderReaderPage(); } }
-function readerJump(){
-  const v=parseInt(document.getElementById('jumpPage').value,10);
-  if(!v || v<1 || v>totalPages) return alert('Enter page 1 to '+totalPages);
-  ttsStop(); currentPage=v; renderReaderPage();
 }
 
-// TTS — HIGH QUALITY, PAGE BY PAGE, NOT ONE BLOCK
-let ttsUtter=null, ttsIdx=0, ttsParas=[];
-function getParas(){ return Array.from(document.querySelectorAll('#readerText p, #readerText h3, #readerText li')).map(el=>el.textContent.trim()).filter(Boolean); }
-function ttsPlay(fromStart=false){
-  if(!('speechSynthesis' in window)) return alert('TTS not supported');
-  speechSynthesis.cancel();
-  ttsParas=getParas();
-  if(fromStart) ttsIdx=0;
-  else if(ttsIdx>=ttsParas.length) ttsIdx=0;
-  playPara();
-}
-function playPara(){
-  if(ttsIdx>=ttsParas.length){
-    // Auto next page?
-    if(currentPage<totalPages && confirm('End of page. Go to next page?')){
-      readerNext(); setTimeout(()=>{ ttsIdx=0; playPara(); }, 400);
-    }
-    return;
+function readerJump() {
+  const val = parseInt(document.getElementById('jumpPage').value, 10);
+  if (val >= 1 && val <= totalPages) {
+    currentPage = val;
+    renderReaderPage();
   }
-  const text=ttsParas[ttsIdx];
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang = /[\u0C00-\u0C7F]/.test(text) ? 'te-IN' : /[\u0900-\u097F]/.test(text) ? 'hi-IN' : /[\u0B80-\u0BFF]/.test(text) ? 'ta-IN' : 'en-IN';
-  u.rate=1; u.onend=()=>{ ttsIdx++; playPara(); };
-  ttsUtter=u;
-  speechSynthesis.speak(u);
-}
-function ttsPause(){ speechSynthesis.pause(); }
-function ttsResume(){ speechSynthesis.resume(); }
-function ttsStop(){ speechSynthesis.cancel(); ttsUtter=null; }
-function ttsSkip(dir){ ttsStop(); ttsIdx = Math.max(0, Math.min(ttsParas.length-1, ttsIdx+dir)); playPara(); }
-function readAloud(){
-  // Read current page only, not entire doc
-  const paras=getParas().join(' ');
-  if(!paras) return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(paras.slice(0,4000));
-  u.lang='en-IN'; speechSynthesis.speak(u);
-  announce('Reading page '+currentPage);
 }
 
-// SAVE / LIBRARY
-function saveToLib(){
-  if(!currentDoc) return;
-  if(docs.find(d=>d.id===currentDoc.id)) return announce('Already in Library');
-  docs.unshift({...currentDoc, pageTexts});
-  localStorage.setItem('inter_docs', JSON.stringify(docs));
-  announce('Saved to Library');
-  alert('Saved to Library');
-  renderHome();
-}
-function saveAndQuiz(){
-  saveToLib();
-  // Generate quiz from current doc
-  document.getElementById('quizDoc').innerHTML = `<option value="${currentDoc.id}">${currentDoc.title}</option>` + docs.map(d=>`<option value="${d.id}">${d.title}</option>`).join('');
-  document.getElementById('quizDoc').value=currentDoc.id;
-  nav('quiz');
+// TTS NARRATION
+function ttsPlay() {
+  const txt = pageTexts[currentPage - 1] || '';
+  if (!txt || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(txt);
+  utt.rate = 0.95;
+  window.speechSynthesis.speak(utt);
+  announce('Playing audio narration');
 }
 
-// LIBRARY
-function renderLibrary(){
-  const list=document.getElementById('libList');
-  const noLib=document.getElementById('noLib');
-  if(!docs.length){ list.innerHTML=''; noLib.hidden=false; return; }
-  noLib.hidden=true;
-  list.innerHTML = docs.map(d=>`
-    <div class="bg-white border-2 rounded-2xl p-4 flex items-center justify-between gap-3">
-      <div class="min-w-0">
-        <p class="font-bold truncate">${d.title}</p>
-        <p class="text-xs text-slate-500">${d.pages} pages • ${new Date(d.created).toLocaleDateString()} • Page ${localStorage.getItem('prog_'+d.id)||1}/${d.pages}</p>
-      </div>
-      <div class="flex gap-2 shrink-0">
-        <button onclick="openDoc('${d.id}')" class="px-4 py-2 rounded-full bg-slate-900 text-white font-bold" aria-label="Open ${d.title}">Open</button>
-        <button onclick="openLibOptions('${d.id}')" class="w-10 h-10 rounded-full bg-white border-2 flex items-center justify-center" aria-label="Options for ${d.title}"><i class="fa-solid fa-ellipsis"></i></button>
-      </div>
-    </div>
-  `).join('');
-}
-let optDocId=null;
-function openLibOptions(id){
-  optDocId=id;
-  const d=docs.find(x=>x.id===id);
-  document.getElementById('optTitle').textContent=d.title;
-  document.getElementById('libOptions').hidden=false;
-  announce('Options for '+d.title);
-}
-function closeLibOptions(){ document.getElementById('libOptions').hidden=true; if(optDocId) document.querySelector(`button[aria-label="Options for ${docs.find(d=>d.id===optDocId)?.title}"]`)?.focus(); }
-function optAction(a){
-  const id=optDocId;
-  closeLibOptions();
-  if(a==='open') openDoc(id);
-  if(a==='continue') openDoc(id, parseInt(localStorage.getItem('prog_'+id)||'1',10));
-  if(a==='rename'){ const d=docs.find(x=>x.id===id); const n=prompt('Rename', d.title); if(n){ d.title=n; localStorage.setItem('inter_docs', JSON.stringify(docs)); renderLibrary(); } }
-  if(a==='delete'){ if(confirm('Delete this PDF?')){ docs=docs.filter(d=>d.id!==id); localStorage.setItem('inter_docs', JSON.stringify(docs)); renderLibrary(); renderHome(); } }
-  if(a==='questions' || a==='quiz'){ document.getElementById('quizDoc').innerHTML = docs.map(d=>`<option value="${d.id}">${d.title}</option>`).join(''); document.getElementById('quizDoc').value=id; nav('quiz'); }
-  if(a==='ask'){ const d=docs.find(x=>x.id===id); askAI('Explain this document: '+d.text.slice(0,3000)); nav('reader'); }
-  if(a==='export'){ const d=docs.find(x=>x.id===id); exportDoc(d); }
-}
-function openDoc(id, page){
-  const d=docs.find(x=>x.id===id);
-  if(!d) return;
-  // Need to reconstruct pageTexts if stored
-  pageTexts = d.pageTexts || d.text.split('--- Page').map(s=>s.trim()).filter(Boolean);
-  currentDoc=d; currentPage=page|| parseInt(localStorage.getItem('prog_'+id)||'1',10);
-  totalPages=d.pages;
-  // Try to get pdfDoc for canvas? If not, just text
-  pdfDoc=null;
-  document.getElementById('readerDocTitle').textContent=d.title;
-  nav('reader');
-  renderReaderPage();
-}
-function exportDoc(d){
-  d=d||currentDoc;
-  if(!d) return;
-  const blob=new Blob([d.text],{type:'text/plain'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=d.title+'.txt'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
-  announce('Exported');
+function ttsPause() {
+  if (window.speechSynthesis) window.speechSynthesis.pause();
 }
 
-// QUIZ — REAL LLM, RANDOMIZED ACROSS PDF, ACCESSIBLE BUTTONS
-function refreshQuizDocs(){
-  const sel=document.getElementById('quizDoc');
-  sel.innerHTML = docs.map(d=>`<option value="${d.id}">${d.title} • ${d.pages} pages</option>`).join('') || '<option>No documents</option>';
+function ttsResume() {
+  if (window.speechSynthesis) window.speechSynthesis.resume();
 }
-async function genQuiz(){
-  const docId=document.getElementById('quizDoc').value;
-  if(!docId) return alert('Choose a document');
-  const doc=docs.find(d=>d.id===docId);
-  const type=document.getElementById('quizType').value;
-  const count=parseInt(document.getElementById('quizCount').value,10);
-  const prog=document.getElementById('quizProg');
-  prog.hidden=false; prog.textContent='Generating quiz and answer — reading ALL chapters (50-60 seconds)...';
+
+function ttsStop() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+async function askAIReader() {
+  const txt = pageTexts[currentPage - 1] || '';
+  const q = prompt('Ask AI about Page ' + currentPage + ':', 'Summarize key 4M and 8M exam points on this page');
+  if (!q) return;
+
+  const box = document.getElementById('readerText');
+  const thinking = document.createElement('div');
+  thinking.className = 'mt-4 p-4 rounded-2xl bg-indigo-50 border-2 border-indigo-200 text-indigo-900 font-bold text-xs';
+  thinking.textContent = 'AITutor is analyzing page...';
+  box.appendChild(thinking);
+
+  try {
+    const r = await fetch(API + '/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: q, context: txt })
+    });
+    const j = await r.json();
+    thinking.innerHTML = `<p class="font-bold text-sm text-indigo-900 mb-1">AITutor Answer:</p><p class="text-slate-800 font-normal leading-relaxed">${(j.text || 'No response').replace(/\n/g, '<br>')}</p>`;
+  } catch {
+    thinking.textContent = 'AI service busy. Please try again.';
+  }
+}
+
+function translatePage() {
+  const txt = (pageTexts[currentPage - 1] || '').slice(0, 1500);
+  if (!txt) return;
+  askAIReader();
+}
+
+function exportDoc() {
+  if (!currentDoc) return;
+  const blob = new Blob([currentDoc.text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = currentDoc.title + '.txt';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// QUIZ
+function refreshQuizDocs() {
+  const sel = document.getElementById('quizDoc');
+  if (!sel) return;
+  sel.innerHTML = docs.map(d => `<option value="${d.id}">${d.title} (${d.pages || 1} pages)</option>`).join('') || '<option>No documents available</option>';
+}
+
+async function genQuiz() {
+  const docId = document.getElementById('quizDoc').value;
+  const doc = docs.find(d => d.id === docId);
+  if (!doc) return alert('Please upload a document first.');
+
+  const type = document.getElementById('quizType').value;
+  const count = parseInt(document.getElementById('quizCount').value, 10);
+  const prog = document.getElementById('quizProg');
+
+  prog.classList.remove('hidden');
+  prog.textContent = 'Generating blueprint exam quiz questions (please wait)...';
   announce('Generating quiz');
-  let questions=null;
-  try{
-    const r=await fetch(API+'/api/ai/quiz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({docText: doc.text, subject: doc.subject, type, count, lang:'English', stream: localStorage.getItem('inter_stream')||'MPC'})});
-    if(r.ok){
-      const j=await r.json();
-      if(j.questions && j.questions.length) questions=j.questions;
+
+  let questions = null;
+  try {
+    const r = await fetch(API + '/api/ai/quiz', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        docText: doc.text,
+        subject: doc.subject,
+        type,
+        count,
+        lang: 'English',
+        stream: localStorage.getItem('inter_stream') || 'MPC'
+      })
+    });
+    if (r.ok) {
+      const j = await r.json();
+      if (j.questions && j.questions.length) questions = j.questions;
     }
-  }catch(e){ console.warn(e); }
-  if(!questions || !questions.length){
-    // Fallback: try chat
-    const prompt=`Create ${count} ${type} questions from this document, grounded strictly in content, randomized across pages. Return ONLY JSON array {q, options[4], answerIndex, explanation, marks}. Document: """${doc.text.slice(0,12000)}"""`;
-    try{
-      const r=await fetch(API+'/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-      if(r.ok){ const j=await r.json(); const t=j.text||''; const m=t.match(/\[[\s\S]*\]/); if(m) questions=JSON.parse(m[0]); }
-    }catch{}
+  } catch (e) {
+    console.warn(e);
   }
-  if(!questions || !questions.length){
-    prog.textContent='AI busy — try again in 30 seconds';
-    announce('Quiz generation failed, try again');
+
+  if (!questions || !questions.length) {
+    prog.textContent = 'AI is busy. Please retry in a few moments.';
     return;
   }
-  // Randomize order already done by LLM, ensure grounded
-  quiz={ id:'quiz_'+Date.now(), docId, title: doc.title+' — '+type, questions: questions.slice(0,count), created: new Date().toISOString() };
+
+  quiz = {
+    id: 'quiz_' + Date.now(),
+    docId,
+    title: doc.title + ' Quiz',
+    questions: questions.slice(0, count),
+    created: new Date().toISOString()
+  };
+
   quizzes.unshift(quiz);
   localStorage.setItem('inter_quizzes', JSON.stringify(quizzes));
-  prog.hidden=true;
+  prog.classList.add('hidden');
   startQuiz(quiz.id);
 }
-function startQuiz(id){
-  quiz=quizzes.find(q=>q.id===id);
-  if(!quiz) return;
-  qIdx=0; answers={};
-  document.getElementById('quizBox').hidden=false;
-  document.getElementById('quizQTitle').textContent=quiz.title;
+
+function startQuiz(id) {
+  quiz = quizzes.find(q => q.id === id);
+  if (!quiz) return;
+  qIdx = 0;
+  answers = {};
+  document.getElementById('quizBox').classList.remove('hidden');
+  document.getElementById('quizQTitle').textContent = quiz.title;
   startTimer();
   renderQuiz();
   announce('Quiz started');
 }
-function renderQuiz(){
-  const q=quiz.questions[qIdx];
-  document.getElementById('quizProgText').textContent=`Question ${qIdx+1} of ${quiz.questions.length}`;
-  announce(`Question ${qIdx+1} of ${quiz.questions.length}`);
-  const opts=document.getElementById('quizOpts');
-  opts.innerHTML='';
-  ['A','B','C','D'].forEach((label,i)=>{
-    if(q.options && q.options[i]){
-      const btn=document.createElement('button');
-      btn.className='w-full text-left p-4 rounded-xl border-2 bg-white font-bold flex gap-3 items-center focus:border-indigo-500';
-      btn.setAttribute('aria-label', `Option ${label}: ${q.options[i]}`);
-      btn.innerHTML=`<span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">${label}</span><span class="flex-1">${q.options[i]}</span>`;
-      btn.onclick=()=> chooseOpt(i);
-      if(answers[qIdx]===i) btn.classList.add('bg-indigo-50','border-indigo-500');
+
+function renderQuiz() {
+  const q = quiz.questions[qIdx];
+  document.getElementById('quizProgText').textContent = `Question ${qIdx + 1} of ${quiz.questions.length}`;
+  announce(`Question ${qIdx + 1} of ${quiz.questions.length}`);
+
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = `<p class="font-bold text-base text-slate-900 mb-3">${q.q}</p>`;
+
+  ['A', 'B', 'C', 'D'].forEach((label, i) => {
+    if (q.options && q.options[i]) {
+      const btn = document.createElement('button');
+      btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white font-bold flex gap-3 items-center hover:border-indigo-400 transition cursor-pointer text-sm';
+      btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 font-bold">${label}</span><span class="flex-1">${q.options[i]}</span>`;
+      btn.onclick = () => chooseOpt(i);
+      if (answers[qIdx] === i) btn.classList.add('bg-indigo-50', 'border-indigo-500');
       opts.appendChild(btn);
     }
   });
-  // For theory, show textarea
-  if(!q.options || !q.options.length){
-    const ta=document.createElement('textarea');
-    ta.placeholder='Type your answer';
-    ta.className='w-full p-3 rounded-xl border-2';
-    ta.setAttribute('aria-label','Your answer');
-    opts.appendChild(ta);
+}
+
+function chooseOpt(i) {
+  answers[qIdx] = i;
+  const q = quiz.questions[qIdx];
+  const correct = (i === q.answerIndex);
+  announce(correct ? 'Correct' : 'Incorrect');
+
+  try {
+    const snd = document.getElementById(correct ? 'sndCorrect' : 'sndWrong');
+    if (snd) snd.play();
+  } catch {}
+
+  const expl = document.createElement('div');
+  expl.className = 'mt-3 p-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs';
+  expl.innerHTML = `<p class="font-bold ${correct ? 'text-emerald-700' : 'text-red-600'}">${correct ? '✓ Correct Answer' : '✗ Incorrect'}</p><p class="text-slate-600 mt-1">${q.explanation || ''}</p>`;
+  document.getElementById('quizOpts').appendChild(expl);
+
+  setTimeout(() => {
+    if (qIdx < quiz.questions.length - 1) {
+      qIdx++;
+      renderQuiz();
+    } else {
+      finishQuiz();
+    }
+  }, 1200);
+}
+
+function quizPrev() {
+  if (qIdx > 0) {
+    qIdx--;
+    renderQuiz();
   }
 }
-function chooseOpt(i){
-  answers[qIdx]=i;
-  const q=quiz.questions[qIdx];
-  const correct = i===q.answerIndex;
-  announce(correct? 'Correct' : 'Incorrect, correct is Option ' + ['A','B','C','D'][q.answerIndex]);
-  // Sound
-  try{ (correct? document.getElementById('sndCorrect'): document.getElementById('sndWrong')).play(); }catch{}
-  // Show explanation
-  const expl=document.createElement('div');
-  expl.className='mt-3 p-3 rounded-xl bg-slate-50 border-2';
-  expl.innerHTML=`<p class="font-bold">${correct? 'Correct ✓':'Incorrect ✗ — Correct: Option '+['A','B','C','D'][q.answerIndex]}</p><p class="text-sm mt-1">${q.explanation||''}</p>`;
-  document.getElementById('quizOpts').appendChild(expl);
-  setTimeout(()=>{ if(qIdx < quiz.questions.length-1){ qIdx++; renderQuiz(); } else { finishQuiz(); } }, 1200);
+
+function quizNext() {
+  if (qIdx < quiz.questions.length - 1) {
+    qIdx++;
+    renderQuiz();
+  } else {
+    finishQuiz();
+  }
 }
-function quizPrev(){ if(qIdx>0){ qIdx--; renderQuiz(); } }
-function quizNext(){ if(qIdx < quiz.questions.length-1){ qIdx++; renderQuiz(); } else { finishQuiz(); } }
-function startTimer(){
+
+function startTimer() {
   clearInterval(timer);
-  timeLeft = quiz.questions.length * 45; // 45 sec per question
-  const el=document.getElementById('quizTimer');
-  timer=setInterval(()=>{
+  timeLeft = quiz.questions.length * 45;
+  const el = document.getElementById('quizTimer');
+  timer = setInterval(() => {
     timeLeft--;
-    const m=Math.floor(timeLeft/60), s=timeLeft%60;
-    el.textContent=`Time left: ${m}:${String(s).padStart(2,'0')}`;
-    if(timeLeft===30){ try{ document.getElementById('sndTick').play(); }catch{} announce('30 seconds left'); }
-    if(timeLeft<=0){ clearInterval(timer); finishQuiz(); }
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    el.textContent = `⏱️ ${m}:${String(s).padStart(2, '0')}`;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      finishQuiz();
+    }
   }, 1000);
 }
-function finishQuiz(){
+
+function finishQuiz() {
   clearInterval(timer);
-  let correct=0;
-  quiz.questions.forEach((q,i)=>{ if(answers[i]===q.answerIndex) correct++; });
-  document.getElementById('quizResult').hidden=false;
-  document.getElementById('quizScore').textContent=`You scored ${correct} of ${quiz.questions.length}`;
-  try{ document.getElementById('sndComplete').play(); }catch{}
-  announce(`Quiz complete, you scored ${correct} of ${quiz.questions.length}`);
-}
-function restartQuiz(){ document.getElementById('quizResult').hidden=true; qIdx=0; answers={}; renderQuiz(); startTimer(); }
-
-// AI TUTOR — REAL LLM, NO LOGIN REQUIRED FOR CHAT
-async function askAI(prompt){
-  const full = currentDoc? `Context (page ${currentPage} of ${totalPages}):\n"""${(pageTexts[currentPage-1]||'').slice(0,4000)}"""\n\nQuestion: ${prompt}` : prompt;
-  // Show thinking
-  const box=document.createElement('div');
-  box.className='mt-4 p-4 rounded-xl bg-slate-50 border-2';
-  box.innerHTML='<p class="text-sm font-bold">Thinking...</p>';
-  document.getElementById('readerText').appendChild(box);
-  try{
-    const r=await fetch(API+'/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: full})});
-    if(!r.ok) throw new Error('AI error');
-    const j=await r.json();
-    const text=j.text || j.demo || 'No answer';
-    box.innerHTML=`<p class="font-bold">AI Tutor</p><p class="text-sm mt-2 whitespace-pre-wrap">${text.replace(/</g,'&lt;')}</p>`;
-    announce('AI answered');
-  }catch(e){
-    box.textContent='Unable to get AI answer. Try again.';
-  }
-}
-function translatePage(){
-  const text = (pageTexts[currentPage-1]||'').slice(0,1000);
-  if(!text) return;
-  askAI('Translate this to Telugu (if English) or English (if Telugu), keep structure:\n\n'+text);
+  let correct = 0;
+  quiz.questions.forEach((q, i) => {
+    if (answers[i] === q.answerIndex) correct++;
+  });
+  document.getElementById('quizResult').classList.remove('hidden');
+  document.getElementById('quizScore').textContent = `You scored ${correct} out of ${quiz.questions.length} questions!`;
+  try {
+    const snd = document.getElementById('sndComplete');
+    if (snd) snd.play();
+  } catch {}
 }
 
-// UTILS
-function setStream(v){ localStorage.setItem('inter_stream', v); document.getElementById('streamSelect').value=v; document.getElementById('setStream').value=v; }
+function restartQuiz() {
+  document.getElementById('quizResult').classList.add('hidden');
+  qIdx = 0;
+  answers = {};
+  renderQuiz();
+  startTimer();
+}
+
+async function askFromHome() {
+  const input = document.getElementById('homeAsk');
+  const q = input.value.trim();
+  if (!q) return;
+  alert('AITutor Answer:\n\n' + 'Thinking...');
+}
 </script>
 </body>
 </html>
