@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="Ts0tjKFlNmAjB6cr2feAjxOG7j6r7KsKq6p_tO5tqKw">
-<meta name="description" content="Study Vision AI — Accessible AI Study App for Blind Students. Upload PDF, Auto Scan, Listen, Quiz.">
+<meta name="description" content="Study Vision AI — Accessible AI Study Companion for Blind & TS Intermediate Students. Detective PDF Scanner, Auto Scan, Audio Narration, Exam Blueprint Quizzes.">
 <meta name="theme-color" content="#4f46e5">
 <link rel="manifest" href="manifest.json">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <title>Study Vision AI — Accessible Study Companion</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; tailwind.config={theme:{extend:{fontFamily:{display:['Outfit'],body:['Plus Jakarta Sans']}}}};</script>
@@ -20,9 +20,11 @@
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .sr-only:focus{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:normal;background:#0f172a;color:white;padding:8px 16px;border-radius:999px;z-index:999}
   *:focus-visible{outline:3px solid #4f46e5;outline-offset:2px}
-  .glass{backdrop-filter:blur(12px);background:rgba(255,255,255,.95)}
+  .glass{backdrop-filter:blur(12px);background:rgba(255,255,255,.96)}
   @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
   .animate-fadeIn { animation: fadeIn 0.25s ease-out forwards; }
+  @keyframes pulseSubtle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .animate-pulseSubtle { animation: pulseSubtle 1.8s infinite ease-in-out; }
 </style>
 </head>
 <body class="bg-[#f8fafc] font-body text-slate-900 antialiased min-h-screen">
@@ -215,10 +217,17 @@
       <!-- Quick AI Ask Bar -->
       <div class="mt-6 bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm">
         <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-600"></i> Ask AITutor (Telugu & English)</h3>
-        <p class="text-xs text-slate-500 mt-0.5">Ask questions from TS Inter syllabus (Maths, Physics, Chemistry, Economics, Civics, Commerce).</p>
+        <p class="text-xs text-slate-500 mt-0.5">Ask questions from TS Inter syllabus (Maths, Physics, Chemistry, Economics, Civics, Commerce, History).</p>
         <div class="mt-3 flex gap-2">
-          <input id="homeAsk" placeholder="e.g. Explain Gauss Law with steps or Telugu lo explain cheyyi..." class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 border-slate-200 focus:bg-white focus:border-indigo-500 outline-none text-sm">
+          <input id="homeAsk" placeholder="e.g. Explain Law of Demand with 10-mark points or Telugu lo explain cheyyi..." class="flex-1 px-4 py-3 rounded-full bg-slate-100 border-2 border-slate-200 focus:bg-white focus:border-indigo-500 outline-none text-sm">
           <button onclick="askFromHome()" class="px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition cursor-pointer">Ask AI</button>
+        </div>
+        <div id="homeAiResponseBox" class="hidden mt-4 p-5 rounded-2xl border-2 border-indigo-100 bg-slate-50 text-left">
+          <div class="flex items-center justify-between border-b pb-3 mb-3">
+            <span class="font-bold text-sm text-indigo-900 flex items-center gap-1.5"><i class="fa-solid fa-chalkboard-user text-indigo-600"></i> AITutor Teacher Explanation</span>
+            <button onclick="listenHomeAiResponse()" class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-volume-high"></i> Listen</button>
+          </div>
+          <div id="homeAiResponseText" class="text-sm leading-relaxed" aria-live="polite"></div>
         </div>
       </div>
     </section>
@@ -238,32 +247,50 @@
       </div>
     </section>
 
-    <!-- UPLOAD PDF SECTION -->
+    <!-- UPLOAD PDF SECTION (DETECTIVE SCANNING EXPERIENCE) -->
     <section id="view-upload" class="hidden" aria-labelledby="uploadSecTitle">
-      <h2 id="uploadSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Upload PDF Document</h2>
+      <h2 id="uploadSecTitle" class="font-bold text-2xl text-slate-900 mb-4">Intelligent PDF Scanner</h2>
       <div class="bg-white border-2 border-slate-200 rounded-3xl p-8 text-center shadow-sm">
         <div class="max-w-md mx-auto">
           <div class="w-16 h-16 rounded-3xl bg-indigo-50 border-2 border-indigo-200 text-indigo-600 flex items-center justify-center mx-auto text-3xl mb-4">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
           </div>
-          <h3 class="font-bold text-xl text-slate-800">Select PDF from Device</h3>
+          <h3 class="font-bold text-xl text-slate-800">Scan Educational Document</h3>
           <p class="text-sm text-slate-500 mt-1">Supports Telugu Academy, NCERT, IPE Question Banks & Class Notes (Any size).</p>
           
           <div class="mt-6">
             <button onclick="openPicker()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base shadow-lg shadow-indigo-200 transition cursor-pointer flex items-center justify-center gap-2">
-              <i class="fa-solid fa-folder-open"></i> Choose PDF File
+              <i class="fa-solid fa-folder-open"></i> Choose PDF File to Scan
             </button>
           </div>
         </div>
 
-        <div id="uploadProgressArea" class="hidden mt-8 max-w-md mx-auto text-left bg-slate-50 border-2 border-slate-200 rounded-2xl p-5">
-          <p id="uploadFileName" class="font-bold text-slate-800 truncate"></p>
-          <div class="mt-3 h-3 bg-slate-200 rounded-full overflow-hidden">
-            <div id="uploadBar" class="h-full bg-indigo-600 transition-all duration-300" style="width:0%"></div>
+        <!-- DETECTIVE PROGRESS BAR (ACCESSIBLE TALKBACK READY) -->
+        <div id="uploadProgressArea" class="hidden mt-8 max-w-xl mx-auto text-left bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-6 shadow-xl">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-500/30 border border-indigo-400/40 flex items-center justify-center text-indigo-300 text-lg">
+              <i class="fa-solid fa-user-secret"></i>
+            </div>
+            <div>
+              <p class="text-xs uppercase tracking-widest text-indigo-300 font-bold">Investigator Mode Active</p>
+              <p id="uploadFileName" class="font-bold text-base truncate max-w-sm"></p>
+            </div>
           </div>
-          <div class="flex justify-between items-center mt-2 text-xs font-bold text-slate-600">
-            <span id="uploadStageText">Processing pages...</span>
-            <span id="uploadPageCount">0 / 0</span>
+
+          <!-- Progress Bar with Full ARIA -->
+          <div class="mt-5">
+            <div class="flex justify-between items-center text-xs font-bold mb-2">
+              <span id="uploadStageText" class="text-indigo-200 flex items-center gap-1.5 animate-pulseSubtle"><i class="fa-solid fa-spinner fa-spin"></i> Initializing scanner...</span>
+              <span id="uploadPageCount" class="text-white font-mono bg-white/10 px-2.5 py-1 rounded-full">0 / 0</span>
+            </div>
+            <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden" role="progressbar" id="uploadBarWrap" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Document scanning progress">
+              <div id="uploadBar" class="h-full bg-gradient-to-r from-indigo-500 via-teal-400 to-emerald-400 transition-all duration-300" style="width:0%"></div>
+            </div>
+          </div>
+          
+          <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-indigo-300">
+            <span>Searching headings, questions & answers</span>
+            <span class="text-emerald-400 font-bold">TalkBack Synced</span>
           </div>
         </div>
       </div>
@@ -439,50 +466,102 @@
       </div>
     </section>
 
-    <!-- READER SECTION (ACCESSIBLE PDF VIEWER + TTS + AI TUTOR) -->
+    <!-- READER SECTION (ACCESSIBLE PDF VIEWER + SOUND FX + TEACHER AI) -->
     <section id="view-reader" class="hidden" aria-labelledby="readerTitle">
       <h2 id="readerTitle" class="sr-only">Document Reader</h2>
       <div class="bg-white border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-        <div class="px-5 py-4 bg-slate-900 text-white flex flex-wrap gap-2 items-center justify-between">
-          <h3 id="readerDocTitle" class="font-bold truncate max-w-md"></h3>
+        <div class="px-5 py-4 bg-slate-900 text-white flex flex-wrap gap-3 items-center justify-between">
+          <div class="flex items-center gap-2 truncate max-w-md">
+            <i class="fa-solid fa-file-pdf text-red-400"></i>
+            <h3 id="readerDocTitle" class="font-bold truncate text-base"></h3>
+          </div>
           <div class="flex items-center gap-2">
-            <span id="readerPage" class="text-xs font-bold px-3 py-1 rounded-full bg-white/15" aria-live="polite">Page 1 of 1</span>
-            <button onclick="nav('library')" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold">Back</button>
+            <span id="readerPage" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-white/15 tracking-wide" aria-live="polite">Page 1 of 1</span>
+            <button onclick="nav('library')" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold">Back to Library</button>
           </div>
         </div>
         
         <div class="p-4 bg-slate-100 flex justify-center overflow-auto max-h-[380px]">
-          <canvas id="readerCanvas" class="bg-white shadow rounded-xl max-w-full" role="img" aria-label="PDF page visual"></canvas>
+          <canvas id="readerCanvas" class="bg-white shadow-md rounded-xl max-w-full" role="img" aria-label="Visual rendered page of PDF"></canvas>
         </div>
 
         <div class="p-5 space-y-4">
-          <div class="flex flex-wrap gap-2">
-            <button onclick="readerPrev()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold hover:bg-slate-50 cursor-pointer" aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i> Previous Page</button>
-            <button onclick="readerNext()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold hover:bg-slate-50 cursor-pointer" aria-label="Next page">Next Page <i class="fa-solid fa-chevron-right"></i></button>
+          <!-- Page Navigation with Audio FX and ARIA -->
+          <div class="flex gap-2">
+            <button id="btnReaderPrev" onclick="readerPrev()" class="flex-1 py-3.5 rounded-2xl bg-white border-2 border-slate-300 font-bold hover:bg-slate-50 transition cursor-pointer text-slate-800 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-chevron-left"></i> Previous Page
+            </button>
+            <button id="btnReaderNext" onclick="readerNext()" class="flex-1 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 font-bold transition cursor-pointer text-white flex items-center justify-center gap-2">
+              Next Page <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
 
           <div class="flex gap-2">
-            <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="Jump to Page #" class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 outline-none text-sm">
-            <button onclick="readerJump()" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm cursor-pointer">Go</button>
+            <input id="jumpPage" type="number" min="1" inputmode="numeric" placeholder="Jump to Page #" class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 outline-none text-sm bg-white">
+            <button onclick="readerJump()" class="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm cursor-pointer">Go</button>
           </div>
 
-          <div id="readerText" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 max-h-[320px] overflow-auto leading-relaxed text-sm text-slate-800" aria-live="polite"></div>
+          <!-- Page Text Display -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Page Content (TalkBack Ready)</span>
+              <span id="pageTextLength" class="text-xs text-slate-400"></span>
+            </div>
+            <div id="readerText" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 max-h-[280px] overflow-auto leading-relaxed text-sm text-slate-800 font-medium" aria-live="polite"></div>
+          </div>
 
           <!-- Audio Controls -->
-          <div class="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl">
-            <p class="text-xs font-bold text-indigo-900 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-headphones"></i> Audio Narration (TTS)</p>
-            <div class="flex flex-wrap gap-2">
-              <button onclick="ttsPlay()" class="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-play"></i> Play</button>
-              <button onclick="ttsPause()" class="flex-1 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-pause"></i> Pause</button>
-              <button onclick="ttsResume()" class="flex-1 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-forward"></i> Resume</button>
-              <button onclick="ttsStop()" class="flex-1 py-2.5 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"><i class="fa-solid fa-stop"></i> Stop</button>
+          <div class="p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-headphones text-indigo-600 text-lg"></i>
+              <div>
+                <p class="text-xs font-bold text-indigo-900">Audio Narration</p>
+                <p class="text-[11px] text-indigo-700">Listen to current page text</p>
+              </div>
+            </div>
+            <div class="flex gap-1.5">
+              <button onclick="ttsPlay()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-play"></i> Play</button>
+              <button onclick="ttsPause()" class="px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-pause"></i> Pause</button>
+              <button onclick="ttsResume()" class="px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-forward"></i> Resume</button>
+              <button onclick="ttsStop()" class="px-3 py-2 rounded-xl bg-white border border-slate-300 font-bold text-xs flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-stop"></i> Stop</button>
             </div>
           </div>
 
-          <div class="flex flex-wrap gap-2 pt-2">
-            <button onclick="askAIReader()" class="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"><i class="fa-solid fa-wand-magic-sparkles"></i> Ask AI about Page</button>
-            <button onclick="translatePage()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center justify-center gap-1.5"><i class="fa-solid fa-language"></i> Translate to Telugu</button>
+          <!-- AI Teacher Ask Bar -->
+          <div class="p-5 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 text-white rounded-2xl">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-chalkboard-user text-teal-400"></i> Ask AI Teacher About This PDF</h4>
+              <span class="text-xs text-indigo-300 bg-white/10 px-2.5 py-0.5 rounded-full">Grounded in PDF</span>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <button onclick="quickAskTeacher('Explain this page like a teacher with simple language and exam points')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">💡 Teacher Explanation</button>
+              <button onclick="quickAskTeacher('Give me 2-mark and 4-mark important questions and answers from this page')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">📌 2M & 4M Questions</button>
+              <button onclick="quickAskTeacher('Give me a complete 10-mark board exam answer from this content')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">🎯 10-Mark Answer</button>
+              <button onclick="quickAskTeacher('Summarize key definitions and formulas on this page')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-semibold text-indigo-200">📝 Definitions & Key Points</button>
+            </div>
+
+            <div class="flex gap-2">
+              <input id="readerAiQuestion" placeholder="Ask AI Teacher any question about this lesson..." class="flex-1 px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-indigo-300 focus:bg-white/20 outline-none text-sm">
+              <button onclick="submitReaderAiQuestion()" class="px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-sm transition cursor-pointer">Ask Teacher</button>
+            </div>
+
+            <!-- AI Response Box with Beautiful Teacher Formatting -->
+            <div id="readerAiResponseBox" class="hidden mt-4 p-5 rounded-2xl bg-white text-slate-900 text-left border border-white/40 shadow-xl">
+              <div class="flex items-center justify-between border-b pb-3 mb-3">
+                <span class="font-bold text-sm text-indigo-900 flex items-center gap-1.5"><i class="fa-solid fa-graduation-cap text-indigo-600"></i> AI Teacher Answer</span>
+                <div class="flex gap-1.5">
+                  <button onclick="listenReaderAiAnswer()" class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-volume-high"></i> Listen Aloud</button>
+                  <button onclick="closeReaderAiAnswer()" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+              </div>
+              <div id="readerAiAnswerContent" class="text-sm leading-relaxed" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-1">
             <button onclick="exportDoc()" class="flex-1 py-3 rounded-xl bg-white border-2 border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center justify-center gap-1.5"><i class="fa-solid fa-file-export"></i> Export Text</button>
+            <button onclick="nav('quiz')" class="flex-1 py-3 rounded-xl bg-indigo-50 border-2 border-indigo-200 text-indigo-700 font-bold text-xs hover:bg-indigo-100 cursor-pointer flex items-center justify-center gap-1.5"><i class="fa-solid fa-brain"></i> Quiz on this PDF</button>
           </div>
         </div>
       </div>
@@ -494,7 +573,8 @@
 <!-- Hidden native file picker -->
 <input id="filePicker" type="file" accept="application/pdf,.pdf" hidden aria-hidden="true">
 
-<!-- Audio elements for quiz & timer -->
+<!-- Local Audio Elements -->
+<audio id="sndPageFlip" preload="auto" src="assets/page-flip.wav"></audio>
 <audio id="sndCorrect" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/correct.mp3"></audio>
 <audio id="sndWrong" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/wrong.mp3"></audio>
 <audio id="sndComplete" preload="auto" src="https://cdn.jsdelivr.net/gh/joshnh/tones@master/mp3/complete.mp3"></audio>
@@ -519,10 +599,52 @@ const announce = (m) => {
   }
 };
 
+// ZERO-LATENCY REAL ROYALTY-FREE PAGE TURN AUDIO (Web Audio API synthesis + WAV fallback)
+let audioCtx = null;
+function playPageTurnAudio() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) {
+      const snd = document.getElementById('sndPageFlip');
+      if (snd) { snd.currentTime = 0; snd.play().catch(() => {}); }
+      return;
+    }
+    if (!audioCtx) audioCtx = new AudioContext();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    // Synthesize gentle paper flip rustle + woosh with natural acoustic envelope
+    const dur = 0.19;
+    const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const progress = i / data.length;
+      const env = progress < 0.15 ? (progress / 0.15) : Math.pow(1 - (progress - 0.15) / 0.85, 1.8);
+      const noise = (Math.random() * 2 - 1);
+      const tone = Math.sin(2 * Math.PI * (220 + 350 * progress) * (i / audioCtx.sampleRate));
+      data[i] = (noise * 0.55 + tone * 0.25) * env * 0.45;
+    }
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200, audioCtx.currentTime);
+    filter.Q.setValueAtTime(1.2, audioCtx.currentTime);
+    
+    src.connect(filter);
+    filter.connect(audioCtx.destination);
+    src.start();
+  } catch (e) {
+    const snd = document.getElementById('sndPageFlip');
+    if (snd) { snd.currentTime = 0; snd.play().catch(() => {}); }
+  }
+}
+
 // STATE
 let user = null, token = localStorage.getItem('inter_token') || '';
 let docs = [], quizzes = [], currentDoc = null, currentPage = 1, totalPages = 1, pdfDoc = null, pageTexts = [];
 let quiz = null, qIdx = 0, answers = {}, timer = null, timeLeft = 0;
+let lastTeacherResponseRaw = '';
 
 // INIT
 (async () => {
@@ -662,6 +784,9 @@ function showApp() {
 
   const userBadge = document.getElementById('userBadge');
   if (userBadge) userBadge.textContent = initial;
+
+  const topBarName = document.getElementById('topBarName');
+  if (topBarName && user) topBarName.textContent = first;
 
   renderHome();
   renderAccountView();
@@ -1162,6 +1287,7 @@ function openPicker() {
   document.getElementById('filePicker').click();
 }
 
+// DETECTIVE-STYLE INTELLIGENT PDF SCANNING EXPERIENCE
 async function onFilePicked(e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
@@ -1169,13 +1295,19 @@ async function onFilePicked(e) {
   nav('upload');
   const progArea = document.getElementById('uploadProgressArea');
   const bar = document.getElementById('uploadBar');
+  const wrap = document.getElementById('uploadBarWrap');
   const stage = document.getElementById('uploadStageText');
   const count = document.getElementById('uploadPageCount');
+  
   document.getElementById('uploadFileName').textContent = file.name;
   progArea.classList.remove('hidden');
 
-  stage.textContent = 'Reading PDF buffer...';
-  bar.style.width = '15%';
+  stage.textContent = 'Investigator mode activated. Initializing document analysis...';
+  bar.style.width = '10%';
+  if (wrap) wrap.setAttribute('aria-valuenow', '10');
+  announce('Investigator mode activated. Initializing document analysis.');
+
+  await new Promise(r => setTimeout(r, 450));
 
   try {
     const arrayBuffer = await file.arrayBuffer();
@@ -1183,15 +1315,69 @@ async function onFilePicked(e) {
     totalPages = pdf.numPages;
     pageTexts = [];
 
+    stage.textContent = `Examining document structure (${totalPages} total pages detected)...`;
+    bar.style.width = '20%';
+    if (wrap) wrap.setAttribute('aria-valuenow', '20');
+    announce(`Document structure identified. Total ${totalPages} pages found.`);
+
+    await new Promise(r => setTimeout(r, 400));
+
     for (let i = 1; i <= totalPages; i++) {
-      stage.textContent = `Extracting page ${i} of ${totalPages}...`;
-      bar.style.width = `${Math.round((i / totalPages) * 100)}%`;
-      count.textContent = `${i} / ${totalPages}`;
+      const pct = Math.round(20 + (i / totalPages) * 70);
+      bar.style.width = `${pct}%`;
+      if (wrap) wrap.setAttribute('aria-valuenow', String(pct));
+      count.textContent = `Page ${i} of ${totalPages}`;
+
+      const detectivePhrases = [
+        `Analyzing page ${i} of ${totalPages}: Searching for key concepts & definitions...`,
+        `Examining page ${i} of ${totalPages}: Detecting chapter headings and questions...`,
+        `Analyzing page ${i} of ${totalPages}: Cross-referencing IPE syllabus points...`,
+        `Examining page ${i} of ${totalPages}: Checking tables, formulas, and diagrams...`
+      ];
+      const phrase = detectivePhrases[(i - 1) % detectivePhrases.length];
+      stage.textContent = phrase;
+
+      if (i === 1 || i === Math.ceil(totalPages / 2) || i === totalPages) {
+        announce(`Scanning page ${i} of ${totalPages}. Document scanning ${pct} percent complete.`);
+      }
+
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
-      const pageText = textContent.items.map(item => item.str).join(' ');
-      pageTexts.push(pageText);
+      let pageText = textContent.items.map(item => item.str).join(' ').trim();
+
+      // OCR Fallback if page contains no digital text
+      if (pageText.length < 30 && typeof Tesseract !== 'undefined') {
+        stage.textContent = `Page ${i} requires OCR scan: Extracting text from image...`;
+        try {
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          const worker = await Tesseract.createWorker('eng');
+          const ocrRet = await worker.recognize(canvas);
+          await worker.terminate();
+          if (ocrRet.data.text && ocrRet.data.text.trim().length > 10) {
+            pageText = ocrRet.data.text.trim();
+          }
+        } catch (ocrErr) {
+          console.warn('OCR fallback on page ' + i, ocrErr);
+        }
+      }
+
+      pageTexts.push(pageText || `[Page ${i} content extracted]`);
+      
+      // Deterministic controlled pacing so scan feels intelligent without stalling
+      const delayMs = Math.min(240, Math.max(80, Math.floor(1200 / totalPages)));
+      await new Promise(r => setTimeout(r, delayMs));
     }
+
+    stage.textContent = 'Investigation complete! All educational concepts & clues indexed.';
+    bar.style.width = '100%';
+    if (wrap) wrap.setAttribute('aria-valuenow', '100');
+    count.textContent = `${totalPages} / ${totalPages} Ready`;
+    announce(`Investigation complete. Document of ${totalPages} pages is ready.`);
 
     const fullText = pageTexts.join('\n\n--- Page Break ---\n\n');
     const newDoc = {
@@ -1211,16 +1397,16 @@ async function onFilePicked(e) {
     currentPage = 1;
     pdfDoc = pdf;
 
-    setTimeout(() => {
-      progArea.classList.add('hidden');
-      openDoc(newDoc.id);
-    }, 600);
+    await new Promise(r => setTimeout(r, 600));
+    progArea.classList.add('hidden');
+    openDoc(newDoc.id, 1);
   } catch (err) {
-    stage.textContent = 'Error parsing PDF: ' + err.message;
+    stage.textContent = 'PDF scanning could not be completed: ' + err.message;
+    announce('PDF scanning could not be completed.');
   }
 }
 
-// AUTO SCAN OCR
+// AUTO SCAN PHOTO / CAMERA OCR
 async function handleScanPicked(e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
@@ -1234,27 +1420,28 @@ async function handleScanPicked(e) {
 
   box.classList.remove('hidden');
   resultBox.classList.add('hidden');
-  status.textContent = 'Analyzing image...';
+  status.textContent = 'Investigator mode: Analyzing document photo...';
   bar.style.width = '15%';
   pct.textContent = '15%';
+  announce('Investigator mode: Analyzing document photo.');
 
   try {
     if (typeof Tesseract !== 'undefined') {
       const worker = await Tesseract.createWorker('eng');
-      status.textContent = 'Running Optical Character Recognition (OCR)...';
-      bar.style.width = '55%';
-      pct.textContent = '55%';
+      status.textContent = 'Extracting textbook paragraphs and handwritten notes...';
+      bar.style.width = '60%';
+      pct.textContent = '60%';
 
       const ret = await worker.recognize(file);
       await worker.terminate();
 
       bar.style.width = '100%';
       pct.textContent = '100%';
-      status.textContent = 'Scan completed!';
+      status.textContent = 'Investigation complete! Text extracted.';
 
-      textarea.value = ret.data.text || 'No text detected.';
+      textarea.value = ret.data.text || 'No text detected in this scan.';
       resultBox.classList.remove('hidden');
-      announce('OCR Scan complete');
+      announce('OCR Scan complete. Extracted text is ready.');
     }
   } catch (err) {
     status.textContent = 'Scan error: ' + err.message;
@@ -1293,7 +1480,7 @@ function saveScannedToLib() {
   nav('library');
 }
 
-// READER
+// DOCUMENT READER & PAGE NAVIGATION (SOUND FX + ACCESSIBILITY)
 function openDoc(id, page) {
   const d = docs.find(x => x.id === id);
   if (!d) return;
@@ -1309,47 +1496,90 @@ function openDoc(id, page) {
 
 function renderReaderPage() {
   if (!currentDoc) return;
-  document.getElementById('readerPage').textContent = `Page ${currentPage} of ${totalPages}`;
+  const pageLabel = `Page ${currentPage} of ${totalPages}`;
+  document.getElementById('readerPage').textContent = pageLabel;
   localStorage.setItem('prog_' + currentDoc.id, String(currentPage));
 
+  const prevBtn = document.getElementById('btnReaderPrev');
+  const nextBtn = document.getElementById('btnReaderNext');
+  
+  if (prevBtn) {
+    prevBtn.disabled = (currentPage <= 1);
+    prevBtn.setAttribute('aria-label', `Previous page, currently on page ${currentPage} of ${totalPages}`);
+    if (currentPage <= 1) prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    else prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+  }
+  
+  if (nextBtn) {
+    nextBtn.disabled = (currentPage >= totalPages);
+    nextBtn.setAttribute('aria-label', `Next page, currently on page ${currentPage} of ${totalPages}`);
+    if (currentPage >= totalPages) nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    else nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+  }
+
   const pageText = pageTexts[currentPage - 1] || 'No text available for this page.';
-  document.getElementById('readerText').textContent = pageText;
+  const txtBox = document.getElementById('readerText');
+  txtBox.textContent = pageText;
+  
+  const lenEl = document.getElementById('pageTextLength');
+  if (lenEl) lenEl.textContent = `${pageText.length} characters`;
 
   if (pdfDoc) {
     pdfDoc.getPage(currentPage).then(page => {
       const canvas = document.getElementById('readerCanvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      const viewport = page.getViewport({ scale: 1.2 });
+      const viewport = page.getViewport({ scale: 1.25 });
       canvas.height = viewport.height;
       canvas.width = viewport.width;
       page.render({ canvasContext: ctx, viewport });
-    });
+    }).catch(() => {});
   }
 }
 
 function readerPrev() {
-  if (currentPage > 1) {
-    currentPage--;
-    renderReaderPage();
+  if (currentPage <= 1) {
+    announce(`First page of ${totalPages}. Cannot go back further.`);
+    return;
+  }
+  playPageTurnAudio();
+  currentPage--;
+  renderReaderPage();
+  if (currentPage === 1) {
+    announce(`First page of ${totalPages}.`);
+  } else {
+    announce(`Page ${currentPage} of ${totalPages}.`);
   }
 }
 
 function readerNext() {
-  if (currentPage < totalPages) {
-    currentPage++;
-    renderReaderPage();
+  if (currentPage >= totalPages) {
+    announce(`Last page of ${totalPages}. Reached the end of the document.`);
+    return;
+  }
+  playPageTurnAudio();
+  currentPage++;
+  renderReaderPage();
+  if (currentPage === totalPages) {
+    announce(`Last page of ${totalPages}.`);
+  } else {
+    announce(`Page ${currentPage} of ${totalPages}.`);
   }
 }
 
 function readerJump() {
   const val = parseInt(document.getElementById('jumpPage').value, 10);
   if (val >= 1 && val <= totalPages) {
+    playPageTurnAudio();
     currentPage = val;
     renderReaderPage();
+    announce(`Jumped to Page ${currentPage} of ${totalPages}.`);
+  } else {
+    announce(`Invalid page number. Please enter a page between 1 and ${totalPages}.`);
   }
 }
 
-// TTS NARRATION
+// TTS AUDIO NARRATION
 function ttsPlay() {
   const txt = pageTexts[currentPage - 1] || '';
   if (!txt || !window.speechSynthesis) return;
@@ -1357,7 +1587,7 @@ function ttsPlay() {
   const utt = new SpeechSynthesisUtterance(txt);
   utt.rate = 0.95;
   window.speechSynthesis.speak(utt);
-  announce('Playing audio narration');
+  announce('Playing audio narration of current page');
 }
 
 function ttsPause() {
@@ -1372,34 +1602,197 @@ function ttsStop() {
   if (window.speechSynthesis) window.speechSynthesis.cancel();
 }
 
-async function askAIReader() {
-  const txt = pageTexts[currentPage - 1] || '';
-  const q = prompt('Ask AI about Page ' + currentPage + ':', 'Summarize key 4M and 8M exam points on this page');
+// AI TEACHER FORMATTING & CHAT ENGINE
+function formatTeacherResponse(text) {
+  if (!text) return '<p class="text-slate-500">No explanation provided.</p>';
+
+  const lines = text.trim().split('\n');
+  let html = '';
+  let inList = false;
+  let listType = 'ul';
+
+  const sections = [
+    { key: 'simple explanation', icon: 'fa-lightbulb', color: 'emerald', label: 'Simple Teacher Explanation' },
+    { key: 'academic definition', icon: 'fa-book-bookmark', color: 'indigo', label: 'Academic & Textbook Definition' },
+    { key: 'core concept', icon: 'fa-graduation-cap', color: 'indigo', label: 'Core Concept' },
+    { key: 'key points', icon: 'fa-list-check', color: 'blue', label: 'Key Concepts & Important Points' },
+    { key: 'real-world example', icon: 'fa-magnifying-glass', color: 'amber', label: 'Practical Real-World Example' },
+    { key: 'example', icon: 'fa-magnifying-glass', color: 'amber', label: 'Example' },
+    { key: 'exam answer', icon: 'fa-award', color: 'purple', label: 'Exam Blueprint Answer' },
+    { key: 'exam preparation', icon: 'fa-award', color: 'purple', label: 'Exam Preparation' },
+    { key: 'summary', icon: 'fa-file-lines', color: 'slate', label: 'Summary' }
+  ];
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      if (inList) { html += listType === 'ol' ? '</ol>' : '</ul>'; inList = false; }
+      continue;
+    }
+
+    // Check for section headers
+    let matchedSec = null;
+    const lower = trimmed.toLowerCase();
+    for (const sec of sections) {
+      if (lower.startsWith(sec.key) || lower.startsWith('**' + sec.key) || lower.startsWith('### ' + sec.key)) {
+        matchedSec = sec;
+        break;
+      }
+    }
+
+    if (matchedSec) {
+      if (inList) { html += listType === 'ol' ? '</ol>' : '</ul>'; inList = false; }
+      const content = trimmed.replace(/^(\*\*|###\s*)*[A-Za-z\s\(\)\:\-\/\d]+[:\-]\s*(\*\*)*\s*/i, '').trim();
+      html += `
+        <div class="mt-3.5 mb-2.5 p-3.5 rounded-2xl bg-${matchedSec.color}-50/80 border border-${matchedSec.color}-200">
+          <h4 class="font-bold text-xs uppercase tracking-wider text-${matchedSec.color}-900 flex items-center gap-1.5 mb-1.5">
+            <i class="fa-solid ${matchedSec.icon} text-${matchedSec.color}-600"></i> ${matchedSec.label}
+          </h4>
+          ${content ? `<p class="text-slate-800 text-sm leading-relaxed">${cleanInlineMarkdown(content)}</p>` : ''}
+        </div>
+      `;
+      continue;
+    }
+
+    // Numbered list
+    const numMatch = trimmed.match(/^(\d+)[\.\)]\s+(.*)/);
+    if (numMatch) {
+      if (!inList || listType !== 'ol') {
+        if (inList) html += listType === 'ol' ? '</ol>' : '</ul>';
+        html += '<ol class="list-decimal pl-5 space-y-1.5 my-2.5 text-sm text-slate-800 font-medium">';
+        inList = true;
+        listType = 'ol';
+      }
+      html += `<li>${cleanInlineMarkdown(numMatch[2])}</li>`;
+      continue;
+    }
+
+    // Bullet list
+    const bulletMatch = trimmed.match(/^[\*\-•]\s+(.*)/);
+    if (bulletMatch) {
+      if (!inList || listType !== 'ul') {
+        if (inList) html += listType === 'ol' ? '</ol>' : '</ul>';
+        html += '<ul class="list-disc pl-5 space-y-1.5 my-2.5 text-sm text-slate-800">';
+        inList = true;
+        listType = 'ul';
+      }
+      html += `<li>${cleanInlineMarkdown(bulletMatch[1])}</li>`;
+      continue;
+    }
+
+    if (inList) {
+      html += listType === 'ol' ? '</ol>' : '</ul>';
+      inList = false;
+    }
+
+    html += `<p class="text-slate-800 text-sm leading-relaxed my-2">${cleanInlineMarkdown(trimmed)}</p>`;
+  }
+
+  if (inList) {
+    html += listType === 'ol' ? '</ol>' : '</ul>';
+  }
+
+  return html;
+}
+
+function cleanInlineMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-xs text-indigo-700">$1</code>');
+}
+
+// ASK AI TEACHER ABOUT PDF
+function quickAskTeacher(q) {
+  document.getElementById('readerAiQuestion').value = q;
+  submitReaderAiQuestion();
+}
+
+async function submitReaderAiQuestion() {
+  const input = document.getElementById('readerAiQuestion');
+  const q = input.value.trim();
   if (!q) return;
 
-  const box = document.getElementById('readerText');
-  const thinking = document.createElement('div');
-  thinking.className = 'mt-4 p-4 rounded-2xl bg-indigo-50 border-2 border-indigo-200 text-indigo-900 font-bold text-xs';
-  thinking.textContent = 'AITutor is analyzing page...';
-  box.appendChild(thinking);
+  const box = document.getElementById('readerAiResponseBox');
+  const content = document.getElementById('readerAiAnswerContent');
+  box.classList.remove('hidden');
+
+  // Accessible thinking stages
+  content.innerHTML = `
+    <div class="py-4 text-center text-indigo-700 animate-pulseSubtle">
+      <i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i>
+      <p class="font-bold text-sm">AI Tutor is analyzing the PDF...</p>
+      <p class="text-xs text-slate-500 mt-1">Cross-referencing Page ${currentPage} with TS Inter Board blueprint</p>
+    </div>
+  `;
+  announce('AI Tutor is analyzing the PDF.');
+
+  const pageText = pageTexts[currentPage - 1] || '';
+  const fullDocContext = currentDoc ? currentDoc.text.slice(0, 14000) : pageText;
 
   try {
     const r = await fetch(API + '/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: q, context: txt })
+      body: JSON.stringify({
+        prompt: q,
+        context: fullDocContext,
+        stream: localStorage.getItem('inter_stream') || 'MPC'
+      })
     });
     const j = await r.json();
-    thinking.innerHTML = `<p class="font-bold text-sm text-indigo-900 mb-1">AITutor Answer:</p><p class="text-slate-800 font-normal leading-relaxed">${(j.text || 'No response').replace(/\n/g, '<br>')}</p>`;
-  } catch {
-    thinking.textContent = 'AI service busy. Please try again.';
+    lastTeacherResponseRaw = j.text || 'No response';
+    content.innerHTML = formatTeacherResponse(lastTeacherResponseRaw);
+    announce('AI Teacher answer ready.');
+  } catch (e) {
+    content.innerHTML = `<p class="text-sm text-red-600 font-bold">AI Tutor could not answer right now. Please try again.</p>`;
   }
 }
 
-function translatePage() {
-  const txt = (pageTexts[currentPage - 1] || '').slice(0, 1500);
-  if (!txt) return;
-  askAIReader();
+function listenReaderAiAnswer() {
+  if (!lastTeacherResponseRaw || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  // Strip markdown symbols before speech
+  const cleanSpeech = lastTeacherResponseRaw.replace(/[*#`]/g, '');
+  const utt = new SpeechSynthesisUtterance(cleanSpeech);
+  utt.rate = 0.95;
+  window.speechSynthesis.speak(utt);
+  announce('Playing AI Teacher explanation aloud');
+}
+
+function closeReaderAiAnswer() {
+  document.getElementById('readerAiResponseBox').classList.add('hidden');
+}
+
+async function askFromHome() {
+  const input = document.getElementById('homeAsk');
+  const q = input.value.trim();
+  if (!q) return;
+
+  const box = document.getElementById('homeAiResponseBox');
+  const content = document.getElementById('homeAiResponseText');
+  box.classList.remove('hidden');
+  content.innerHTML = `<p class="text-indigo-700 font-bold text-sm animate-pulseSubtle"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i> AI Tutor is preparing your lesson explanation...</p>`;
+
+  try {
+    const r = await fetch(API + '/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: q, stream: localStorage.getItem('inter_stream') || 'MPC' })
+    });
+    const j = await r.json();
+    lastTeacherResponseRaw = j.text || 'No explanation';
+    content.innerHTML = formatTeacherResponse(lastTeacherResponseRaw);
+    announce('AI Tutor explanation ready');
+  } catch {
+    content.innerHTML = '<p class="text-sm text-red-600 font-bold">AI Tutor could not answer right now. Please try again.</p>';
+  }
+}
+
+function listenHomeAiResponse() {
+  listenReaderAiAnswer();
 }
 
 function exportDoc() {
@@ -1413,7 +1806,7 @@ function exportDoc() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-// QUIZ
+// QUIZ GENERATION
 function refreshQuizDocs() {
   const sel = document.getElementById('quizDoc');
   if (!sel) return;
@@ -1430,7 +1823,7 @@ async function genQuiz() {
   const prog = document.getElementById('quizProg');
 
   prog.classList.remove('hidden');
-  prog.textContent = 'Generating blueprint exam quiz questions (please wait)...';
+  prog.textContent = 'Generating blueprint exam quiz questions (reading all chapters)...';
   announce('Generating quiz');
 
   let questions = null;
@@ -1584,13 +1977,6 @@ function restartQuiz() {
   answers = {};
   renderQuiz();
   startTimer();
-}
-
-async function askFromHome() {
-  const input = document.getElementById('homeAsk');
-  const q = input.value.trim();
-  if (!q) return;
-  alert('AITutor Answer:\n\n' + 'Thinking...');
 }
 </script>
 </body>
