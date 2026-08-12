@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 
 const { initDB, run, get, all } = require('./db');
-const { sendOTPEmail } = require('./email');
+const { sendOTPEmail, cleanCredentials } = require('./email');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -75,7 +75,27 @@ function authMiddleware(req, res, next) {
 // HEALTH CHECK ENDPOINT
 // ==========================================
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, time: new Date().toISOString(), db: 'sqlite' });
+  const { isConfigured, user, pass } = cleanCredentials();
+  res.json({
+    ok: true,
+    time: new Date().toISOString(),
+    db: 'sqlite',
+    emailConfigured: isConfigured,
+    emailUserSet: Boolean(user && !user.includes('your.email')),
+    emailPassLength: pass ? pass.length : 0
+  });
+});
+
+app.get('/api/email-status', (req, res) => {
+  const { isConfigured, user, pass } = cleanCredentials();
+  res.json({
+    configured: isConfigured,
+    userConfigured: Boolean(user && !user.includes('your.email')),
+    passLength: pass ? pass.length : 0,
+    hint: !isConfigured
+      ? 'To send real OTP emails, set GMAIL_USER and GMAIL_APP_PASSWORD (16-char app password from https://myaccount.google.com/apppasswords) in Render Environment variables.'
+      : 'Gmail SMTP credentials are configured.'
+  });
 });
 
 // ==========================================
@@ -106,7 +126,7 @@ app.post('/api/auth/signup', authLimiter, async (req, res) => {
     const trimmedName = name.trim();
     const existingUser = await get('SELECT id, name, email, is_verified FROM users WHERE email = ?', [normEmail]);
 
-    const isDev = !process.env.GMAIL_USER || process.env.GMAIL_USER.includes('your.email');
+    const isDev = !cleanCredentials().isConfigured;
 
     // Case 1: Verified user already exists -> Do not allow duplicate signup
     if (existingUser && existingUser.is_verified) {
@@ -238,7 +258,7 @@ app.post('/api/auth/resend-otp', authLimiter, async (req, res) => {
     const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString();
     await run('INSERT INTO otps (email, otp, purpose, expires_at) VALUES (?, ?, ?, ?)', [normEmail, otp, purpose, expires]);
 
-    const isDev = !process.env.GMAIL_USER || process.env.GMAIL_USER.includes('your.email');
+    const isDev = !cleanCredentials().isConfigured;
     try {
       const emailResult = await sendOTPEmail(normEmail, otp, purpose);
       return res.json({
@@ -277,7 +297,7 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
       return res.status(401).json({ success: false, error: 'Incorrect password' });
     }
 
-    const isDev = !process.env.GMAIL_USER || process.env.GMAIL_USER.includes('your.email');
+    const isDev = !cleanCredentials().isConfigured;
 
     // If unverified, generate and send fresh OTP
     if (!user.is_verified) {
@@ -339,7 +359,7 @@ app.post('/api/auth/forgot-password', authLimiter, async (req, res) => {
     const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString();
     await run('INSERT INTO otps (email, otp, purpose, expires_at) VALUES (?, ?, ?, ?)', [normEmail, otp, 'forgot', expires]);
 
-    const isDev = !process.env.GMAIL_USER || process.env.GMAIL_USER.includes('your.email');
+    const isDev = !cleanCredentials().isConfigured;
     try {
       const emailResult = await sendOTPEmail(normEmail, otp, 'forgot');
       return res.json({
