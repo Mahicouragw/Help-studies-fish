@@ -15,6 +15,7 @@ backend/.env
 database.db
 backend/database.db
 *.db
+*.db-*
 
 # OS
 .DS_Store

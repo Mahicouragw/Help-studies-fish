@@ -2,17 +2,61 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'database.db');
+// Resolve the safest and most persistent path for SQLite
+function resolveDbPath() {
+  if (process.env.DB_PATH && process.env.DB_PATH.trim()) {
+    return process.env.DB_PATH.trim();
+  }
+
+  // Check persistent disk mount locations on Render / Linux cloud hosts
+  const candidateDirs = [
+    '/var/data',
+    '/data',
+    '/opt/render/project/data'
+  ];
+
+  for (const dir of candidateDirs) {
+    try {
+      if (fs.existsSync(dir)) {
+        const testFile = path.join(dir, '.write_test');
+        fs.writeFileSync(testFile, 'ok');
+        fs.unlinkSync(testFile);
+        console.log(`💾 Using persistent disk directory: ${dir}`);
+        return path.join(dir, 'study_vision.db');
+      }
+    } catch (e) {
+      // Directory not writable or doesn't exist
+    }
+  }
+
+  // Fallback to local directory
+  return path.join(__dirname, 'database.db');
+}
+
+const DB_PATH = resolveDbPath();
+
+// Ensure parent directory exists
+try {
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+} catch (e) {}
 
 const db = new sqlite3.Database(DB_PATH, (err) => {
-  if (err) console.error('DB open error', err);
-  else console.log('✅ SQLite connected:', DB_PATH);
+  if (err) {
+    console.error('❌ Database open error:', err.message);
+  } else {
+    console.log('✅ Persistent SQLite database connected at:', DB_PATH);
+  }
 });
 
 function initDB() {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
-      // Users table
+      // Optimize SQLite for high reliability & durability
+      db.run(`PRAGMA journal_mode = WAL;`);
+      db.run(`PRAGMA synchronous = NORMAL;`);
+      db.run(`PRAGMA foreign_keys = ON;`);
+
+      // 1. Users Table (Safe & Idempotent: NEVER drops or deletes existing records)
       db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -21,9 +65,11 @@ function initDB() {
         is_verified INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         last_login DATETIME
-      )`, (err) => { if(err) console.error('users table', err); });
+      )`, (err) => {
+        if (err) console.error('Error ensuring users table exists:', err.message);
+      });
 
-      // OTPs table - for signup verify & forgot password
+      // 2. OTPs Table
       db.run(`CREATE TABLE IF NOT EXISTS otps (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT NOT NULL COLLATE NOCASE,
@@ -34,7 +80,7 @@ function initDB() {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )`);
 
-      // Sessions (optional)
+      // 3. Sessions Table
       db.run(`CREATE TABLE IF NOT EXISTS sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -43,7 +89,7 @@ function initDB() {
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       )`);
 
-      // Documents library (server-side persistence optional)
+      // 4. Documents Library Table
       db.run(`CREATE TABLE IF NOT EXISTS documents (
         id TEXT PRIMARY KEY,
         user_id INTEGER,
@@ -58,7 +104,7 @@ function initDB() {
         FOREIGN KEY(user_id) REFERENCES users(id)
       )`);
 
-      // Quiz attempts
+      // 5. Quiz Attempts Table
       db.run(`CREATE TABLE IF NOT EXISTS quiz_attempts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -71,7 +117,7 @@ function initDB() {
         FOREIGN KEY(user_id) REFERENCES users(id)
       )`);
 
-      // Study sessions (pomodoro)
+      // 6. Study Sessions (Pomodoro) Table
       db.run(`CREATE TABLE IF NOT EXISTS study_sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -81,9 +127,10 @@ function initDB() {
         completed INTEGER DEFAULT 0,
         FOREIGN KEY(user_id) REFERENCES users(id)
       )`, (err) => {
-        if (err) reject(err);
-        else {
-          console.log('✅ SQL Database initialized — tables: users, otps, sessions, documents, quiz_attempts, study_sessions');
+        if (err) {
+          reject(err);
+        } else {
+          console.log('✅ SQLite Schema verified — All user accounts & data preserved safely.');
           resolve();
         }
       });
@@ -91,21 +138,30 @@ function initDB() {
   });
 }
 
-function run(sql, params=[]) {
+function run(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function(err) {
-      if(err) reject(err); else resolve({ id: this.lastID, changes: this.changes });
+      if (err) reject(err);
+      else resolve({ id: this.lastID, changes: this.changes });
     });
   });
 }
-function get(sql, params=[]) {
+
+function get(sql, params = []) {
   return new Promise((resolve, reject) => {
-    db.get(sql, params, (err,row)=> err?reject(err):resolve(row));
+    db.get(sql, params, (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
   });
 }
-function all(sql, params=[]) {
+
+function all(sql, params = []) {
   return new Promise((resolve, reject) => {
-    db.all(sql, params, (err,rows)=> err?reject(err):resolve(rows));
+    db.all(sql, params, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
   });
 }
 

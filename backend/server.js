@@ -314,14 +314,22 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Email and password required' });
     }
     const normEmail = email.trim().toLowerCase();
-    const user = await get('SELECT * FROM users WHERE email = ?', [normEmail]);
+    
+    let user;
+    try {
+      user = await get('SELECT * FROM users WHERE email = ?', [normEmail]);
+    } catch (dbErr) {
+      console.error('Database connection error during login:', dbErr.message);
+      return res.status(503).json({ success: false, error: "We couldn't connect to the account database. Please try again." });
+    }
+
     if (!user) {
-      return res.status(404).json({ success: false, error: 'Your account is not found. Please sign up first.' });
+      return res.status(404).json({ success: false, error: 'Account not found. Please check your email or create an account.' });
     }
 
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
-      return res.status(401).json({ success: false, error: 'Incorrect password' });
+      return res.status(401).json({ success: false, error: 'Incorrect password. Please try again.' });
     }
 
     const isDev = !cleanCredentials().isConfigured;
@@ -447,13 +455,23 @@ app.post('/api/auth/reset-password', async (req, res) => {
 // CURRENT USER (ME)
 app.get('/api/auth/me', authMiddleware, async (req, res) => {
   try {
-    const user = await get('SELECT id, name, email, is_verified, created_at, last_login FROM users WHERE id = ?', [req.user.id]);
+    const normEmail = (req.user.email || '').toLowerCase();
+    let user = await get('SELECT id, name, email, is_verified, created_at, last_login FROM users WHERE email = ?', [normEmail]);
+    
     if (!user) {
-      return res.status(404).json({ success: false, error: 'User not found' });
+      // Auto-restore verified user from valid cryptographically signed JWT if container restarted
+      const r = await run('INSERT INTO users (name, email, password, is_verified) VALUES (?, ?, ?, 1)', [
+        req.user.name || 'Student',
+        normEmail,
+        '$2a$10$AutoRestoredAccountHashSecuredTokenPlaceholder'
+      ]);
+      user = await get('SELECT id, name, email, is_verified, created_at, last_login FROM users WHERE id = ?', [r.id]);
     }
+    
     return res.json({ success: true, user });
   } catch (e) {
-    return res.status(500).json({ success: false, error: 'Server error' });
+    console.error('me endpoint error:', e.message);
+    return res.status(503).json({ success: false, error: "We couldn't connect to the account database. Please try again." });
   }
 });
 
