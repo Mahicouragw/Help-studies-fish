@@ -45,8 +45,8 @@
         <label class="block text-sm font-bold">Email <input id="loginEmail" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
         <label class="block text-sm font-bold">Password <input id="loginPass" type="password" autocomplete="current-password" required aria-required="true" placeholder="••••••••" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
         <p id="loginErr" class="text-sm font-bold text-red-600 min-h-[18px]" aria-live="polite"></p>
-        <button type="submit" class="w-full py-3 rounded-full bg-slate-900 text-white font-bold text-base">Login</button>
-        <button type="button" onclick="showForgot()" class="w-full text-sm font-bold text-indigo-600 underline">Forgot password? Get OTP</button>
+        <button id="btnLoginSubmit" type="submit" class="w-full py-3 rounded-full bg-slate-900 text-white font-bold text-base hover:bg-slate-800 transition cursor-pointer">Login</button>
+        <button type="button" onclick="showForgot()" class="w-full text-sm font-bold text-indigo-600 underline cursor-pointer">Forgot password? Get OTP</button>
       </form>
 
       <form id="panelSignup" role="tabpanel" aria-labelledby="tabSignup" hidden class="mt-5 space-y-3" onsubmit="doSignup(event)">
@@ -55,31 +55,33 @@
         <label class="block text-sm font-bold">Password <input id="signupPass" type="password" autocomplete="new-password" required placeholder="At least 6 characters" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
         <label class="block text-sm font-bold">Confirm Password <input id="signupConfirm" type="password" autocomplete="new-password" required placeholder="Repeat password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base"></label>
         <p id="signupErr" class="text-sm font-bold min-h-[18px]" aria-live="polite"></p>
-        <button type="submit" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold text-base">Create Account</button>
+        <button id="btnSignupSubmit" type="submit" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold text-base hover:bg-indigo-700 transition cursor-pointer">Create Account</button>
       </form>
 
       <div id="otpPanel" hidden class="mt-5 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
-        <h2 class="font-bold text-amber-900">Check your email</h2>
+        <h2 class="font-bold text-amber-900 text-base">Check your email</h2>
         <p class="text-sm text-amber-800 mt-1">Enter 6-digit OTP sent to <b id="otpEmail"></b> — valid 10 minutes</p>
-        <label class="block mt-3 text-sm font-bold">OTP <input id="otpInput" inputmode="numeric" maxlength="6" placeholder="123456" aria-label="6 digit OTP" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-amber-300 text-center tracking-[0.4em] font-mono text-xl"></label>
+        <label class="block mt-3 text-sm font-bold">OTP <input id="otpInput" inputmode="numeric" maxlength="6" placeholder="123456" aria-label="6 digit OTP" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-amber-300 text-center tracking-[0.4em] font-mono text-xl focus:border-amber-500 outline-none bg-white"></label>
         <p id="otpErr" class="text-sm font-bold min-h-[16px] mt-2" aria-live="polite"></p>
-        <button onclick="verifyOtp()" class="w-full mt-2 py-3 rounded-full bg-amber-600 text-white font-bold">Verify</button>
-        <button onclick="resendOtp()" class="w-full mt-2 text-sm font-bold underline">Resend OTP</button>
+        <button id="btnVerifyOtp" onclick="verifyOtp()" class="w-full mt-2 py-3 rounded-full bg-amber-600 text-white font-bold hover:bg-amber-700 transition cursor-pointer">Verify</button>
+        <button id="btnResendOtp" onclick="resendOtp()" class="w-full mt-2 text-sm font-bold underline text-amber-900 cursor-pointer">Resend OTP</button>
+        <button onclick="showAuth('login')" class="w-full mt-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer">← Back to Login / Change Email</button>
         <p id="devOtp" class="text-xs text-slate-500 mt-2"></p>
       </div>
 
       <div id="forgotPanel" hidden class="mt-5 bg-slate-50 border-2 border-slate-200 rounded-2xl p-4">
-        <h2 class="font-bold">Reset Password</h2>
-        <label class="block mt-2 text-sm font-bold">Email <input id="forgotEmail" type="email" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 text-base"></label>
-        <button onclick="sendForgot()" class="w-full mt-3 py-3 rounded-full bg-slate-900 text-white font-bold">Send Code</button>
-        <div id="resetArea" hidden class="mt-3 space-y-2">
-          <label class="block text-sm font-bold">Code <input id="forgotOtp" inputmode="numeric" placeholder="123456" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200"></label>
-          <label class="block text-sm font-bold">New Password <input id="forgotNew" type="password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200"></label>
-          <label class="block text-sm font-bold">Confirm <input id="forgotConfirm" type="password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200"></label>
-          <button onclick="resetPass()" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold">Reset Password</button>
+        <h2 class="font-bold text-slate-900 text-base">Reset Password</h2>
+        <p class="text-xs text-slate-600 mt-1">We will send a 6-digit verification code to your email.</p>
+        <label class="block mt-3 text-sm font-bold">Email <input id="forgotEmail" type="email" placeholder="you@example.com" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-base bg-white"></label>
+        <button id="btnSendForgot" onclick="sendForgot()" class="w-full mt-3 py-3 rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800 transition cursor-pointer">Send Code</button>
+        <div id="resetArea" hidden class="mt-4 space-y-3 pt-3 border-t">
+          <label class="block text-sm font-bold">Code <input id="forgotOtp" inputmode="numeric" maxlength="6" placeholder="123456" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none font-mono text-center tracking-[0.3em] bg-white"></label>
+          <label class="block text-sm font-bold">New Password <input id="forgotNew" type="password" placeholder="At least 6 characters" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none bg-white"></label>
+          <label class="block text-sm font-bold">Confirm Password <input id="forgotConfirm" type="password" placeholder="Repeat password" class="mt-1 w-full px-3 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 outline-none bg-white"></label>
+          <button id="btnResetPass" onclick="resetPass()" class="w-full py-3 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition cursor-pointer">Reset Password</button>
         </div>
         <p id="forgotErr" class="text-sm font-bold min-h-[16px] mt-2" aria-live="polite"></p>
-        <button onclick="showAuth('login')" class="w-full mt-2 text-sm font-bold underline">Back to Login</button>
+        <button onclick="showAuth('login')" class="w-full mt-2 text-sm font-bold underline text-slate-600 hover:text-slate-900 cursor-pointer">Back to Login</button>
       </div>
 
       <p class="text-[11px] text-slate-500 text-center mt-4">Your data is encrypted — SQLite on our server, not Supabase. OTP via Gmail.</p>
@@ -364,8 +366,19 @@ function showAuth(which){
   document.getElementById('panelSignup').hidden = which!=='signup';
   document.getElementById('tabLogin').setAttribute('aria-selected', String(which==='login'));
   document.getElementById('tabSignup').setAttribute('aria-selected', String(which==='signup'));
+  if (which === 'login') {
+    document.getElementById('tabLogin').className = 'flex-1 py-2 rounded-full bg-white shadow font-bold text-sm text-slate-900';
+    document.getElementById('tabSignup').className = 'flex-1 py-2 rounded-full font-bold text-sm text-slate-600';
+  } else {
+    document.getElementById('tabSignup').className = 'flex-1 py-2 rounded-full bg-white shadow font-bold text-sm text-slate-900';
+    document.getElementById('tabLogin').className = 'flex-1 py-2 rounded-full font-bold text-sm text-slate-600';
+  }
   document.getElementById('otpPanel').hidden=true;
   document.getElementById('forgotPanel').hidden=true;
+  document.getElementById('loginErr').textContent = '';
+  document.getElementById('signupErr').textContent = '';
+  document.getElementById('otpErr').textContent = '';
+  document.getElementById('forgotErr').textContent = '';
   setTimeout(()=> document.getElementById(which==='login'?'loginEmail':'signupName')?.focus(), 80);
   announce(which==='signup'?'Sign Up form opened':'Login form opened');
 }
@@ -391,6 +404,7 @@ function enterApp(){ showApp(); nav('home'); }
 
 // AUTH ACTIONS
 let pendingEmail='', pendingPurpose='signup';
+
 async function doSignup(e){
   e.preventDefault();
   const name=document.getElementById('signupName').value.trim();
@@ -398,93 +412,322 @@ async function doSignup(e){
   const p=document.getElementById('signupPass').value;
   const c=document.getElementById('signupConfirm').value;
   const err=document.getElementById('signupErr');
-  err.textContent='Creating...'; err.className='text-sm font-bold text-slate-600';
+  const btn=document.getElementById('btnSignupSubmit');
+
+  if(!name || !email || !p){
+    err.textContent='Please fill in all fields.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+  if(p !== c){
+    err.textContent='Passwords do not match.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+  if(p.length < 6){
+    err.textContent='Password must be at least 6 characters.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+
+  const origBtnText = btn ? btn.textContent : 'Create Account';
+  if(btn){ btn.disabled = true; btn.textContent = 'Creating...'; }
+  err.textContent='Creating...';
+  err.className='text-sm font-bold text-slate-600';
+
   try{
-    const r=await fetch(API+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:p,confirmPassword:c})});
+    const r=await fetch(API+'/api/auth/signup',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,email,password:p,confirmPassword:c})
+    });
     const j=await r.json();
-    if(!r.ok) throw new Error(j.error||'Failed');
-    pendingEmail=email; pendingPurpose='signup';
-    document.getElementById('otpEmail').textContent=email;
+    if(!r.ok || j.success === false){
+      throw new Error(j.error || j.message || 'Failed to create account');
+    }
+    pendingEmail=email.toLowerCase();
+    pendingPurpose='signup';
+    document.getElementById('otpEmail').textContent=pendingEmail;
+    document.getElementById('panelSignup').hidden=true;
     document.getElementById('otpPanel').hidden=false;
-    document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP (no email): '+j.devOtp : 'OTP sent to email';
-    err.textContent=''; announce('OTP sent to '+email);
-    document.getElementById('otpInput').focus();
-  }catch(er){ err.textContent=er.message; err.className='text-sm font-bold text-red-600'; }
+    document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP (no email config): '+j.devOtp : (j.message || 'OTP sent to email');
+    document.getElementById('otpErr').textContent='';
+    err.textContent='';
+    announce('Account created. OTP sent to '+pendingEmail);
+    const otpInput = document.getElementById('otpInput');
+    otpInput.value = '';
+    setTimeout(()=> otpInput.focus(), 80);
+  }catch(er){
+    err.textContent=er.message;
+    err.className='text-sm font-bold text-red-600';
+    announce(er.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  }
 }
+
 async function doLogin(e){
   e.preventDefault();
   const email=document.getElementById('loginEmail').value.trim();
   const p=document.getElementById('loginPass').value;
   const err=document.getElementById('loginErr');
+  const btn=document.getElementById('btnLoginSubmit');
+
+  if(!email || !p){
+    err.textContent='Please enter email and password.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+
+  const origBtnText = btn ? btn.textContent : 'Login';
+  if(btn){ btn.disabled = true; btn.textContent = 'Logging in...'; }
   err.textContent='Logging in...';
+  err.className='text-sm font-bold text-slate-600';
+
   try{
-    const r=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:p})});
+    const r=await fetch(API+'/api/auth/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:p})
+    });
     const j=await r.json();
-    if(!r.ok){
-      if(j.error && j.error.includes('not found')) throw new Error('Your account is not found. Please sign up first.');
-      if(j.needVerify){ pendingEmail=j.email; document.getElementById('otpEmail').textContent=j.email; document.getElementById('otpPanel').hidden=false; err.textContent='Verify email first — OTP sent'; return; }
-      throw new Error(j.error);
+
+    if(!r.ok || j.success === false){
+      if(j.needVerify || j.requiresOtp){
+        pendingEmail=(j.email || email).toLowerCase();
+        pendingPurpose='signup';
+        document.getElementById('otpEmail').textContent=pendingEmail;
+        document.getElementById('panelLogin').hidden=true;
+        document.getElementById('otpPanel').hidden=false;
+        document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP: '+j.devOtp : (j.message || 'OTP sent to email');
+        document.getElementById('otpErr').textContent='';
+        err.textContent='';
+        announce('Email not verified. OTP sent to '+pendingEmail);
+        const otpInput = document.getElementById('otpInput');
+        otpInput.value = '';
+        setTimeout(()=> otpInput.focus(), 80);
+        return;
+      }
+      if(j.error && j.error.includes('not found')){
+        throw new Error('Your account is not found. Please sign up first.');
+      }
+      throw new Error(j.error || j.message || 'Login failed');
     }
-    token=j.token; user=j.user;
-    localStorage.setItem('inter_token',token); localStorage.setItem('inter_user',JSON.stringify(user));
+
+    if(j.needVerify || j.requiresOtp){
+      pendingEmail=(j.email || email).toLowerCase();
+      pendingPurpose='signup';
+      document.getElementById('otpEmail').textContent=pendingEmail;
+      document.getElementById('panelLogin').hidden=true;
+      document.getElementById('otpPanel').hidden=false;
+      document.getElementById('devOtp').textContent=j.devOtp? 'DEV OTP: '+j.devOtp : (j.message || 'OTP sent to email');
+      document.getElementById('otpErr').textContent='';
+      err.textContent='';
+      announce('Email not verified. OTP sent to '+pendingEmail);
+      const otpInput = document.getElementById('otpInput');
+      otpInput.value = '';
+      setTimeout(()=> otpInput.focus(), 80);
+      return;
+    }
+
+    token=j.token;
+    user=j.user;
+    localStorage.setItem('inter_token',token);
+    localStorage.setItem('inter_user',JSON.stringify(user));
+    err.textContent='';
     announce('Login successful');
     showApp();
-  }catch(er){ err.textContent=er.message; }
+  }catch(er){
+    err.textContent=er.message;
+    err.className='text-sm font-bold text-red-600';
+    announce(er.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  }
 }
+
 async function verifyOtp(){
   const otp=document.getElementById('otpInput').value.trim();
   const err=document.getElementById('otpErr');
-  if(otp.length!==6) return err.textContent='Enter 6-digit OTP';
+  const btn=document.getElementById('btnVerifyOtp');
+
+  if(!otp || otp.length!==6){
+    err.textContent='Enter 6-digit OTP';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+
+  const origBtnText = btn ? btn.textContent : 'Verify';
+  if(btn){ btn.disabled = true; btn.textContent = 'Verifying...'; }
   err.textContent='Verifying...';
+  err.className='text-sm font-bold text-slate-600';
+
   try{
-    const r=await fetch(API+'/api/auth/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail, otp, purpose:pendingPurpose})});
+    const r=await fetch(API+'/api/auth/verify-otp',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:pendingEmail, otp, purpose:pendingPurpose})
+    });
     const j=await r.json();
-    if(!r.ok) throw new Error(j.error);
-    token=j.token; user=j.user;
-    localStorage.setItem('inter_token',token); localStorage.setItem('inter_user',JSON.stringify(user));
+    if(!r.ok || j.success === false){
+      throw new Error(j.error || j.message || 'Invalid OTP');
+    }
+    token=j.token;
+    user=j.user;
+    localStorage.setItem('inter_token',token);
+    localStorage.setItem('inter_user',JSON.stringify(user));
     document.getElementById('otpPanel').hidden=true;
     err.textContent='';
     showWelcome();
-  }catch(er){ err.textContent=er.message; }
+  }catch(er){
+    err.textContent=er.message;
+    err.className='text-sm font-bold text-red-600';
+    announce(er.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  }
 }
+
 async function resendOtp(){
-  const r=await fetch(API+'/api/auth/resend-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail, purpose:pendingPurpose})});
-  const j=await r.json();
-  document.getElementById('otpErr').textContent=j.devOtp? 'Resent — DEV OTP: '+j.devOtp : 'OTP resent';
+  const err=document.getElementById('otpErr');
+  const btn=document.getElementById('btnResendOtp');
+  if(!pendingEmail){
+    err.textContent='No email specified. Please sign up or login again.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+
+  const origBtnText = btn ? btn.textContent : 'Resend OTP';
+  if(btn){ btn.disabled = true; btn.textContent = 'Sending...'; }
+  err.textContent='Resending OTP...';
+  err.className='text-sm font-bold text-slate-600';
+
+  try{
+    const r=await fetch(API+'/api/auth/resend-otp',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:pendingEmail, purpose:pendingPurpose})
+    });
+    const j=await r.json();
+    if(!r.ok || j.success === false){
+      throw new Error(j.error || j.message || 'Failed to resend OTP');
+    }
+    err.textContent=j.devOtp? 'Resent — DEV OTP: '+j.devOtp : 'New OTP sent to '+pendingEmail;
+    err.className='text-sm font-bold text-emerald-700';
+    if(j.devOtp) document.getElementById('devOtp').textContent='DEV OTP: '+j.devOtp;
+    announce('New OTP sent');
+  }catch(er){
+    err.textContent=er.message;
+    err.className='text-sm font-bold text-red-600';
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  }
 }
+
 function showForgot(){
   document.getElementById('panelLogin').hidden=true;
   document.getElementById('panelSignup').hidden=true;
   document.getElementById('otpPanel').hidden=true;
   document.getElementById('forgotPanel').hidden=false;
+  document.getElementById('forgotErr').textContent='';
+  setTimeout(()=> document.getElementById('forgotEmail')?.focus(), 80);
 }
+
 async function sendForgot(){
   const email=document.getElementById('forgotEmail').value.trim();
   const err=document.getElementById('forgotErr');
-  if(!email) return err.textContent='Enter email';
-  err.textContent='Sending...';
+  const btn=document.getElementById('btnSendForgot');
+
+  if(!email){
+    err.textContent='Please enter your email.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+
+  const origBtnText = btn ? btn.textContent : 'Send Code';
+  if(btn){ btn.disabled = true; btn.textContent = 'Sending...'; }
+  err.textContent='Sending code...';
+  err.className='text-sm font-bold text-slate-600';
+
   try{
-    const r=await fetch(API+'/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const r=await fetch(API+'/api/auth/forgot-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
     const j=await r.json();
-    if(!r.ok) throw new Error(j.error);
-    pendingEmail=email;
-    err.textContent=j.devOtp? 'Code sent — DEV: '+j.devOtp : 'Verification code sent';
+    if(!r.ok || j.success === false){
+      throw new Error(j.error || j.message || 'Failed to send reset code');
+    }
+    pendingEmail=email.toLowerCase();
+    pendingPurpose='forgot';
+    err.textContent=j.devOtp? 'Code sent — DEV: '+j.devOtp : 'Verification code sent to '+email;
+    err.className='text-sm font-bold text-emerald-700';
     document.getElementById('resetArea').hidden=false;
-  }catch(er){ err.textContent=er.message; }
+    announce('Verification code sent');
+    setTimeout(()=> document.getElementById('forgotOtp')?.focus(), 80);
+  }catch(er){
+    err.textContent=er.message;
+    err.className='text-sm font-bold text-red-600';
+    announce(er.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  }
 }
+
 async function resetPass(){
   const otp=document.getElementById('forgotOtp').value.trim();
   const np=document.getElementById('forgotNew').value;
   const cp=document.getElementById('forgotConfirm').value;
   const err=document.getElementById('forgotErr');
-  err.textContent='Resetting...';
+  const btn=document.getElementById('btnResetPass');
+
+  if(!otp || !np || !cp){
+    err.textContent='Please fill in all fields.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+  if(np !== cp){
+    err.textContent='Passwords do not match.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+  if(np.length < 6){
+    err.textContent='Password must be at least 6 characters.';
+    err.className='text-sm font-bold text-red-600';
+    return;
+  }
+
+  const origBtnText = btn ? btn.textContent : 'Reset Password';
+  if(btn){ btn.disabled = true; btn.textContent = 'Resetting...'; }
+  err.textContent='Resetting password...';
+  err.className='text-sm font-bold text-slate-600';
+
   try{
-    const r=await fetch(API+'/api/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail, otp, newPassword:np, confirmPassword:cp})});
+    const r=await fetch(API+'/api/auth/reset-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:pendingEmail, otp, newPassword:np, confirmPassword:cp})
+    });
     const j=await r.json();
-    if(!r.ok) throw new Error(j.error);
-    err.textContent='Password reset — you can now login';
-    setTimeout(()=>{ document.getElementById('forgotPanel').hidden=true; showAuth('login'); }, 1200);
-  }catch(er){ err.textContent=er.message; }
+    if(!r.ok || j.success === false){
+      throw new Error(j.error || j.message || 'Failed to reset password');
+    }
+    err.textContent='Password reset successful! Redirecting to login...';
+    err.className='text-sm font-bold text-emerald-700';
+    announce('Password reset successful. You can now login.');
+    setTimeout(()=>{
+      document.getElementById('forgotPanel').hidden=true;
+      document.getElementById('resetArea').hidden=true;
+      showAuth('login');
+    }, 1200);
+  }catch(er){
+    err.textContent=er.message;
+    err.className='text-sm font-bold text-red-600';
+    announce(er.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+  }
 }
 function logout(){ localStorage.removeItem('inter_token'); localStorage.removeItem('inter_user'); location.reload(); }
 

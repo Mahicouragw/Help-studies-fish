@@ -677,10 +677,10 @@
     try{
       const res=await fetch(`${API_BASE}/api/auth/signup`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,email,password:pass,confirmPassword:confirm})});
       const j=await res.json();
-      if(!res.ok) throw new Error(j.error || 'Failed');
+      if(!res.ok || j.success === false) throw new Error(j.error || j.message || 'Failed');
       msg.textContent='✅ OTP sent to '+email; msg.className='text-xs font-bold text-emerald-600';
-      pendingEmail=email; pendingPurpose='signup';
-      document.getElementById('otpEmailLabel').textContent=email;
+      pendingEmail=email.toLowerCase(); pendingPurpose='signup';
+      document.getElementById('otpEmailLabel').textContent=pendingEmail;
       document.getElementById('otpBox').classList.remove('hidden');
       if(j.devOtp) document.getElementById('devOtpHint').textContent='DEV OTP (no email config): '+j.devOtp;
       announce('OTP sent to '+email);
@@ -698,16 +698,23 @@
     try{
       const res=await fetch(`${API_BASE}/api/auth/login`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email,password:pass})});
       const j=await res.json();
-      if(!res.ok) {
-        if(j.error && j.error.includes('not found')) throw new Error('Your account is not found. Please sign up first.');
-        if(j.needVerify){
+      if(!res.ok || j.success === false) {
+        if(j.needVerify || j.requiresOtp){
           msg.textContent='Email not verified — OTP sent. Please verify.';
-          pendingEmail=j.email; pendingPurpose='signup';
-          document.getElementById('otpEmailLabel').textContent=j.email;
+          pendingEmail=(j.email || email).toLowerCase(); pendingPurpose='signup';
+          document.getElementById('otpEmailLabel').textContent=pendingEmail;
           document.getElementById('otpBox').classList.remove('hidden');
           return;
         }
-        throw new Error(j.error);
+        if(j.error && j.error.includes('not found')) throw new Error('Your account is not found. Please sign up first.');
+        throw new Error(j.error || j.message || 'Login failed');
+      }
+      if(j.needVerify || j.requiresOtp){
+        msg.textContent='Email not verified — OTP sent. Please verify.';
+        pendingEmail=(j.email || email).toLowerCase(); pendingPurpose='signup';
+        document.getElementById('otpEmailLabel').textContent=pendingEmail;
+        document.getElementById('otpBox').classList.remove('hidden');
+        return;
       }
       localStorage.setItem('inter_token', j.token);
       localStorage.setItem('inter_user', JSON.stringify(j.user));
@@ -726,7 +733,7 @@
     try{
       const res=await fetch(`${API_BASE}/api/auth/verify-otp`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:pendingEmail, otp, purpose:pendingPurpose})});
       const j=await res.json();
-      if(!res.ok) throw new Error(j.error);
+      if(!res.ok || j.success === false) throw new Error(j.error || j.message || 'Invalid OTP');
       msg.textContent='✅ Verified! Logging in...'; msg.className='text-xs font-bold text-emerald-600';
       localStorage.setItem('inter_token', j.token);
       localStorage.setItem('inter_user', JSON.stringify(j.user));
@@ -737,10 +744,13 @@
   window.resendOTP = async ()=>{
     const msg=document.getElementById('otpMsg');
     msg.textContent='Resending...';
-    const res=await fetch(`${API_BASE}/api/auth/resend-otp`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:pendingEmail, purpose:pendingPurpose})});
-    const j=await res.json();
-    msg.textContent=j.devOtp ? '✅ Resent! DEV OTP: '+j.devOtp : '✅ OTP resent to email';
-    if(j.devOtp) document.getElementById('devOtpHint').textContent='DEV OTP: '+j.devOtp;
+    try{
+      const res=await fetch(`${API_BASE}/api/auth/resend-otp`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:pendingEmail, purpose:pendingPurpose})});
+      const j=await res.json();
+      if(!res.ok || j.success === false) throw new Error(j.error || j.message || 'Failed');
+      msg.textContent=j.devOtp ? '✅ Resent! DEV OTP: '+j.devOtp : '✅ OTP resent to email';
+      if(j.devOtp) document.getElementById('devOtpHint').textContent='DEV OTP: '+j.devOtp;
+    }catch(err){ msg.textContent='❌ '+err.message; }
   };
   window.openForgot = ()=>{
     document.getElementById('loginForm').classList.add('hidden');
@@ -756,11 +766,11 @@
     try{
       const res=await fetch(`${API_BASE}/api/auth/forgot-password`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
       const j=await res.json();
-      if(!res.ok) throw new Error(j.error);
+      if(!res.ok || j.success === false) throw new Error(j.error || j.message || 'Failed');
       msg.textContent='✅ Verification code sent to '+email;
       msg.className='text-xs font-bold text-emerald-600';
       document.getElementById('resetBox').classList.remove('hidden');
-      pendingEmail=email;
+      pendingEmail=email.toLowerCase();
       if(j.devOtp) msg.textContent += '  DEV CODE: '+j.devOtp;
     }catch(err){ msg.textContent='❌ '+err.message; msg.className='text-xs font-bold text-red-600'; }
   };
@@ -774,8 +784,8 @@
     try{
       const res=await fetch(`${API_BASE}/api/auth/reset-password`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email:pendingEmail, otp, newPassword:np, confirmPassword:cp})});
       const j=await res.json();
-      if(!res.ok) throw new Error(j.error);
-      msg.textContent='✅ '+j.message + ' — You can login now.'; msg.className='text-xs font-bold text-emerald-600';
+      if(!res.ok || j.success === false) throw new Error(j.error || j.message || 'Failed');
+      msg.textContent='✅ '+ (j.message || 'Password reset') + ' — You can login now.'; msg.className='text-xs font-bold text-emerald-600';
       announce('Password reset successful');
       setTimeout(()=> { document.getElementById('forgotBox').classList.add('hidden'); switchAuth('login'); }, 1200);
     }catch(err){ msg.textContent='❌ '+err.message; }
