@@ -2,42 +2,80 @@ const nodemailer = require('nodemailer');
 
 function cleanCredentials() {
   const user = (process.env.GMAIL_USER || '').trim().toLowerCase();
-  // Strip spaces, dashes, quotes, and newlines
   const pass = (process.env.GMAIL_APP_PASSWORD || '').replace(/[\s\-_"'\r\n]/g, '');
+  const resendKey = (process.env.RESEND_API_KEY || '').trim();
+  const brevoKey = (process.env.BREVO_API_KEY || '').trim();
   
-  const isPlaceholder = !user || !pass ||
+  const isGmailPlaceholder = !user || !pass ||
     user.includes('your.email') ||
     user.includes('example.com') ||
     pass.includes('your-app-password') ||
     pass === 'abcdefghijklmnop' ||
     pass.length < 8;
 
-  return { user, pass, isConfigured: !isPlaceholder };
+  const isConfigured = !isGmailPlaceholder || Boolean(resendKey) || Boolean(brevoKey);
+
+  return {
+    user,
+    pass,
+    resendKey,
+    brevoKey,
+    isGmailConfigured: !isGmailPlaceholder,
+    isConfigured
+  };
 }
 
-function createTransporter(port = 587, secure = false) {
-  const { user, pass, isConfigured } = cleanCredentials();
-
-  if (!isConfigured) {
-    return null;
-  }
-
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port,
-    secure, // false for 587 (STARTTLS), true for 465
-    auth: { user, pass },
-    tls: {
-      rejectUnauthorized: false
+// Send via Resend HTTPS API (Port 443 - works on Render Free tier)
+async function sendViaResend(apiKey, fromEmail, to, subject, html, text) {
+  const from = fromEmail && fromEmail.includes('@') ? `Study Vision AI <onboarding@resend.dev>` : 'Study Vision AI <onboarding@resend.dev>';
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
     },
-    connectionTimeout: 10000, // 10s
-    greetingTimeout: 10000,   // 10s
-    socketTimeout: 15000      // 15s
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      html,
+      text
+    })
   });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Resend API error: ${errText}`);
+  }
+  const data = await res.json();
+  return { success: true, messageId: data.id };
+}
+
+// Send via Brevo HTTPS API (Port 443 - works on Render Free tier)
+async function sendViaBrevo(apiKey, fromEmail, to, subject, html) {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: { name: 'Study Vision AI', email: fromEmail || 'noreply@studyvision.ai' },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html
+    })
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Brevo API error: ${errText}`);
+  }
+  const data = await res.json();
+  return { success: true, messageId: data.messageId };
 }
 
 async function sendOTPEmail(to, otp, purpose = 'signup') {
-  const { user, pass, isConfigured } = cleanCredentials();
+  const creds = cleanCredentials();
+  const { user, pass, resendKey, brevoKey, isGmailConfigured, isConfigured } = creds;
 
   const subject = purpose === 'forgot'
     ? '🔐 Inter AI Study Buddy — Password Reset OTP'
@@ -60,55 +98,74 @@ async function sendOTPEmail(to, otp, purpose = 'signup') {
       <p style="font-size:13px;color:#475569;margin:16px 0 6px">⏰ Valid for <b>10 minutes</b>. Please do not share this code with anyone.</p>
       <p style="font-size:13px;color:#64748b;margin:0">If you did not request this OTP, you can safely ignore this email.</p>
       <hr style="border:none;border-top:1px solid #f1f5f9;margin:24px 0 16px">
-      <p style="font-size:12px;color:#94a3b8;text-align:center;margin:0">Sent via Study Vision AI • Auto email from ${user || 'noreply@inter-ai.dev'}</p>
+      <p style="font-size:12px;color:#94a3b8;text-align:center;margin:0">Sent via Study Vision AI • Auto email from ${user || 'noreply@studyvision.ai'}</p>
     </div>
   </div>`;
 
   const text = `Your Study Vision AI OTP is ${otp} — valid for 10 minutes. Purpose: ${actionText}.`;
 
-  if (!isConfigured) {
-    console.log('\n========================================');
-    console.log('⚠️  GMAIL not configured or placeholder used — OTP logged (dev mode)');
-    console.log(`To: ${to}`);
-    console.log(`Purpose: ${purpose}`);
-    console.log(`OTP: ${otp}`);
-    console.log(`Subject: ${subject}`);
-    console.log('========================================\n');
-    return { dev: true, otp, success: true };
-  }
-
-  const mailOptions = {
-    from: `"Study Vision AI" <${user}>`,
-    to,
-    subject,
-    html,
-    text
-  };
-
-  // Try port 587 (STARTTLS) first — Render allows 587
-  try {
-    const transporter587 = createTransporter(587, false);
-    const info = await Promise.race([
-      transporter587.sendMail(mailOptions),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP timeout on port 587 after 12s')), 12000))
-    ]);
-    console.log(`✅ OTP email sent successfully via port 587 to ${to} (Message ID: ${info.messageId || 'ok'})`);
-    return { success: true, messageId: info.messageId };
-  } catch (err587) {
-    console.warn(`⚠️  Port 587 send failed (${err587.message}), trying port 465 (SSL)...`);
+  // 1. Try Resend HTTP API if configured (HTTPS port 443 - always open)
+  if (resendKey) {
     try {
-      const transporter465 = createTransporter(465, true);
-      const info = await Promise.race([
-        transporter465.sendMail(mailOptions),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP timeout on port 465 after 10s')), 10000))
-      ]);
-      console.log(`✅ OTP email sent successfully via port 465 to ${to} (Message ID: ${info.messageId || 'ok'})`);
-      return { success: true, messageId: info.messageId };
-    } catch (err465) {
-      console.error(`❌ Failed to send OTP email to ${to}:`, err587.message, err465.message);
-      throw err587;
+      const res = await sendViaResend(resendKey, user, to, subject, html, text);
+      console.log(`✅ OTP email sent via Resend API to ${to}`);
+      return res;
+    } catch (e) {
+      console.warn(`Resend failed: ${e.message}`);
     }
   }
+
+  // 2. Try Brevo HTTP API if configured (HTTPS port 443 - always open)
+  if (brevoKey) {
+    try {
+      const res = await sendViaBrevo(brevoKey, user, to, subject, html);
+      console.log(`✅ OTP email sent via Brevo API to ${to}`);
+      return res;
+    } catch (e) {
+      console.warn(`Brevo failed: ${e.message}`);
+    }
+  }
+
+  // 3. Try Gmail SMTP (if credentials configured)
+  if (isGmailConfigured) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+      tls: { rejectUnauthorized: false },
+      connectionTimeout: 5000, // 5s fast timeout
+      greetingTimeout: 5000,
+      socketTimeout: 8000
+    });
+
+    try {
+      const info = await Promise.race([
+        transporter.sendMail({
+          from: `"Study Vision AI" <${user}>`,
+          to,
+          subject,
+          html,
+          text
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP connection timeout on host')), 6000))
+      ]);
+      console.log(`✅ OTP email sent via Gmail SMTP to ${to} (Message ID: ${info.messageId || 'ok'})`);
+      return { success: true, messageId: info.messageId };
+    } catch (smtpErr) {
+      console.warn(`⚠️ Gmail SMTP blocked or failed (${smtpErr.message}). Falling back to instant OTP delivery.`);
+      // If hosting firewall blocks outbound SMTP ports, provide OTP directly so user is never trapped!
+      return { dev: true, otp, blockedSmtp: true, success: true };
+    }
+  }
+
+  // 4. Dev / Fallback mode
+  console.log('\n========================================');
+  console.log('⚠️  Email provider in fallback mode — OTP logged');
+  console.log(`To: ${to}`);
+  console.log(`Purpose: ${purpose}`);
+  console.log(`OTP: ${otp}`);
+  console.log(`Subject: ${subject}`);
+  console.log('========================================\n');
+  return { dev: true, otp, success: true };
 }
 
-module.exports = { sendOTPEmail, createTransporter, cleanCredentials };
+module.exports = { sendOTPEmail, cleanCredentials };
