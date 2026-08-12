@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 
 function cleanCredentials() {
   const user = (process.env.GMAIL_USER || '').trim().toLowerCase();
-  // Strip all whitespace, quotes, dashes, and placeholder values
-  const pass = (process.env.GMAIL_APP_PASSWORD || '').replace(/[\s\-_"']/g, '');
+  // Strip spaces, dashes, quotes, and newlines
+  const pass = (process.env.GMAIL_APP_PASSWORD || '').replace(/[\s\-_"'\r\n]/g, '');
   
   const isPlaceholder = !user || !pass ||
     user.includes('your.email') ||
@@ -15,21 +15,23 @@ function cleanCredentials() {
   return { user, pass, isConfigured: !isPlaceholder };
 }
 
-function createTransporter(port = 465, secure = true) {
+function createTransporter() {
   const { user, pass, isConfigured } = cleanCredentials();
 
   if (!isConfigured) {
     return null;
   }
 
+  // Use service 'gmail' with TLS settings and timeouts
   return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port,
-    secure,
+    service: 'gmail',
     auth: { user, pass },
-    connectionTimeout: 10000, // 10s connection timeout
-    greetingTimeout: 10000,   // 10s greeting timeout
-    socketTimeout: 15000      // 15s socket inactivity timeout
+    tls: {
+      rejectUnauthorized: false
+    },
+    connectionTimeout: 10000, // 10s
+    greetingTimeout: 10000,   // 10s
+    socketTimeout: 15000      // 15s
   });
 }
 
@@ -74,6 +76,11 @@ async function sendOTPEmail(to, otp, purpose = 'signup') {
     return { dev: true, otp, success: true };
   }
 
+  const transporter = createTransporter();
+  if (!transporter) {
+    return { dev: true, otp, success: true };
+  }
+
   const mailOptions = {
     from: `"Study Vision AI" <${user}>`,
     to,
@@ -82,38 +89,25 @@ async function sendOTPEmail(to, otp, purpose = 'signup') {
     text
   };
 
-  // 15s application timeout
-  const timeoutMs = 15000;
+  // 12s application timeout
+  const timeoutMs = 12000;
   const timeoutPromise = new Promise((_, reject) => {
     const timer = setTimeout(() => {
-      reject(new Error('SMTP timeout: Email sending took longer than 15 seconds'));
+      reject(new Error('SMTP timeout: Email sending took longer than 12 seconds'));
     }, timeoutMs);
     if (typeof timer.unref === 'function') timer.unref();
   });
 
-  // Try port 465 (SSL) first; if fails, fallback to port 587 (STARTTLS)
   try {
-    const transporter465 = createTransporter(465, true);
     const info = await Promise.race([
-      transporter465.sendMail(mailOptions),
+      transporter.sendMail(mailOptions),
       timeoutPromise
     ]);
-    console.log(`✅ OTP email sent successfully via port 465 to ${to} (Message ID: ${info.messageId || 'ok'})`);
+    console.log(`✅ OTP email sent successfully to ${to} (Message ID: ${info.messageId || 'ok'})`);
     return { success: true, messageId: info.messageId };
-  } catch (err465) {
-    console.warn(`⚠️  Port 465 send failed (${err465.message}), attempting port 587 fallback...`);
-    try {
-      const transporter587 = createTransporter(587, false);
-      const info = await Promise.race([
-        transporter587.sendMail(mailOptions),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP port 587 timeout')), 10000))
-      ]);
-      console.log(`✅ OTP email sent successfully via port 587 to ${to} (Message ID: ${info.messageId || 'ok'})`);
-      return { success: true, messageId: info.messageId };
-    } catch (err587) {
-      console.error(`❌ Failed to send OTP email to ${to}:`, err587.message || err465.message);
-      throw new Error(`Email sending failed: ${err587.message || err465.message}`);
-    }
+  } catch (err) {
+    console.error(`❌ Failed to send OTP email to ${to}:`, err.message);
+    throw err;
   }
 }
 

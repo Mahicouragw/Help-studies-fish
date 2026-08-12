@@ -98,6 +98,33 @@ app.get('/api/email-status', (req, res) => {
   });
 });
 
+app.get('/api/test-email', async (req, res) => {
+  const { isConfigured, user } = cleanCredentials();
+  if (!isConfigured) {
+    return res.json({
+      success: false,
+      error: 'Gmail not configured in environment variables.'
+    });
+  }
+  try {
+    const result = await sendOTPEmail(user, '123456', 'verification test');
+    res.json({
+      success: true,
+      message: `Test email successfully sent to ${user}! Check your inbox.`,
+      result
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+      code: err.code || 'UNKNOWN',
+      command: err.command || null,
+      response: err.response || null,
+      responseCode: err.responseCode || null
+    });
+  }
+});
+
 // ==========================================
 // AUTHENTICATION ENDPOINTS
 // ==========================================
