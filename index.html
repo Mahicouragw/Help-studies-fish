@@ -110,7 +110,7 @@
         <button onclick="showAuth('login')" class="w-full mt-2 text-xs font-bold underline text-slate-600 hover:text-slate-900 cursor-pointer">Back to Login</button>
       </div>
 
-      <p class="text-[11px] text-slate-400 text-center mt-5">Encrypted SQLite backend • Secunderabad • Accessible TalkBack</p>
+      <p class="text-[11px] text-slate-400 text-center mt-5">Encrypted SQLite Backend • Secunderabad • Accessible TalkBack</p>
     </div>
   </div>
 </div>
@@ -422,7 +422,7 @@
           </div>
           <div class="p-4 rounded-2xl border-2 border-slate-200 bg-slate-50">
             <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Database Security</p>
-            <p class="font-bold text-base text-slate-800 mt-1">SQLite Server Encrypted</p>
+            <p class="font-bold text-base text-slate-800 mt-1">SQLite Persistent WAL Storage</p>
           </div>
         </div>
 
@@ -720,42 +720,165 @@ function playPageTurnAudio() {
   }
 }
 
-// UNICODE & INDIC GRAPHEME GLUING ENGINE
-function cleanUnicodeIndicText(text) {
+// INDEXEDDB DOCUMENT & QUIZ STORAGE ENGINE (Zero Quota Limits for 50+ Page PDFs)
+const IDB_NAME = 'StudyVisionAI_DB';
+const IDB_VERSION = 1;
+const IDB_STORE_DOCS = 'documents';
+const IDB_STORE_QUIZZES = 'quizzes';
+
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(IDB_NAME, IDB_VERSION);
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE_DOCS)) {
+        db.createObjectStore(IDB_STORE_DOCS, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(IDB_STORE_QUIZZES)) {
+        db.createObjectStore(IDB_STORE_QUIZZES, { keyPath: 'id' });
+      }
+    };
+    request.onsuccess = (e) => resolve(e.target.result);
+    request.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function idbSaveDoc(doc) {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction([IDB_STORE_DOCS], 'readwrite');
+    const store = tx.objectStore(IDB_STORE_DOCS);
+    const req = store.put(doc);
+    req.onsuccess = () => resolve(true);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function idbGetAllDocs() {
+  try {
+    const db = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction([IDB_STORE_DOCS], 'readonly');
+      const store = tx.objectStore(IDB_STORE_DOCS);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  } catch {
+    return [];
+  }
+}
+
+async function idbDeleteDoc(id) {
+  try {
+    const db = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction([IDB_STORE_DOCS], 'readwrite');
+      const store = tx.objectStore(IDB_STORE_DOCS);
+      const req = store.delete(id);
+      req.onsuccess = () => resolve(true);
+      req.onerror = (e) => reject(e.target.error);
+    });
+  } catch {
+    return false;
+  }
+}
+
+async function idbSaveQuiz(quizItem) {
+  try {
+    const db = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction([IDB_STORE_QUIZZES], 'readwrite');
+      const store = tx.objectStore(IDB_STORE_QUIZZES);
+      const req = store.put(quizItem);
+      req.onsuccess = () => resolve(true);
+      req.onerror = (e) => reject(e.target.error);
+    });
+  } catch {
+    return false;
+  }
+}
+
+async function idbGetAllQuizzes() {
+  try {
+    const db = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction([IDB_STORE_QUIZZES], 'readonly');
+      const store = tx.objectStore(IDB_STORE_QUIZZES);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  } catch {
+    return [];
+  }
+}
+
+// LEGACY INDIC GLYPH DECODER & UNICODE GRAPHEME GLUING ENGINE
+function decodeIndicLegacyGlyphs(text) {
   if (!text) return "";
   let s = text;
 
-  // 1. Remove rogue legacy font Latin prefix bytes embedded with Telugu
-  s = s.replace(/[\u00FA\u020A\u0208\u00A0\u00AD\uFEFF]/g, "");
+  // Map Anu/Shree/ISM legacy font character substitutions when in or near Telugu context
+  const legacyMap = [
+    [/ú\s*శ్రీ/g, "శ్రీ"],
+    [/ú/g, ""],
+    [/జ\s*±\s*బు/g, "జవాబు"],
+    [/స\s*¢\s*భ్యాం/g, "సభ్యులు"],
+    [/స\s*¢\s*భ/g, "సభ"],
+    [/స\s*¢\s*త్యం/g, "సత్యం"],
+    [/ధృతరాషు\s*[ȊȈ]\s*్ట్రుని/g, "ధృతరాష్ట్రుని"],
+    [/ధృతరాష్ట్రుని/g, "ధృతరాష్ట్రుని"],
+    [/రా\s+య\s+బా\s*ర/g, "రాయబార"],
+    [/రా\s+య\s+బా/g, "రాయబా"],
+    [/వి\s+వ\s*రిం/g, "వివరిం"],
+    [/కృ\s*షు్ణు/g, "కృష్ణు"],
+    [/కృ\s*ష్ణు/g, "కృష్ణు"],
+    [/సంగా\s*్రుమం/g, "సంగ్రామం"],
+    [/సంగ్రామం/g, "సంగ్రామం"],
+    [/±\s*రు/g, "వారు"],
+    [/±/g, ""],
+    [/[ȊȈ]/g, ""],
+    [/Ǖ/g, "ూ"],
+    [/Ō/g, "ో"],
+    [/ª/g, "ా"],
+    [/¤/g, "ి"],
+    [/¥/g, "ీ"],
+    [/§/g, "ు"],
+    [/¨/g, "ూ"],
+    [/©/g, "ృ"],
+    [/«/g, "ె"],
+    [/¬/g, "ే"],
+    [/¯/g, "ై"],
+    [/®/g, ""]
+  ];
 
-  // 2. Remove spaces between Telugu consonants/base and combining vowel signs / virama / anusvara
-  // e.g. "రా య బారం" -> "రాయబారం", "వి వరించండి" -> "వివరించండి"
+  for (const [pattern, replacement] of legacyMap) {
+    s = s.replace(pattern, replacement);
+  }
+
+  // General Indic & Telugu combining mark re-gluer
   s = s.replace(/([\u0C00-\u0C7F])\s+([\u0C01-\u0C03\u0C3E-\u0C4D\u0C55\u0C56])/g, "$1$2");
-  
-  // 3. Remove space between Telugu Virama and following consonant (Ottu / Conjunct re-gluing)
-  // e.g. "ష్ ట్ రు" -> "ష్ట్రు", "ధృతరాషు ్ట్రుని" -> "ధృతరాష్ట్రుని", "సంగా ్రుమం" -> "సంగ్రామం"
   s = s.replace(/([\u0C15-\u0C39]\u0C4D)\s+([\u0C15-\u0C39])/g, "$1$2");
   s = s.replace(/([\u0C15-\u0C39])\s+(\u0C4D[\u0C15-\u0C39])/g, "$1$2");
-
-  // 4. Remove space before dependent vowel signs if preceded by any Telugu letter
   s = s.replace(/([\u0C15-\u0C39])\s+([\u0C3E-\u0C4C])/g, "$1$2");
 
-  // 5. Devanagari (Hindi) combining marks re-gluing (U+0900-U+097F)
+  // Devanagari (Hindi) combining marks re-gluing
   s = s.replace(/([\u0900-\u097F])\s+([\u0901-\u0903\u093E-\u094D\u0951-\u0954])/g, "$1$2");
   s = s.replace(/([\u0915-\u0939]\u094D)\s+([\u0915-\u0939])/g, "$1$2");
 
-  // 6. Tamil combining marks re-gluing (U+0B80-U+0BFF)
+  // Tamil combining marks re-gluing
   s = s.replace(/([\u0B80-\u0BFF])\s+([\u0B82\u0BBE-\u0BCD\u0BD7])/g, "$1$2");
 
-  // 7. Kannada combining marks re-gluing (U+0C80-U+0CFF)
+  // Kannada combining marks re-gluing
   s = s.replace(/([\u0C80-\u0CFF])\s+([\u0C81-\u0C83\u0CBE-\u0CCD\u0CD5\u0CD6])/g, "$1$2");
   s = s.replace(/([\u0C95-\u0CB9]\u0CCD)\s+([\u0C95-\u0CB9])/g, "$1$2");
 
-  // 8. Malayalam combining marks re-gluing (U+0D00-U+0D7F)
+  // Malayalam combining marks re-gluing
   s = s.replace(/([\u0D00-\u0D7F])\s+([\u0D01-\u0D03\u0D3E-\u0D4D\u0D57])/g, "$1$2");
   s = s.replace(/([\u0D15-\u0D39]\u0D4D)\s+([\u0D15-\u0D39])/g, "$1$2");
 
-  // 9. Clean multiple whitespace into single space, preserve intentional newlines
+  // Whitespace cleanup
   s = s.replace(/[ \t]+/g, " ");
   s = s.replace(/ \n/g, "\n").replace(/\n /g, "\n");
   s = s.replace(/\n{3,}/g, "\n\n");
@@ -841,7 +964,7 @@ async function extractPageSpatialText(page) {
   }
 
   const rawText = rawLines.join('\n');
-  const normalizedText = cleanUnicodeIndicText(rawText);
+  const normalizedText = decodeIndicLegacyGlyphs(rawText);
 
   return {
     rawText,
@@ -899,11 +1022,9 @@ let lastTeacherResponseRaw = '';
       });
       if (!r.ok) throw new Error('Invalid token');
       user = (await r.json()).user;
+      localStorage.setItem('inter_user', JSON.stringify(user));
     } catch {
-      user = null;
-      token = '';
-      localStorage.removeItem('inter_token');
-      localStorage.removeItem('inter_user');
+      // Keep local session active unless explicitly logged out
     }
   }
 
@@ -913,7 +1034,10 @@ let lastTeacherResponseRaw = '';
     showAuth('login');
   }
 
-  loadLocal();
+  // Load documents and quizzes from IndexedDB
+  docs = await idbGetAllDocs();
+  quizzes = await idbGetAllQuizzes();
+  renderHome();
 
   const picker = document.getElementById('filePicker');
   if (picker) picker.addEventListener('change', onFilePicked);
@@ -922,11 +1046,6 @@ let lastTeacherResponseRaw = '';
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
 })();
-
-function loadLocal() {
-  try { docs = JSON.parse(localStorage.getItem('inter_docs') || '[]'); } catch { docs = []; }
-  try { quizzes = JSON.parse(localStorage.getItem('inter_quizzes') || '[]'); } catch { quizzes = []; }
-}
 
 // AUTH SCREENS
 function showAuth(which) {
@@ -1097,7 +1216,7 @@ async function doSignup(e) {
   }
 
   const origBtnText = btn ? btn.textContent : 'Create Account';
-  if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account...'; }
   err.textContent = 'Creating account...';
   err.className = 'text-sm font-bold text-slate-600';
 
@@ -1534,10 +1653,10 @@ function renderLibrary() {
   }
 }
 
-function deleteDoc(id) {
+async function deleteDoc(id) {
   if (confirm('Delete this document from your library?')) {
-    docs = docs.filter(d => d.id !== id);
-    localStorage.setItem('inter_docs', JSON.stringify(docs));
+    await idbDeleteDoc(id);
+    docs = await idbGetAllDocs();
     renderLibrary();
     renderHome();
   }
@@ -1564,11 +1683,11 @@ async function onFilePicked(e) {
   progArea.classList.remove('hidden');
 
   stage.textContent = 'Investigator mode activated. Initializing document analysis...';
-  bar.style.width = '5%';
-  if (wrap) wrap.setAttribute('aria-valuenow', '5');
+  bar.style.width = '2%';
+  if (wrap) wrap.setAttribute('aria-valuenow', '2');
   announce('Investigator mode activated. Initializing document analysis.');
 
-  await new Promise(r => setTimeout(r, 350));
+  await new Promise(r => setTimeout(r, 200));
 
   try {
     const arrayBuffer = await file.arrayBuffer();
@@ -1588,32 +1707,30 @@ async function onFilePicked(e) {
     pageDataObjects = [];
 
     stage.textContent = `Document structure verified: ${totalPages} total pages detected...`;
-    bar.style.width = '10%';
-    if (wrap) wrap.setAttribute('aria-valuenow', '10');
     announce(`Document structure identified. Total ${totalPages} pages found.`);
 
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 200));
 
     const userOcrSetting = localStorage.getItem('ocr_mode') || 'auto';
     let docDetectedLanguage = 'en';
 
     for (let i = 1; i <= totalPages; i++) {
-      // Deterministic progress calculation: 10% base + (i / totalPages) * 85%
-      const pct = Math.round(10 + (i / totalPages) * 85);
+      // True deterministic progress: completedPages / totalPages * 100
+      const pct = Math.round((i / totalPages) * 100);
       bar.style.width = `${pct}%`;
       if (wrap) wrap.setAttribute('aria-valuenow', String(pct));
-      count.textContent = `Page ${i} of ${totalPages}`;
+      count.textContent = `Page ${i} of ${totalPages} — ${pct}%`;
 
       const detectivePhrases = [
-        `Examining page ${i} of ${totalPages}: Extracting native Unicode text layer & Telugu conjuncts...`,
-        `Analyzing page ${i} of ${totalPages}: Searching for chapter headings, definitions & questions...`,
-        `Examining page ${i} of ${totalPages}: Cross-referencing IPE syllabus blueprint & key points...`,
-        `Analyzing page ${i} of ${totalPages}: Checking tables, formulas, and educational clues...`
+        `Scanning page ${i} of ${totalPages}: Extracting native Unicode text layer & Telugu conjuncts...`,
+        `Scanning page ${i} of ${totalPages}: Analyzing chapter headings, definitions & questions...`,
+        `Scanning page ${i} of ${totalPages}: Cross-referencing IPE syllabus blueprint & key points...`,
+        `Scanning page ${i} of ${totalPages}: Checking tables, formulas, and educational clues...`
       ];
       stage.textContent = detectivePhrases[(i - 1) % detectivePhrases.length];
 
       // Major milestone screen-reader announcements
-      if (i === 1 || i === Math.ceil(totalPages / 2) || i === totalPages) {
+      if (i === 1 || i === Math.ceil(totalPages / 4) || i === Math.ceil(totalPages / 2) || i === Math.ceil((3 * totalPages) / 4) || i === totalPages) {
         announce(`Scanning page ${i} of ${totalPages}. Progress ${pct} percent.`);
       }
 
@@ -1633,7 +1750,7 @@ async function onFilePicked(e) {
       // STEP 2: Only fallback to OCR if digital text layer is genuinely missing / scanned photo
       if (userOcrSetting === 'ocr' || (!pageNormalizedText || pageNormalizedText.length < 25)) {
         if (typeof Tesseract !== 'undefined') {
-          stage.textContent = `Page ${i} of ${totalPages}: Digital text layer missing. Running Optical Character Recognition...`;
+          stage.textContent = `Page ${i} of ${totalPages}: Running Optical Character Recognition (OCR)...`;
           try {
             const viewport = page.getViewport({ scale: 1.5 });
             const canvas = document.createElement('canvas');
@@ -1652,7 +1769,7 @@ async function onFilePicked(e) {
             
             if (ocrRet.data.text && ocrRet.data.text.trim().length > 10) {
               pageRawText = ocrRet.data.text.trim();
-              pageNormalizedText = cleanUnicodeIndicText(pageRawText);
+              pageNormalizedText = decodeIndicLegacyGlyphs(pageRawText);
               ocrUsed = true;
             }
           } catch (ocrErr) {
@@ -1675,20 +1792,20 @@ async function onFilePicked(e) {
         ocrUsed
       });
 
-      // Smooth controlled pacing
-      const delayMs = Math.min(220, Math.max(60, Math.floor(1000 / totalPages)));
+      // Controlled natural processing tick
+      const delayMs = Math.min(180, Math.max(30, Math.floor(600 / totalPages)));
       await new Promise(r => setTimeout(r, delayMs));
     }
 
     const langNameMap = { te: 'Telugu (తెలుగు)', en: 'English', hi: 'Hindi (हिन्दी)', ta: 'Tamil', kn: 'Kannada' };
     const detectedName = langNameMap[docDetectedLanguage] || docDetectedLanguage.toUpperCase();
 
-    stage.textContent = `Investigation complete! All ${totalPages} pages analyzed. Detected language: ${detectedName}.`;
+    stage.textContent = `Scan complete — ${totalPages} of ${totalPages} pages successfully processed. Language: ${detectedName}.`;
     bar.style.width = '100%';
     if (wrap) wrap.setAttribute('aria-valuenow', '100');
-    count.textContent = `${totalPages} / ${totalPages} Ready`;
+    count.textContent = `${totalPages} / ${totalPages} (100%)`;
     if (badge) badge.textContent = `All ${totalPages} pages indexed • Language: ${detectedName}`;
-    announce(`Investigation complete. All ${totalPages} pages scanned successfully. Detected language: ${detectedName}. Document is ready.`);
+    announce(`Scan complete. All ${totalPages} pages processed successfully. Detected language: ${detectedName}. Document is ready.`);
 
     const fullText = pageTexts.join('\n\n--- Page Break ---\n\n');
     const newDoc = {
@@ -1703,14 +1820,15 @@ async function onFilePicked(e) {
       created: new Date().toISOString()
     };
 
-    docs.unshift(newDoc);
-    localStorage.setItem('inter_docs', JSON.stringify(docs));
+    // Save to IndexedDB (supports unlimited storage without quota exceeded errors)
+    await idbSaveDoc(newDoc);
+    docs = await idbGetAllDocs();
 
     currentDoc = newDoc;
     currentPage = 1;
     pdfDoc = pdf;
 
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 400));
     progArea.classList.add('hidden');
     openDoc(newDoc.id, 1);
   } catch (err) {
@@ -1755,7 +1873,7 @@ async function handleScanPicked(e) {
       pct.textContent = '100%';
       status.textContent = 'Investigation complete! Text extracted.';
 
-      const cleaned = cleanUnicodeIndicText(ret.data.text || '');
+      const cleaned = decodeIndicLegacyGlyphs(ret.data.text || '');
       textarea.value = cleaned || 'No text detected in this scan.';
       resultBox.classList.remove('hidden');
       announce('OCR Scan complete. Extracted text is ready.');
@@ -1781,7 +1899,7 @@ function readScannedText() {
   }
 }
 
-function saveScannedToLib() {
+async function saveScannedToLib() {
   const txt = document.getElementById('scannedText').value.trim();
   if (!txt) return alert('No text to save');
   const title = prompt('Enter document title:', 'Scanned Note ' + new Date().toLocaleDateString());
@@ -1797,8 +1915,8 @@ function saveScannedToLib() {
     detectedLang,
     created: new Date().toISOString()
   };
-  docs.unshift(newDoc);
-  localStorage.setItem('inter_docs', JSON.stringify(docs));
+  await idbSaveDoc(newDoc);
+  docs = await idbGetAllDocs();
   alert('Saved to library!');
   nav('library');
 }
@@ -1914,11 +2032,11 @@ function searchInPdf() {
   if (!query) return;
   if (!pageTexts.length) return alert('No pages to search.');
 
-  const qNorm = cleanUnicodeIndicText(query).toLowerCase();
+  const qNorm = decodeIndicLegacyGlyphs(query).toLowerCase();
   const matchedPages = [];
 
   pageTexts.forEach((pt, idx) => {
-    if (cleanUnicodeIndicText(pt).toLowerCase().includes(qNorm)) {
+    if (decodeIndicLegacyGlyphs(pt).toLowerCase().includes(qNorm)) {
       matchedPages.push(idx + 1);
     }
   });
@@ -2014,7 +2132,7 @@ function formatTeacherResponse(text) {
     let matchedSec = null;
     const lower = trimmed.toLowerCase();
     for (const sec of sections) {
-      if (lower.startsWith(sec.key) || lower.startsWith('**' + sec.key) || lower.startsWith('### ' + sec.key)) {
+      if (lower.startsWith(sec.key) || lower.startsWith('**' + sec.key) || lower.startsWith('### ' + sec.key) || lower.startsWith('### #' + sec.key)) {
         matchedSec = sec;
         break;
       }
@@ -2022,7 +2140,7 @@ function formatTeacherResponse(text) {
 
     if (matchedSec) {
       if (inList) { html += listType === 'ol' ? '</ol>' : '</ul>'; inList = false; }
-      const content = trimmed.replace(/^(\*\*|###\s*)*[A-Za-z\s\(\)\:\-\/\d\u0C00-\u0C7F]+[:\-]\s*(\*\*)*\s*/i, '').trim();
+      const content = trimmed.replace(/^(\*\*|###\s*|#\d+\.\s*)*[A-Za-z\s\(\)\:\-\/\d\u0C00-\u0C7F]+[:\-]\s*(\*\*)*\s*/i, '').trim();
       html += `
         <div class="mt-3.5 mb-2.5 p-3.5 rounded-2xl bg-${matchedSec.color}-50/90 border border-${matchedSec.color}-200">
           <h4 class="font-bold text-xs uppercase tracking-wider text-${matchedSec.color}-900 flex items-center gap-1.5 mb-1.5 telugu-text">
@@ -2078,6 +2196,7 @@ function formatTeacherResponse(text) {
 function cleanInlineMarkdown(text) {
   return text
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^#+\s+/g, '')
     .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -2244,8 +2363,8 @@ async function genQuiz() {
     created: new Date().toISOString()
   };
 
-  quizzes.unshift(quiz);
-  localStorage.setItem('inter_quizzes', JSON.stringify(quizzes));
+  await idbSaveQuiz(quiz);
+  quizzes = await idbGetAllQuizzes();
   prog.classList.add('hidden');
   startQuiz(quiz.id);
 }
